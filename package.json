@@ -1,8 +1,8 @@
 {
-  "name": "rESCueApp",
+  "name": "rESCue App",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "ThankTheMaker",
+  "homepage": "https://www.thank-the-maker.org",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -19,8 +19,10 @@
     "@angular/platform-browser": "~11.2.0",
     "@angular/platform-browser-dynamic": "~11.2.0",
     "@angular/router": "~11.2.0",
-    "@capacitor/core": "2.4.7",
+    "@capacitor-community/bluetooth-le": "^0.6.0",
+    "@capacitor/core": "^2.4.7",
     "@ionic/angular": "^5.5.2",
+    "@ionic/pwa-elements": "^3.0.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
@@ -35,7 +37,7 @@
     "@angular/compiler": "~11.2.0",
     "@angular/compiler-cli": "~11.2.0",
     "@angular/language-service": "~11.2.0",
-    "@capacitor/cli": "2.4.7",
+    "@capacitor/cli": "^2.4.7",
     "@ionic/angular-toolkit": "^3.1.1",
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "~2.0.3",

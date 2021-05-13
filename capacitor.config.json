@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "org.thankthemaker.rescueapp",
   "appName": "rESCueApp",
   "bundledWebRuntime": false,
   "npmClient": "npm",

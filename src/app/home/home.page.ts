@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BleClient, numberToUUID } from '@capacitor-community/bluetooth-le';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,15 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor() {
+  }
 
+  scan() {
+    try {
+      BleClient.initialize();
+      BleClient.requestDevice();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
