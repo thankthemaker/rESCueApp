@@ -1,0 +1,7 @@
+{
+  "name": "rESCueApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
