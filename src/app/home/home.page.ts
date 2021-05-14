@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BleClient, BleDevice, numberToUUID } from '@capacitor-community/bluetooth-le';
 import { ToastController } from '@ionic/angular';
 import { Router, NavigationExtras } from '@angular/router';
+import { AppSettings } from '../AppSettings';
 
 @Component({
   selector: 'app-home',
@@ -14,29 +15,38 @@ export class HomePage {
     private router: Router,
     private toastController: ToastController) {}
 
-  scan() {
+  async scan() {
+    try {
       BleClient.initialize();
-      BleClient.requestDevice({
-        //services: [ 'd804b643-6ce7-4e81-9f8a-ce0f699085eb', '713d0000-503e-4c75-ba94-3148f18d941e' ]
-        //services: [ '6e400001-b5a3-f393-e0a9-e50e24dcca9e' ]
-      }).then((device) => {
-        console.log('connected to device ' + device.name + '(' + atob(device.deviceId) + ')');
-        let navigationExtras: NavigationExtras = {
-          state: {
-            device
-          }
-        };
-        this.router.navigate(['/device'], navigationExtras)
-      }).catch(() => {
-        this.presentToast();
-      });
-    } 
+      
+      //check if BLE is enabled on device, otherwise ask the user to turn on
+      const isEnabled = await BleClient.getEnabled();
+      console.log("Is BLE enabled: " + isEnabled)
+
+      const device = await BleClient.requestDevice({
+        //services: [ AppSettings.ESP_SERVICE_UUID ],
+        //optionalServices: [AppSettings.OTA_SERVICE_UUID]
+      })
+      
+      await BleClient.connect(device.deviceId);
+     
+      console.log('connected to device ' + device.name + '(' + atob(device.deviceId) + ')');
+      let navigationExtras: NavigationExtras = {
+        state: {
+          device
+        }
+      };
+      this.router.navigate(['/device'], navigationExtras)
+    } catch(error) {
+      this.presentToast(error);
+    }
+  } 
   
 
-  async presentToast() {
+  async presentToast(error) {
     const toast = await this.toastController.create({
       header: "Bluetooth not supported",
-      message: 'Your browser does not support BLE or it is not activated.',
+      message: 'Your browser does not support BLE or it is not activated. (' + error + ')',
       animated: true,
       color: "danger",
       position: "middle",

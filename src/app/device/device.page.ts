@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { BleClient, BleDevice, numberToUUID } from '@capacitor-community/bluetooth-le';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { AppSettings } from '../AppSettings';
 
 @Component({
   selector: 'app-device',
@@ -34,6 +35,16 @@ export class DevicePage implements OnInit {
     }).catch((error) => {
       console.error('Unable to disconnect ' + error)
     })
+  }
+
+  async readVersion() {
+    const result = await BleClient.read(
+      this.device.deviceId,
+      AppSettings.ESP_SERVICE_UUID,
+      AppSettings.VERSION_CHAR_UUID,
+    );
+    console.log('versioninfo', result.getUint8(0));
+
   }
 
   async checkForUpdate() {
