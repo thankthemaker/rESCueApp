@@ -24,8 +24,8 @@ export class HomePage {
       console.log("Is BLE enabled: " + isEnabled)
 
       const device = await BleClient.requestDevice({
-        //services: [ AppSettings.ESP_SERVICE_UUID ],
-        //optionalServices: [AppSettings.OTA_SERVICE_UUID]
+        services: [ AppSettings.ESP_SERVICE_UUID ],
+        optionalServices: [AppSettings.OTA_SERVICE_UUID]
       })
       
       await BleClient.connect(device.deviceId);

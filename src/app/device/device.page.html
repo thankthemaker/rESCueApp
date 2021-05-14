@@ -9,10 +9,12 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>rESCue device {{device.deviceId}}</ion-card-subtitle>
-      <ion-card-title>{{device.name}}</ion-card-title>
+      <ion-card-title>Name: {{device.name}}</ion-card-title>
     </ion-card-header>
   
     <ion-card-content>
+      <p>Hardware-Version: {{hardwareVersion}}</p>
+      <p>Firmware-Version: {{softwareVersion}}</p>
       <ion-list>
         <ion-item *ngFor="let service of device.uuids">
           <ion-label>service</ion-label>
@@ -25,7 +27,7 @@
       <ion-label>Set Auth-Token</ion-label>
       <ion-icon name="close-circle"></ion-icon>
     </ion-chip>
-    <ion-chip outline color="warning" (click)="checkForUpdate()">
+    <ion-chip outline color="warning" (click)="getFirmwareVersions()">
       <ion-icon name="construct"></ion-icon>
       <ion-label>Check for update</ion-label>
       <!--<ion-icon name="close-circle"></ion-icon>-->
