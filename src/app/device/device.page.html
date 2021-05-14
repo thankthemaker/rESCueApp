@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>device</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>rESCue device</ion-card-subtitle>
+      <ion-card-title>{{device.name}}</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let service of device.uuids">
+          <ion-label>service</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+
+    <ion-chip outline color="secondary">
+      <ion-icon name="key"></ion-icon>
+      <ion-label>Set Auth-Token</ion-label>
+      <ion-icon name="close-circle"></ion-icon>
+    </ion-chip>
+    <ion-chip outline color="warning" (click)="checkForUpdate()">
+      <ion-icon name="construct"></ion-icon>
+      <ion-label>Check for update</ion-label>
+      <!--<ion-icon name="close-circle"></ion-icon>-->
+    </ion-chip>
+    <ion-chip outline color="danger" (click)="disconnect()">
+      <ion-icon name="bluetooth"></ion-icon>
+      <ion-label>Disconnect</ion-label>
+      <!--<ion-icon name="close-circle"></ion-icon>-->
+    </ion-chip>
+
+    <!--<ion-button (click)="disconnect()" color="primary">Disconnect <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>-->
+  </ion-card>
+
+</ion-content>
