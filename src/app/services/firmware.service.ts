@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
   })
   export class FirmwareService {
-    url = 'https://thank-the-maker.org/rescue/version.json';
+    url = 'https://thank-the-maker.org/rescue';
    
     /**
      * Constructor of the Service with Dependency Injection
@@ -19,6 +18,12 @@ import { map } from 'rxjs/operators';
     * Get version file from remote 
     */
     getVersioninfo(): Observable<any> {
-      return this.http.get(`${this.url}`)
+      return this.http.get(`${this.url}/version.json`)
+    }
+
+    getFirmwareFile(version: string) : Observable<any> {
+      return this.http.get(`${this.url}/firmware-${version}.bin`, {
+        responseType: 'arraybuffer'
+      }).pipe()
     }
   }

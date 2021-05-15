@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { BleClient, BleDevice, numberToUUID } from '@capacitor-community/bluetooth-le';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { AppSettings } from '../AppSettings';
 import { FirmwareService } from '../services/firmware.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-device',
@@ -16,6 +15,7 @@ export class DevicePage implements OnInit {
   device: BleDevice
   softwareVersion: string
   hardwareVersion: string
+  isFirstUpdateCheck: boolean = true
 
   constructor(
       private route: ActivatedRoute, 
@@ -27,12 +27,14 @@ export class DevicePage implements OnInit {
         this.device = this.router.getCurrentNavigation().extras.state.device;
         console.log('UUIDs: ' + this.device.uuids)
       }
-    });
+    })
   }
 
   ngOnInit() {
-    this.readVersion()
-    this.getFirmwareVersions()
+    this.isFirstUpdateCheck = true
+    this.readVersion().then(() => {
+      this.getFirmwareVersions()
+    })
   }
 
   disconnect() {
@@ -64,54 +66,84 @@ export class DevicePage implements OnInit {
   }
 
   checkForUpdate(data) {
-    console.log("Data: " + JSON.stringify(data))
     let softwareVersionCount = 0;
     let latestCompatibleSoftware = data.firmware[softwareVersionCount]['software'];
     versionFindLoop:
       while (latestCompatibleSoftware !== undefined) {
         let compatibleHardwareVersion = "N/A"
-        let hardwareVersionCount = 0;
+        let hardwareVersionCount = 0
         while (compatibleHardwareVersion !== undefined) {
+          if(data.firmware[softwareVersionCount] === undefined) {
+            break versionFindLoop
+          }
           compatibleHardwareVersion = data.firmware[softwareVersionCount]['hardware'][hardwareVersionCount++];
           if (compatibleHardwareVersion === this.hardwareVersion) {
-            latestCompatibleSoftware = data.firmware[softwareVersionCount]['software'];
+            latestCompatibleSoftware = data.firmware[softwareVersionCount]['software']
             if (latestCompatibleSoftware !== this.softwareVersion) {
-              console.log("latest compatible version: " + latestCompatibleSoftware);
-              this.promptForUpdate(latestCompatibleSoftware);
+              console.log("latest compatible version: " + latestCompatibleSoftware)
+              this.promptForUpdate(true, latestCompatibleSoftware)
+              return
             }
             break versionFindLoop;
           }
         }
-        softwareVersionCount++;
+        softwareVersionCount++
+      }
+      if(!this.isFirstUpdateCheck) {
+        this.promptForUpdate(false, this.softwareVersion)
+      } else {
+        this.isFirstUpdateCheck = false
       }
   }
 
-  async promptForUpdate(version: string) {
-    const toast = await this.toastCtrl.create({
-      header: 'Compatible update available - version ' + version,
-      message: 'Do you want to update your rESCue device?',
-      position: 'middle',
-      color: 'warning',
-      animated: true,
-      buttons: [
-        {
-          //side: 'start',
-          icon: 'checkmark-circle',
-          text: 'Yes',
-          handler: () => {
-            console.log('Update clicked');
-            this.router.navigate(['/update'])   
+  async promptForUpdate(isUpdateAvailable: boolean, version: string) {
+    let toast
+    if(isUpdateAvailable) {
+        toast = await this.toastCtrl.create({
+        header: 'Compatible update available - version ' + version,
+        message: 'Do you want to update your rESCue device?',
+        position: 'middle',
+        color: 'warning',
+        animated: true,
+        buttons: [
+          {
+             //side: 'start',
+            icon: 'checkmark-circle',
+            text: 'Yes',
+            handler: () => {
+              console.log('Update clicked');
+              let navigationExtras: NavigationExtras = {
+                state: {
+                  'deviceId': this.device.deviceId,
+                  version
+                }
+              };
+              this.router.navigate(['/update'], navigationExtras)   
+            }
+          }, {
+            icon: 'close-circle',
+            text: 'No',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
           }
-        }, {
-          icon: 'close-circle',
-          text: 'No',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
+        ]
+      })
+    } else {
+      toast = await this.toastCtrl.create({
+        header: 'No compatible update available!',
+        message: 'Your device is already running the latest version ' + version,
+        color: 'primary',
+        position: 'middle',
+        buttons: [
+          {
+            text: 'OK',
+            role: 'cancel'
           }
-        }
-      ]
-    });
+        ]
+      })
+    }
     toast.present();
   }
 }
