@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>rESCUe enrollment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Set up rESCue device </ion-card-subtitle>
+      <ion-card-title>Name: {{device.name}}</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      <p>Hardware-Version: {{hardwareVersion}}</p>
+      <p>Firmware-Version: {{softwareVersion}}</p>
+      <p>
+        <b>Blynk</b><br/>
+          <ion-item>
+            <ion-label>Auth Token</ion-label>
+            <ion-input placeholder="Enter your Token"></ion-input>
+          </ion-item>
+      </p>
+      <p>
+        <b>CANBUS</b><br/>
+          <ion-item>
+            <ion-label>VESC-ID</ion-label>
+            <ion-input type="number" value="25"></ion-input>
+          </ion-item>
+      </p>
+    </ion-card-content>
+ </ion-card>
+
+  <ion-button (click)="save()" color="primary" expand="block">Save and reboot <ion-icon slot="start" name="save"></ion-icon></ion-button>
+
+</ion-content>

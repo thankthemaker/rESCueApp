@@ -6,7 +6,8 @@ import { Observable } from 'rxjs';
     providedIn: 'root'
   })
   export class FirmwareService {
-    url = 'https://thank-the-maker.org/rescue';
+    versionFilelUrl = 'https://rescue.thank-the-maker.org/firmware/version.json';
+    releaseUrl = 'https://rescue.thank-the-maker.org/firmware'
    
     /**
      * Constructor of the Service with Dependency Injection
@@ -18,12 +19,18 @@ import { Observable } from 'rxjs';
     * Get version file from remote 
     */
     getVersioninfo(): Observable<any> {
-      return this.http.get(`${this.url}/version.json`)
+      return this.http.get(`${this.versionFilelUrl}`)
     }
 
     getFirmwareFile(version: string) : Observable<any> {
-      return this.http.get(`${this.url}/firmware-${version}.bin`, {
+      return this.http.get(`${this.releaseUrl}/firmware-${version}.bin`, {
         responseType: 'arraybuffer'
+      }).pipe()
+    }
+
+    getChecksum(version: string): Observable<any> {
+      return this.http.get(`${this.releaseUrl}/firmware-${version}.sha256`, {
+        responseType: 'text'
       }).pipe()
     }
   }

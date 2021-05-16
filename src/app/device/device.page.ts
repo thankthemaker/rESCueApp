@@ -146,4 +146,15 @@ export class DevicePage implements OnInit {
     }
     toast.present();
   }
+
+  startEnrollment() {
+    let navigationExtras: NavigationExtras = {
+      state: {
+        'device': this.device,
+        'hardwareVersion': this.hardwareVersion,
+        'softwareVersion': this.softwareVersion
+      }
+    };
+    this.router.navigate(['/enroll'], navigationExtras)
+  }
 }

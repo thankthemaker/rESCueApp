@@ -22,9 +22,9 @@
       </ion-list>
     </ion-card-content>
 
-    <ion-chip outline color="secondary">
+    <ion-chip outline color="secondary" (click)="startEnrollment()">
       <ion-icon name="key"></ion-icon>
-      <ion-label>Set Auth-Token</ion-label>
+      <ion-label>Enrollment</ion-label>
       <ion-icon name="close-circle"></ion-icon>
     </ion-chip>
     <ion-chip outline color="warning" (click)="getFirmwareVersions()">
@@ -37,8 +37,6 @@
       <ion-label>Disconnect</ion-label>
       <!--<ion-icon name="close-circle"></ion-icon>-->
     </ion-chip>
-
-    <!--<ion-button (click)="disconnect()" color="primary">Disconnect <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>-->
   </ion-card>
 
 </ion-content>

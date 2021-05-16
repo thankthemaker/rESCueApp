@@ -8,10 +8,33 @@
 
   <div id="container">
     <strong>Updating your rESCue device!</strong>
-    <p>Please be patient, the update might take several minutes.</p>
-    <p>
-      <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
-      Progress: {{progress}}
-    </p>
+    <br/>
+    <br/>
+    <div *ngIf="!downloadFinished">
+      <p>
+        Downloading firmware version: {{version}}, please wait...
+      </p>
+      <br/>
+    </div>
+    <div *ngIf="downloadFinished">
+      <p>
+        Downloaded firmware version: {{version}}, size {{totalSize}} bytes  
+        <ion-icon name="checkmark-circle" color="success"></ion-icon>
+      </p>
+      <br/>
+      <p>
+        Checking firmware integrity:<br/>
+        checksum {{checksum | slice:0:30}}  
+        <ion-icon name="checkmark-circle" color="success"></ion-icon>
+      </p>
+      <br/>
+      <p>Now updating your rESCue device.</p>
+      <p>Please be patient, the update might take several minutes.</p>
+      <br/>
+      <p>
+        <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
+        Progress: {{progress}}
+      </p>
+    </div>
   </div>
 </ion-content>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BleClient } from '@capacitor-community/bluetooth-le';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { FirmwareService } from '../services/firmware.service';
 import { AppSettings } from '../AppSettings';
 
@@ -20,17 +20,21 @@ export class UpdatePage implements OnInit {
   deviceId : string
   updateData : any
   dataToSend : any
+  checksum: string
   totalSize : number
   remaining : number
   amountToWrite : number
   currentPosition : number
+  loading: any;
+  downloadFinished: boolean = false
 
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
     private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController,
     private firmwareService: FirmwareService) { 
-      this.progress = '0%';
+      this.progress = 'starting update, please wait...';
       this.progressNum = 0;
       this.route.queryParams.subscribe(params => {
         if (this.router.getCurrentNavigation().extras.state) {
@@ -41,9 +45,23 @@ export class UpdatePage implements OnInit {
   }
 
   ngOnInit() {
+    this.loading = this.showLoadingIndicator('Downloading firmware, please wait...');
+    this.firmwareService.getChecksum(this.version).subscribe(result => {
+      this.checksum = result;
+    })
     this.firmwareService.getFirmwareFile(this.version).subscribe(result => {
+      this.loading.dismiss();
+      this.totalSize = result.byteLength
+      this.downloadFinished = true
       this.updateDevice(result)
     })
+  }
+
+  async showLoadingIndicator(message: string) {
+     this.loading = await this.loadingCtrl.create({
+      message
+    });
+    return await this.loading.present();
   }
 
   async updateDevice(data) {
@@ -51,19 +69,7 @@ export class UpdatePage implements OnInit {
     console.log('started update to version ' + this.version)
     console.log('filesize bytes ' + byteCount)
     this.updateData = data
-
-    ///for(this.progress = 0; this.progress<100; this.progress = this.progress+5) {
-    ///  console.log('Progress: ' + this.progress)
-    ///  await this.delay(50)
-    ///}
-  
     this.sendFileOverBluetooth()
-
-   ///this.updateFinished(true);
-  }
-
-  async delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) )
   }
 
   async updateFinished(successful: boolean) {
@@ -73,12 +79,10 @@ export class UpdatePage implements OnInit {
       position: 'middle',
       color: successful ? 'success' : 'danger',
       animated: true,
-      buttons: [
-        {
+      buttons: [ {
           text: 'OK',
           role: 'ok'
-        }
-      ]
+        }]
     });
     await toast.present();
     const { role } = await toast.onDidDismiss();
@@ -101,7 +105,7 @@ export class UpdatePage implements OnInit {
     this.sendBufferedData()
   }
   
-   sendBufferedData() {
+   async sendBufferedData() {
     console.log("sendBufferedData: ");
     if (this.remaining > 0) {
       if (this.remaining >= characteristicSize) {
@@ -115,7 +119,7 @@ export class UpdatePage implements OnInit {
       this.remaining -= this.amountToWrite;
       console.log("remaining: " + this.remaining);
 
-      BleClient.write(
+      await BleClient.write(
         this.deviceId,
         AppSettings.OTA_SERVICE_UUID,
         AppSettings.FILE_CHAR_UUID,
@@ -124,6 +128,9 @@ export class UpdatePage implements OnInit {
 
       this.progressNum = this.currentPosition/this.totalSize
       this.progress = (100 * this.progressNum).toPrecision(3) + '%'
+      if(this.progressNum >= 1) {
+        this.updateFinished(true);
+      }
     }
   }
 }
