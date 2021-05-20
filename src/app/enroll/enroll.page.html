@@ -9,24 +9,38 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Set up rESCue device </ion-card-subtitle>
-      <ion-card-title>Name: {{device.name}}</ion-card-title>
+      <ion-card-title>Name: {{deviceName}}</ion-card-title>
     </ion-card-header>
   
     <ion-card-content>
       <p>Hardware-Version: {{hardwareVersion}}</p>
-      <p>Firmware-Version: {{softwareVersion}}</p>
+      <p>Firmware-Version: {{softwareVersion}}</p><br/>
+      <p>
+        <b>LEDs Front-/Backlight</b><br/>
+          <ion-item>
+            <ion-label>Number of pixel</ion-label>
+            <ion-input type="number" value="32" [(ngModel)]="ledPixel"></ion-input>
+          </ion-item>
+      </p>
+      <p>
+        <b>Battery Monitor</b><br/>
+          <ion-item>
+            <ion-label>Number of pixel</ion-label>
+            <ion-input type="number" value="5" [(ngModel)]="batmonPixel"></ion-input>
+          </ion-item>
+      </p>
       <p>
         <b>Blynk</b><br/>
           <ion-item>
             <ion-label>Auth Token</ion-label>
-            <ion-input placeholder="Enter your Token"></ion-input>
+            <ion-input placeholder="Enter your Token" [(ngModel)]="authToken"></ion-input>
           </ion-item>
       </p>
       <p>
         <b>CANBUS</b><br/>
           <ion-item>
             <ion-label>VESC-ID</ion-label>
-            <ion-input type="number" value="25"></ion-input>
+            <ion-input type="number" value="25" [(ngModel)]="vescId"></ion-input>
           </ion-item>
       </p>
     </ion-card-content>
