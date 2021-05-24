@@ -22,5 +22,12 @@
     <!--<ion-button color="primary" (click)="scan()">Scan</ion-button>-->
     <ion-button (click)="scan()" color="primary">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
   </div>
-
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-item>Version: {{version}}, 
+      Git-Tag: {{tag}}, 
+      Git-Hash: {{hash}}
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

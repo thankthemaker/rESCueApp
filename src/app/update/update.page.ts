@@ -27,6 +27,11 @@ export class UpdatePage implements OnInit {
   currentPosition : number
   loading: any;
   downloadFinished: boolean = false
+  lastSend: number = 0
+  lastAcknowledged: number = 0
+  lastSendTime: number
+  refreshIntervalId: any
+  resentCounter: number = 0
 
   constructor(
     private route: ActivatedRoute, 
@@ -96,17 +101,22 @@ export class UpdatePage implements OnInit {
     this.amountToWrite = 0;
     this.currentPosition = 0;
 
+    this.refreshIntervalId = setInterval(this.uploadStateCheck.bind(this), 5000);
+
     BleClient.startNotifications(
       this.deviceId,
       AppSettings.OTA_SERVICE_UUID,
       AppSettings.FILE_CHAR_UUID,
-      this.sendBufferedData.bind(this)
-    )
-    this.sendBufferedData()
+      value => {
+        this.lastAcknowledged++
+        this.sendBufferedData.bind(this)(value.getUint32(0))
+      })
+    this.sendBufferedData(-1)
   }
   
-   async sendBufferedData() {
-    console.log("sendBufferedData: ");
+   async sendBufferedData(ack: number) {
+    console.log("sendBufferedData: " + this.lastSend++ + ', last ack. ' + ack);
+    this.lastAcknowledged = ack
     if (this.remaining > 0) {
       if (this.remaining >= characteristicSize) {
         this.amountToWrite = characteristicSize
@@ -125,12 +135,26 @@ export class UpdatePage implements OnInit {
         AppSettings.FILE_CHAR_UUID,
         this.dataToSend
       )
+      this.lastSendTime = new Date().getTime()
 
       this.progressNum = this.currentPosition/this.totalSize
       this.progress = (100 * this.progressNum).toPrecision(3) + '%'
       if(this.progressNum >= 1) {
+        clearInterval(this.refreshIntervalId)
         this.updateFinished(true);
       }
+    }
+  }
+
+  async uploadStateCheck() {
+    let now = new Date().getTime()
+    console.log('uploadStateCheck, now=' + now + ', last sent=' + this.lastSendTime)
+    if(this.progressNum < 1 &&  now - this.lastSendTime > 3000) {
+      this.resentCounter++
+      console.log('resend triggered, last ack. ' + this.lastAcknowledged +  ', last send ' + this.lastSend)
+      this.currentPosition -= this.amountToWrite
+      this.remaining += this.amountToWrite
+      this.sendBufferedData(this.lastAcknowledged)
     }
   }
 }

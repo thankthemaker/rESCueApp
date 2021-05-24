@@ -35,8 +35,11 @@ export class DevicePage implements OnInit {
   async disconnect(rebootTorescue: boolean) {
     if(rebootTorescue) {
       console.log('Reboot to rESCue requested')
-      const str = "otaUpdateActive=false"
+      let str = "otaUpdateActive=false"
       this.bleService.write(str);
+      str = "save=true"
+      this.bleService.write(str);
+
     }
     this.bleService.disconnect()
   }

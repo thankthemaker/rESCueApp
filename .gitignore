@@ -35,3 +35,5 @@ npm-debug.log*
 /.gradle
 /resources/android
 /resources/ios
+
+environments/version.ts

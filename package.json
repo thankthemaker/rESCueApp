@@ -1,12 +1,13 @@
 {
   "name": "rESCueApp",
-  "version": "0.0.1",
+  "version": "0.9.1",
   "author": "ThankTheMaker",
   "homepage": "https://www.thank-the-maker.org",
   "scripts": {
     "ng": "ng",
+    "postinstall": "node git-version.js",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "angular-build-info && ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -25,6 +26,7 @@
     "@capacitor/ios": "^2.4.7",
     "@ionic/angular": "^5.5.2",
     "@ionic/pwa-elements": "^3.0.2",
+    "@w11k/git-info": "^1.0.2",
     "angular-cli-ghpages": "^1.0.0-rc.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
@@ -51,6 +53,8 @@
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jsdoc": "30.7.6",
     "eslint-plugin-prefer-arrow": "1.2.2",
+    "fs-extra": "6.0.1",
+    "git-describe": "4.0.4",
     "jasmine-core": "~3.7.1",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.2.0",

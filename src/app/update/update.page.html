@@ -33,7 +33,8 @@
       <br/>
       <p>
         <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
-        Progress: {{progress}}
+        Progress: {{progress}} 
+        <i *ngIf="resentCounter > 0">, packages resent: {{resentCounter}}</i>
       </p>
     </div>
   </div>
