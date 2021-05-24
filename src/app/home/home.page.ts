@@ -11,16 +11,16 @@ import { build } from "../../build";
 export class HomePage {
 
   version : string
-  tag : string
+  timestamp : string
   hash : string
 
   constructor(
     private router: Router,
     private bleService: BleService) {
       this.version = build.version
-      this.tag = build.tag
-      this.hash = build.hash
-      console.log(`Application version is: version (from package.json)=${build.version}, git-tag=${build.tag}, git-hash=${VERSION.hash}`);
+      this.timestamp = build.timestamp
+      this.hash = build.git.hash
+      console.log(`Application version is: version (from package.json)=${build.version}, timestamp=${build.timestamp}, git-hash=${build.git.hash}`);
     }
 
   async scan() {
