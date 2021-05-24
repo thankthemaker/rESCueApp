@@ -1,7 +1,7 @@
 import { Component, Version } from '@angular/core';
 import { Router } from '@angular/router';
 import { BleService } from '../services/ble.service';
-import { VERSION } from '../../environments/version';
+import { build } from "../../build";
 
 @Component({
   selector: 'app-home',
@@ -17,10 +17,10 @@ export class HomePage {
   constructor(
     private router: Router,
     private bleService: BleService) {
-      this.version = VERSION.version
-      this.tag = VERSION.tag
-      this.hash = VERSION.hash
-      console.log(`Application version is: version (from package.json)=${VERSION.version}, git-tag=${VERSION.tag}, git-hash=${VERSION.hash}`);
+      this.version = build.version
+      this.tag = build.tag
+      this.hash = build.hash
+      console.log(`Application version is: version (from package.json)=${build.version}, git-tag=${build.tag}, git-hash=${VERSION.hash}`);
     }
 
   async scan() {

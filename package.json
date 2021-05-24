@@ -1,13 +1,13 @@
 {
   "name": "rESCueApp",
-  "version": "0.9.1",
+  "version": "0.9.6",
   "author": "ThankTheMaker",
   "homepage": "https://www.thank-the-maker.org",
   "scripts": {
     "ng": "ng",
     "postinstall": "node git-version.js",
     "start": "ng serve",
-    "build": "angular-build-info && ng build",
+    "build": "npm i -g angular-build-info && ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -27,6 +27,7 @@
     "@ionic/angular": "^5.5.2",
     "@ionic/pwa-elements": "^3.0.2",
     "@w11k/git-info": "^1.0.2",
+    "angular-build-info": "^2.0.1",
     "angular-cli-ghpages": "^1.0.0-rc.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
