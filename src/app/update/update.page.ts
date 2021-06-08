@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BleClient } from '@capacitor-community/bluetooth-le';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { FirmwareService } from '../services/firmware.service';
+import { BleService } from '../services/ble.service';
 import { AppSettings } from '../AppSettings';
 
 const characteristicSize = 512;
@@ -18,6 +19,7 @@ export class UpdatePage implements OnInit {
   progressNum : number
   version : string
   deviceId : string
+  deviceName : string
   updateData : any
   dataToSend : any
   checksum: string
@@ -27,6 +29,11 @@ export class UpdatePage implements OnInit {
   currentPosition : number
   loading: any;
   downloadFinished: boolean = false
+  updateInProgress: boolean = false
+  wifiEnabled: boolean = false
+  wifiSupported: boolean = false
+  disabled: boolean = false
+  isWifiConnected: boolean = false
   lastSend: number = 0
   lastAcknowledged: number = 0
   lastSendTime: number
@@ -38,43 +45,44 @@ export class UpdatePage implements OnInit {
     private router: Router,
     private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private firmwareService: FirmwareService) { 
+    private firmwareService: FirmwareService,
+    private bleService: BleService) { 
       this.progress = 'starting update, please wait...';
       this.progressNum = 0;
       this.route.queryParams.subscribe(params => {
         if (this.router.getCurrentNavigation().extras.state) {
           this.deviceId = this.router.getCurrentNavigation().extras.state.deviceId
-          this.version = this.router.getCurrentNavigation().extras.state.version;
+          this.version = this.router.getCurrentNavigation().extras.state.version
+          this.wifiSupported = this.router.getCurrentNavigation().extras.state.currentVersion >= 110
         }
       })
   }
 
-  ngOnInit() {
-    this.loading = this.showLoadingIndicator('Downloading firmware, please wait...');
+  async ngOnInit() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'Downloading firmware, please wait...'
+    });
+
+    await this.loading.present()
+
     this.firmwareService.getChecksum(this.version).subscribe(result => {
       this.checksum = result;
     })
+
     this.firmwareService.getFirmwareFile(this.version).subscribe(result => {
-      this.loading.dismiss();
       this.totalSize = result.byteLength
       this.downloadFinished = true
-      this.updateDevice(result)
+      this.updateData = result
+      this.loading.dismiss()
     })
   }
 
-  async showLoadingIndicator(message: string) {
-     this.loading = await this.loadingCtrl.create({
-      message
-    });
-    return await this.loading.present();
-  }
-
-  async updateDevice(data) {
-    let byteCount = data.byteLength
+  async updateDevice() {
+    this.updateInProgress = true
+    let byteCount = this.updateData.byteLength
     console.log('started update to version ' + this.version)
     console.log('filesize bytes ' + byteCount)
-    this.updateData = data
-    this.sendFileOverBluetooth()
+    this.sendFile()
   }
 
   async updateFinished(successful: boolean) {
@@ -95,7 +103,7 @@ export class UpdatePage implements OnInit {
   }
 
 
-  sendFileOverBluetooth() {
+  sendFile() {
     this.totalSize = this.updateData.byteLength;
     this.remaining = this.totalSize;
     this.amountToWrite = 0;
@@ -103,14 +111,16 @@ export class UpdatePage implements OnInit {
 
     this.refreshIntervalId = setInterval(this.uploadStateCheck.bind(this), 5000);
 
-    BleClient.startNotifications(
-      this.deviceId,
-      AppSettings.OTA_SERVICE_UUID,
-      AppSettings.FILE_CHAR_UUID,
-      value => {
-        this.lastAcknowledged++
-        this.sendBufferedData.bind(this)(value.getUint32(0))
+    if(!this.wifiEnabled) {
+      BleClient.startNotifications(
+        this.deviceId,
+        AppSettings.OTA_SERVICE_UUID,
+        AppSettings.FILE_CHAR_UUID,
+        value => {
+          this.lastAcknowledged = value.getUint32(0);
+          this.sendBufferedData.bind(this)(value.getUint32(0))
       })
+    }
     this.sendBufferedData(-1)
   }
   
@@ -129,12 +139,23 @@ export class UpdatePage implements OnInit {
       this.remaining -= this.amountToWrite;
       console.log("remaining: " + this.remaining);
 
-      await BleClient.write(
-        this.deviceId,
-        AppSettings.OTA_SERVICE_UUID,
-        AppSettings.FILE_CHAR_UUID,
-        this.dataToSend
-      )
+      if(!this.wifiEnabled) {
+        try {
+          await BleClient.write(
+            this.deviceId,
+            AppSettings.OTA_SERVICE_UUID,
+            AppSettings.FILE_CHAR_UUID,
+            this.dataToSend
+          )
+        } catch(error) {
+          console.error('Error BLE.write ' + error)
+        }
+      } else {
+        this.firmwareService.postUpdateData(this.dataToSend).subscribe(result => {
+          this.lastAcknowledged++
+          this.sendBufferedData.bind(this)(this.lastAcknowledged);
+        })
+      }
       this.lastSendTime = new Date().getTime()
 
       this.progressNum = this.currentPosition/this.totalSize
@@ -156,5 +177,20 @@ export class UpdatePage implements OnInit {
       this.remaining += this.amountToWrite
       this.sendBufferedData(this.lastAcknowledged)
     }
+  }
+
+  toggle() {
+    this.wifiEnabled = !this.wifiEnabled
+    this.disabled = this.wifiEnabled
+    const str = 'wifiActive=' + this.wifiEnabled
+    this.bleService.write(str);
+    let timer = setInterval(() =>{
+      this.firmwareService.checkWiFiConnection().subscribe(result => {
+        console.log("Wifi connection successful")
+        this.isWifiConnected = true
+        this.disabled = false
+        clearInterval(timer)
+      })
+    }, 2000, "check WiFi connection");
   }
 }

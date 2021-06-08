@@ -7,35 +7,84 @@
 <ion-content>
 
   <div id="container">
-    <strong>Updating your rESCue device!</strong>
-    <br/>
-    <br/>
-    <div *ngIf="!downloadFinished">
-      <p>
-        Downloading firmware version: {{version}}, please wait...
-      </p>
-      <br/>
-    </div>
-    <div *ngIf="downloadFinished">
-      <p>
-        Downloaded firmware version: {{version}}, size {{totalSize}} bytes  
-        <ion-icon name="checkmark-circle" color="success"></ion-icon>
-      </p>
-      <br/>
-      <p>
-        Checking firmware integrity:<br/>
-        checksum {{checksum | slice:0:30}}  
-        <ion-icon name="checkmark-circle" color="success"></ion-icon>
-      </p>
-      <br/>
-      <p>Now updating your rESCue device.</p>
-      <p>Please be patient, the update might take several minutes.</p>
-      <br/>
-      <p>
-        <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
-        Progress: {{progress}} 
-        <i *ngIf="resentCounter > 0">, packages resent: {{resentCounter}}</i>
-      </p>
-    </div>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Updating your rESCue device!</ion-card-title>
+        <ion-card-subtitle>Name: {{deviceName}}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div *ngIf="!downloadFinished">
+          <p>
+            Downloading firmware version: {{version}}, please wait...
+          </p>
+          <br />
+        </div>
+        <div *ngIf="downloadFinished">
+          <p>
+            Downloaded firmware version: {{version}}, size {{totalSize}} bytes
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          </p>
+          <br />
+          <p>
+            Checking firmware integrity:<br />
+            checksum {{checksum | slice:0:30}}
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-content>
+
+        <div *ngIf="updateInProgress">
+          <br />
+          <p>Now updating your rESCue device.</p>
+          <p>Please be patient, the update might take several minutes.</p>
+          <br />
+          <p>
+            <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
+            Progress: {{progress}}
+            <i *ngIf="resentCounter > 0">, packages resent: {{resentCounter}}</i>
+          </p>
+        </div>
+
+        <div *ngIf="!updateInProgress && !wifiEnabled && wifiSupported">
+          <p>
+            Normally the update is done via Bluetooth (BLE). If you like to use WiFi instead, please mark the checkbox
+            <i>"enable WiFi update"</i> below<br />
+          </p>
+        </div>
+
+        <div *ngIf="!updateInProgress && wifiEnabled">
+          <p>
+            WiFi activated please connect to the access point <i>"rESCue Updates"</i> via WiFi.
+            Once connected, please start the update.<br /><br />
+            <ion-item *ngIf="!isWifiConnected">
+              Waiting for WiFi connection
+              <ion-spinner name="dots"></ion-spinner>
+            </ion-item>         
+            <ion-item *ngIf="isWifiConnected">
+              WiFi connection
+              <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            </ion-item> 
+            If you want to update via Bluetooth instead, please unmark the checkbox
+            <i>"enable WiFi update"</i> below<br />
+          </p>
+
+        </div>
+        <ion-item *ngIf="!updateInProgress && wifiSupported">
+          <ion-label>enable WiFi update</ion-label>
+          <ion-checkbox color="primary" (click)="toggle()" slot="start"></ion-checkbox>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-button (click)="updateDevice()" color="primary" expand="block" *ngIf="!updateInProgress" [disabled]="disabled">Start Update <ion-icon slot="start"
+        name="update"></ion-icon>
+    </ion-button>
+
   </div>
 </ion-content>

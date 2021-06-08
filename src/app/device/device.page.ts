@@ -108,8 +108,9 @@ export class DevicePage implements OnInit {
               console.log('Update clicked');
               let navigationExtras: NavigationExtras = {
                 state: {
-                  'deviceId': this.bleService.device.deviceId,
-                  version
+                  deviceId: this.bleService.device.deviceId,
+                  version,
+                  currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1))
                 }
               };
               this.router.navigate(['/update'], navigationExtras)   
