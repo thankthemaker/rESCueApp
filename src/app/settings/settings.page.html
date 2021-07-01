@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>rESCUe enrollment</ion-title>
+    <ion-title>rESCUe settings</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button id="settingsBackButton"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -8,7 +11,7 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Set up rESCue device </ion-card-subtitle>
+      <ion-card-subtitle>Set up rESCue device</ion-card-subtitle>
       <ion-card-title>Name: {{deviceName}}</ion-card-title>
     </ion-card-header>
 
@@ -20,7 +23,10 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>LEDs Front-/Backlight</ion-card-subtitle>
+      <ion-card-subtitle>
+        LEDs Front-/Backlight
+        <ion-icon name="bulb-outline" ></ion-icon>
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
@@ -32,19 +38,37 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Battery Monitor</ion-card-subtitle>
+      <ion-card-subtitle>
+        Battery Monitor
+        <ion-icon name="battery-half-outline" ></ion-icon>
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
         <ion-label>Number of pixel</ion-label>
         <ion-input type="number" value="5" [(ngModel)]="batmonPixel"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-label>Min. Battery Voltage (V)</ion-label>
+        <ion-input type="number" inputmode="decimal" value="40.0" step="0.1"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Low Battery Warning (V)</ion-label>
+        <ion-input type="number" inputmode="decimal" value="42.0" step="0.1"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Max. Battery Voltage (V)</ion-label>
+        <ion-input type="number" inputmode="decimal" value="50.4" step="0.1"></ion-input>
+      </ion-item>
     </ion-card-content>
   </ion-card>
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>Blynk</ion-card-subtitle>
+      <ion-card-subtitle>
+        Blynk
+        <ion-icon name="bonfire-outline" ></ion-icon>
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-item>
@@ -56,7 +80,10 @@
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>CANBUS</ion-card-subtitle>
+      <ion-card-subtitle>
+        CANBUS
+        <ion-icon name="bus-outline" ></ion-icon>
+      </ion-card-subtitle>
     </ion-card-header>
     <ion-card-content>
       <ion-item>

@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Updating your rESCue device</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button id="updateBackButton"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,26 +14,30 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Updating your rESCue device!</ion-card-title>
-        <ion-card-subtitle>Name: {{deviceName}}</ion-card-subtitle>
+        <ion-card-subtitle>Hardware version: {{hardwareVersion}}, Name: {{deviceName}}</ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
+        <ion-chip outline color="secondary" (click)="loadVersions()" id="loadVersionsChip">
+          <ion-icon name="pricetags-outline"></ion-icon>
+          <ion-label>Change version</ion-label>
+        </ion-chip>
         <div *ngIf="!downloadFinished">
           <p>
-            Downloading firmware version: {{version}}, please wait...
+            Downloading firmware version: {{softwareVersion}}, please wait...
           </p>
           <br />
         </div>
         <div *ngIf="downloadFinished">
           <p>
-            Downloaded firmware version: {{version}}, size {{totalSize}} bytes
+            Downloaded firmware version: {{softwareVersion}}, size {{totalSize}} bytes
             <ion-icon name="checkmark-circle" color="success"></ion-icon>
           </p>
           <br />
           <p>
             Checking firmware integrity:<br />
             checksum {{checksum | slice:0:30}}
-            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <ion-icon name="shield-checkmark" color="success"></ion-icon>
           </p>
         </div>
       </ion-card-content>
@@ -65,11 +72,11 @@
             <ion-item *ngIf="!isWifiConnected">
               Waiting for WiFi connection
               <ion-spinner name="dots"></ion-spinner>
-            </ion-item>         
+            </ion-item>
             <ion-item *ngIf="isWifiConnected">
               WiFi connection
               <ion-icon name="checkmark-circle" color="success"></ion-icon>
-            </ion-item> 
+            </ion-item>
             If you want to update via Bluetooth instead, please unmark the checkbox
             <i>"enable WiFi update"</i> below<br />
           </p>
@@ -77,13 +84,13 @@
         </div>
         <ion-item *ngIf="!updateInProgress && wifiSupported">
           <ion-label>enable WiFi update</ion-label>
-          <ion-checkbox color="primary" (click)="toggle()" slot="start"></ion-checkbox>
+          <ion-checkbox color="primary" (click)="toggle()" slot="start" id="enableWifiCheckbox"></ion-checkbox>
         </ion-item>
       </ion-card-content>
     </ion-card>
 
     <ion-button (click)="updateDevice()" color="primary" expand="block" *ngIf="!updateInProgress" [disabled]="disabled">Start Update <ion-icon slot="start"
-        name="update"></ion-icon>
+        name="update" id="updateButton"></ion-icon>
     </ion-button>
 
   </div>

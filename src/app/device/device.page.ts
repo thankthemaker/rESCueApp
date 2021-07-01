@@ -11,11 +11,11 @@ import { BleService } from '../services/ble.service';
 })
 export class DevicePage implements OnInit {
 
-  deviceId: string
-  deviceName: string
-  softwareVersion: string
-  hardwareVersion: string
-  isFirstUpdateCheck: boolean = true
+  deviceId: string;
+  deviceName: string;
+  softwareVersion: string;
+  hardwareVersion: string;
+  isFirstUpdateCheck = true;
 
   constructor(
       private router: Router,
@@ -24,24 +24,25 @@ export class DevicePage implements OnInit {
       private bleService: BleService) {}
 
   ngOnInit() {
-    this.isFirstUpdateCheck = true
+    console.log('entered device page');
+    this.isFirstUpdateCheck = true;
     this.deviceId = this.bleService.device.deviceId;
     this.deviceName = this.bleService.device.name;
     this.readVersion().then(() => {
-      this.getFirmwareVersions()
-    })
+      this.getFirmwareVersions();
+    });
   }
 
-  async disconnect(rebootTorescue: boolean) {
-    if(rebootTorescue) {
-      console.log('Reboot to rESCue requested')
-      let str = "otaUpdateActive=false"
-      this.bleService.write(str);
-      str = "save=true"
-      this.bleService.write(str);
+  async disconnect(rebootToRescue: boolean) {
+    if(rebootToRescue) {
+      console.log('Reboot to rESCue requested');
+      let str = 'otaUpdateActive=false';
+      await this.bleService.write(str);
+      str = 'save=true';
+      await this.bleService.write(str);
 
     }
-    this.bleService.disconnect()
+    await this.bleService.disconnect();
   }
 
   async readVersion() {
@@ -54,47 +55,47 @@ export class DevicePage implements OnInit {
 
   getFirmwareVersions() {
     this.firmwareService.getVersioninfo().subscribe(result => {
-      console.log("Firmware: " + JSON.stringify(result))
+      console.log('Firmware: ' + JSON.stringify(result));
       this.checkForUpdate(result);
     });
   }
 
   checkForUpdate(data) {
     let softwareVersionCount = 0;
-    let latestCompatibleSoftware = data.firmware[softwareVersionCount]['software'];
+    let latestCompatibleSoftware = data.firmware[softwareVersionCount].software;
     versionFindLoop:
       while (latestCompatibleSoftware !== undefined) {
-        let compatibleHardwareVersion = "N/A"
-        let hardwareVersionCount = 0
+        let compatibleHardwareVersion = 'N/A';
+        let hardwareVersionCount = 0;
         while (compatibleHardwareVersion !== undefined) {
           if(data.firmware[softwareVersionCount] === undefined) {
-            break versionFindLoop
+            break versionFindLoop;
           }
-          compatibleHardwareVersion = data.firmware[softwareVersionCount]['hardware'][hardwareVersionCount++];
+          compatibleHardwareVersion = data.firmware[softwareVersionCount].hardware[hardwareVersionCount++];
           if (compatibleHardwareVersion === this.hardwareVersion) {
-            latestCompatibleSoftware = data.firmware[softwareVersionCount]['software']
+            latestCompatibleSoftware = data.firmware[softwareVersionCount].software;
             if (latestCompatibleSoftware !== this.softwareVersion) {
-              console.log("latest compatible version: " + latestCompatibleSoftware)
-              this.promptForUpdate(true, latestCompatibleSoftware)
-              return
+              console.log('latest compatible version: ' + latestCompatibleSoftware);
+              this.promptForUpdate(true, latestCompatibleSoftware, this.hardwareVersion);
+              return;
             }
             break versionFindLoop;
           }
         }
-        softwareVersionCount++
+        softwareVersionCount++;
       }
       if(!this.isFirstUpdateCheck) {
-        this.promptForUpdate(false, this.softwareVersion)
+        this.promptForUpdate(false, this.softwareVersion, this.hardwareVersion);
       } else {
-        this.isFirstUpdateCheck = false
+        this.isFirstUpdateCheck = false;
       }
   }
 
-  async promptForUpdate(isUpdateAvailable: boolean, version: string) {
-    let toast
+  async promptForUpdate(isUpdateAvailable: boolean, softwareVersion: string, hardwareVersion: string) {
+    let toast;
     if(isUpdateAvailable) {
         toast = await this.toastCtrl.create({
-        header: 'Compatible update available - version ' + version,
+        header: 'Compatible update available - version ' + softwareVersion,
         message: 'Do you want to update your rESCue device?',
         position: 'middle',
         color: 'warning',
@@ -106,14 +107,15 @@ export class DevicePage implements OnInit {
             text: 'Yes',
             handler: () => {
               console.log('Update clicked');
-              let navigationExtras: NavigationExtras = {
+              const navigationExtras: NavigationExtras = {
                 state: {
                   deviceId: this.bleService.device.deviceId,
-                  version,
-                  currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1))
+                  softwareVersion,
+                  hardwareVersion,
+                  currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1), 10)
                 }
               };
-              this.router.navigate(['/update'], navigationExtras)   
+              this.router.navigate(['/update'], navigationExtras);
             }
           }, {
             icon: 'close-circle',
@@ -124,31 +126,49 @@ export class DevicePage implements OnInit {
             }
           }
         ]
-      })
+      });
     } else {
       toast = await this.toastCtrl.create({
         header: 'No compatible update available!',
-        message: 'Your device is already running the latest version ' + version,
+        message: 'Your device is already running the latest version ' + softwareVersion,
         color: 'primary',
         position: 'middle',
         buttons: [
           {
-            text: 'OK',
+            //side: 'start',
+            icon: 'skull',
+            text: 'Force update',
+            handler: () => {
+              console.log('Force update clicked');
+              const navigationExtras: NavigationExtras = {
+                state: {
+                  deviceId: this.bleService.device.deviceId,
+                  softwareVersion,
+                  hardwareVersion,
+                  currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1), 10)
+                }
+              };
+              this.router.navigate(['/update'], navigationExtras);
+            }
+          },
+          {
+            icon: 'close-circle',
+            text: 'Close',
             role: 'cancel'
           }
         ]
-      })
+      });
     }
     toast.present();
   }
 
-  startEnrollment() {
-    let navigationExtras: NavigationExtras = {
+  settings() {
+    const navigationExtras: NavigationExtras = {
       state: {
-        'hardwareVersion': this.hardwareVersion,
-        'softwareVersion': this.softwareVersion
+        hardwareVersion: this.hardwareVersion,
+        softwareVersion: this.softwareVersion
       }
     };
-    this.router.navigate(['/enroll'], navigationExtras)
+    this.router.navigate(['/settings'], navigationExtras);
   }
 }

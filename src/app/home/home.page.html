@@ -12,7 +12,7 @@
       <ion-title size="large">rESCue App</ion-title>
     </ion-toolbar>
   </ion-header>
-  
+
   <div id="logo">
     <img width="128" src="assets/icon/favicon.png">
   </div>
@@ -20,13 +20,16 @@
     <strong>Welcome to rESCue App!</strong>
     <p>Start scanning for your device.</p>
     <!--<ion-button color="primary" (click)="scan()">Scan</ion-button>-->
-    <ion-button (click)="scan()" color="primary">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
+    <ion-button (click)="scan()" color="primary" id="scanButton">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
   </div>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-item>Version: {{version}}, 
-      Timestamp: {{timestamp | date : 'medium' }}
+    <ion-item>
+      <ion-note slot="start">&copy; 2021 ThankTheMaker</ion-note>
+      <ion-button size="small" fill="clear" slot="end" *ngIf="!showVersionInfo" align="right" (click)="toggleVersionInfo()">Versioninfo</ion-button>
+      <ion-note slot="end" *ngIf="showVersionInfo">Version: {{version}}</ion-note>
     </ion-item>
   </ion-toolbar>
 </ion-footer>
+

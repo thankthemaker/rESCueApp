@@ -1,7 +1,7 @@
-import { Component, Version } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BleService } from '../services/ble.service';
-import { build } from "../../build";
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -10,19 +10,24 @@ import { build } from "../../build";
 })
 export class HomePage {
 
-  version : string
-  timestamp : string
+  version: string;
+  showVersionInfo = true;
 
   constructor(
     private router: Router,
     private bleService: BleService) {
-      this.version = build.version
-      this.timestamp = build.timestamp
-      console.log(`Application version is: version (from package.json)=${build.version}, timestamp=${build.timestamp}`);
+      this.version =environment.appVersion;
+      console.log(`Application version is: version (from package.json)=${this.version}`);
     }
 
   async scan() {
-      await this.bleService.connect();
-      this.router.navigate(['/device'])
-  } 
+      const success = await this.bleService.connect();
+      if(success) {
+        await this.router.navigate(['/device']);
+      }
+  }
+
+  toggleVersionInfo() {
+    this.showVersionInfo = ! this.showVersionInfo;
+  }
 }

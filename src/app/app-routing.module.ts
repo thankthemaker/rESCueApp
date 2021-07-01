@@ -20,8 +20,8 @@ const routes: Routes = [
     loadChildren: () => import('./update/update.module').then( m => m.UpdatePageModule)
   },
   {
-    path: 'enroll',
-    loadChildren: () => import('./enroll/enroll.module').then( m => m.EnrollPageModule)
+    path: 'settings',
+    loadChildren: () => import('./settings/settings.module').then(m => m.SettingsPageModule)
   },
 ];
 

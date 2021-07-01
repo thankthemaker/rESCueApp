@@ -9,9 +9,10 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HttpClientModule } from '@angular/common/http';
 import { BleService } from './services/ble.service';
+import {VersionsComponent} from './update/versions/versions.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [VersionsComponent, AppComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
   providers: [BleService, { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

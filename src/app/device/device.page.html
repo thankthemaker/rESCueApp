@@ -1,6 +1,9 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Your rESCue device</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button id="deviceBackButton"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,28 +14,28 @@
       <ion-card-subtitle>rESCue device {{deviceId}}</ion-card-subtitle>
       <ion-card-title>Name: {{deviceName}}</ion-card-title>
     </ion-card-header>
-  
+
     <ion-card-content>
       <p>Hardware-Version: {{hardwareVersion}}</p>
       <p>Firmware-Version: {{softwareVersion}}</p>
     </ion-card-content>
 
-    <ion-chip outline color="secondary" (click)="startEnrollment()">
+    <ion-chip outline color="secondary" (click)="settings()" id="settingsChip">
       <ion-icon name="key"></ion-icon>
-      <ion-label>Enrollment</ion-label>
-      <ion-icon name="close-circle"></ion-icon>
+      <ion-label>Settings</ion-label>
+      <!--ion-icon name="close-circle"></ion-icon-->
     </ion-chip>
-    <ion-chip outline color="warning" (click)="getFirmwareVersions()">
+    <ion-chip outline color="warning" (click)="getFirmwareVersions()" id="updateChip">
       <ion-icon name="construct"></ion-icon>
       <ion-label>Check for update</ion-label>
       <!--<ion-icon name="close-circle"></ion-icon>-->
     </ion-chip>
-    <ion-chip outline color="primary" (click)="disconnect(false)">
+    <ion-chip outline color="primary" (click)="disconnect(false)" id="disconnectChip">
       <ion-icon name="bluetooth"></ion-icon>
       <ion-label>Disconnect</ion-label>
       <!--<ion-icon name="close-circle"></ion-icon>-->
     </ion-chip>
-    <ion-chip outline color="danger" (click)="disconnect(true)">
+    <ion-chip outline color="danger" (click)="disconnect(true)" id="rebootChip">
       <ion-icon name="bluetooth"></ion-icon>
       <ion-label>Reboot to rESCue</ion-label>
       <!--<ion-icon name="close-circle"></ion-icon>-->

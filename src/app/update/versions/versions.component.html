@@ -1,0 +1,4 @@
+<ion-list>
+  <ion-list-header>Select rESCue version:</ion-list-header>
+  <ion-item *ngFor="let version of versions" button (click)="close(version)">{{version}}</ion-item>
+</ion-list>

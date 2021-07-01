@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BleClient } from '@capacitor-community/bluetooth-le';
-import { LoadingController, ToastController } from '@ionic/angular';
+import { LoadingController, ToastController, PopoverController } from '@ionic/angular';
+import { VersionsComponent } from './versions/versions.component';
+import _filter from 'lodash/filter';
 import { FirmwareService } from '../services/firmware.service';
 import { BleService } from '../services/ble.service';
 import { AppSettings } from '../AppSettings';
@@ -15,47 +17,50 @@ const characteristicSize = 512;
 })
 export class UpdatePage implements OnInit {
 
-  progress : string
-  progressNum : number
-  version : string
-  deviceId : string
-  deviceName : string
-  updateData : any
-  dataToSend : any
-  checksum: string
-  totalSize : number
-  remaining : number
-  amountToWrite : number
-  currentPosition : number
+  progress: string;
+  progressNum: number;
+  softwareVersion: string;
+  hardwareVersion: string;
+  deviceId: string;
+  deviceName: string;
+  updateData: any;
+  dataToSend: any;
+  checksum: string;
+  totalSize: number;
+  remaining: number;
+  amountToWrite: number;
+  currentPosition: number;
   loading: any;
-  downloadFinished: boolean = false
-  updateInProgress: boolean = false
-  wifiEnabled: boolean = false
-  wifiSupported: boolean = false
-  disabled: boolean = false
-  isWifiConnected: boolean = false
-  lastSend: number = 0
-  lastAcknowledged: number = 0
-  lastSendTime: number
-  refreshIntervalId: any
-  resentCounter: number = 0
+  downloadFinished = false;
+  updateInProgress = false;
+  wifiEnabled = false;
+  wifiSupported = false;
+  disabled = false;
+  isWifiConnected = false;
+  lastSend = 0;
+  lastAcknowledged = 0;
+  lastSendTime: number;
+  refreshIntervalId: any;
+  resentCounter = 0;
 
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router,
     private toastCtrl: ToastController,
+    private popoverController: PopoverController,
     private loadingCtrl: LoadingController,
     private firmwareService: FirmwareService,
-    private bleService: BleService) { 
+    private bleService: BleService) {
       this.progress = 'starting update, please wait...';
       this.progressNum = 0;
       this.route.queryParams.subscribe(params => {
         if (this.router.getCurrentNavigation().extras.state) {
-          this.deviceId = this.router.getCurrentNavigation().extras.state.deviceId
-          this.version = this.router.getCurrentNavigation().extras.state.version
-          this.wifiSupported = this.router.getCurrentNavigation().extras.state.currentVersion >= 110
+          this.deviceId = this.router.getCurrentNavigation().extras.state.deviceId;
+          this.softwareVersion = this.router.getCurrentNavigation().extras.state.softwareVersion;
+          this.hardwareVersion = this.router.getCurrentNavigation().extras.state.hardwareVersion;
+          this.wifiSupported = this.router.getCurrentNavigation().extras.state.currentVersion >= 110;
         }
-      })
+      });
   }
 
   async ngOnInit() {
@@ -63,26 +68,26 @@ export class UpdatePage implements OnInit {
       message: 'Downloading firmware, please wait...'
     });
 
-    await this.loading.present()
+    await this.loading.present();
 
-    this.firmwareService.getChecksum(this.version).subscribe(result => {
+    this.firmwareService.getChecksum(this.softwareVersion).subscribe(result => {
       this.checksum = result;
-    })
+    });
 
-    this.firmwareService.getFirmwareFile(this.version).subscribe(result => {
-      this.totalSize = result.byteLength
-      this.downloadFinished = true
-      this.updateData = result
-      this.loading.dismiss()
-    })
+    this.firmwareService.getFirmwareFile(this.softwareVersion).subscribe(result => {
+      this.totalSize = result.byteLength;
+      this.downloadFinished = true;
+      this.updateData = result;
+      this.loading.dismiss();
+    });
   }
 
   async updateDevice() {
-    this.updateInProgress = true
-    let byteCount = this.updateData.byteLength
-    console.log('started update to version ' + this.version)
-    console.log('filesize bytes ' + byteCount)
-    this.sendFile()
+    this.updateInProgress = true;
+    const byteCount = this.updateData.byteLength;
+    console.log('started update to version ' + this.softwareVersion);
+    console.log('filesize bytes ' + byteCount);
+    this.sendFile();
   }
 
   async updateFinished(successful: boolean) {
@@ -99,7 +104,7 @@ export class UpdatePage implements OnInit {
     });
     await toast.present();
     const { role } = await toast.onDidDismiss();
-    this.router.navigate([''])  
+    this.router.navigate(['']);
   }
 
 
@@ -118,18 +123,18 @@ export class UpdatePage implements OnInit {
         AppSettings.FILE_CHAR_UUID,
         value => {
           this.lastAcknowledged = value.getUint32(0);
-          this.sendBufferedData.bind(this)(value.getUint32(0))
-      })
+          this.sendBufferedData.bind(this)(value.getUint32(0));
+      });
     }
-    this.sendBufferedData(-1)
+    this.sendBufferedData(-1);
   }
-  
+
    async sendBufferedData(ack: number) {
-    console.log("sendBufferedData: " + this.lastSend++ + ', last ack. ' + ack);
-    this.lastAcknowledged = ack
+    console.log('sendBufferedData: ' + this.lastSend++ + ', last ack. ' + ack);
+    this.lastAcknowledged = ack;
     if (this.remaining > 0) {
       if (this.remaining >= characteristicSize) {
-        this.amountToWrite = characteristicSize
+        this.amountToWrite = characteristicSize;
       }
       else {
         this.amountToWrite = this.remaining;
@@ -137,7 +142,7 @@ export class UpdatePage implements OnInit {
       this.dataToSend = this.updateData.slice(this.currentPosition, this.currentPosition + this.amountToWrite);
       this.currentPosition += this.amountToWrite;
       this.remaining -= this.amountToWrite;
-      console.log("remaining: " + this.remaining);
+      console.log('remaining: ' + this.remaining);
 
       if(!this.wifiEnabled) {
         try {
@@ -145,52 +150,77 @@ export class UpdatePage implements OnInit {
             this.deviceId,
             AppSettings.OTA_SERVICE_UUID,
             AppSettings.FILE_CHAR_UUID,
-            this.dataToSend
-          )
+            new DataView(this.dataToSend)
+          );
         } catch(error) {
-          console.error('Error BLE.write ' + error)
+          console.error('Error BLE.write ' + error);
         }
       } else {
         this.firmwareService.postUpdateData(this.dataToSend).subscribe(result => {
-          this.lastAcknowledged++
+          this.lastAcknowledged++;
           this.sendBufferedData.bind(this)(this.lastAcknowledged);
-        })
+        });
       }
-      this.lastSendTime = new Date().getTime()
+      this.lastSendTime = new Date().getTime();
 
-      this.progressNum = this.currentPosition/this.totalSize
-      this.progress = (100 * this.progressNum).toPrecision(3) + '%'
+      this.progressNum = this.currentPosition/this.totalSize;
+      this.progress = (100 * this.progressNum).toPrecision(3) + '%';
       if(this.progressNum >= 1) {
-        clearInterval(this.refreshIntervalId)
-        this.updateFinished(true);
+        clearInterval(this.refreshIntervalId);
+        await this.updateFinished(true);
       }
     }
   }
 
   async uploadStateCheck() {
-    let now = new Date().getTime()
-    console.log('uploadStateCheck, now=' + now + ', last sent=' + this.lastSendTime)
+    const now = new Date().getTime();
+    console.log('uploadStateCheck, now=' + now + ', last sent=' + this.lastSendTime);
     if(this.progressNum < 1 &&  now - this.lastSendTime > 3000) {
-      this.resentCounter++
-      console.log('resend triggered, last ack. ' + this.lastAcknowledged +  ', last send ' + this.lastSend)
-      this.currentPosition -= this.amountToWrite
-      this.remaining += this.amountToWrite
-      this.sendBufferedData(this.lastAcknowledged)
+      this.resentCounter++;
+      console.log('resend triggered, last ack. ' + this.lastAcknowledged +  ', last send ' + this.lastSend);
+      this.currentPosition -= this.amountToWrite;
+      this.remaining += this.amountToWrite;
+      this.sendBufferedData(this.lastAcknowledged);
     }
   }
 
   toggle() {
-    this.wifiEnabled = !this.wifiEnabled
-    this.disabled = this.wifiEnabled
-    const str = 'wifiActive=' + this.wifiEnabled
+    this.wifiEnabled = !this.wifiEnabled;
+    this.disabled = this.wifiEnabled;
+    const str = 'wifiActive=' + this.wifiEnabled;
     this.bleService.write(str);
-    let timer = setInterval(() =>{
+    const timer = setInterval(() =>{
       this.firmwareService.checkWiFiConnection().subscribe(result => {
-        console.log("Wifi connection successful")
-        this.isWifiConnected = true
-        this.disabled = false
-        clearInterval(timer)
-      })
-    }, 2000, "check WiFi connection");
+        console.log('Wifi connection successful');
+        this.isWifiConnected = true;
+        this.disabled = false;
+        clearInterval(timer);
+      });
+    }, 2000, 'check WiFi connection');
+  }
+
+  async loadVersions() {
+    this.firmwareService.getVersioninfo().subscribe(result => {
+      const versions = _filter(result.firmware, { hardware: [ this.hardwareVersion ] }).map(software => software.software);
+      console.log('Versions: ' + versions);
+      this.showVersions(versions);
+    });
+  }
+
+  async showVersions(versions) {
+    const popover = await this.popoverController.create({
+      component: VersionsComponent,
+      //cssClass: 'my-custom-class',
+      componentProps: {
+        versions
+      },
+      translucent: true
+    });
+    popover.present();
+
+    const { data } = await popover.onDidDismiss();
+    this.softwareVersion = data;
+    console.log('Selected version: ' + this.softwareVersion);
+    this.ngOnInit();
   }
 }
