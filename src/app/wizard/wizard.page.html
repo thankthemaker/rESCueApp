@@ -1,0 +1,76 @@
+<ion-content fullscreen class="ion-padding" scroll-y="false">
+  <ion-slides #wizard pager="true" (ionSlideDidChange)="slideChanged()">
+    <ion-slide>
+      <div class="slide">
+        <h2>Welcome to rESCue !</h2>
+        <img src="assets/slide-1.png"/>
+        <p>This <b>wizard</b> will guide you to the initial setup of your new rESCue device.</p>
+        <p>Please <b>turn on your rESCue device</b> and hit the <i>scan</i> button below. Connect to the Bluetooth Low Energy
+          device named <b>rESCue</b></p>
+      </div>
+      <ion-button size="large" (click)="scan()" color="primary" id="scanButton">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
+      <br/>
+      <ion-button (click)="skipWizard()" buttonType="outline">Skip wizard</ion-button>
+    </ion-slide>
+
+    <ion-slide>
+      <div class="slide" *ngIf="connected">
+        <h2>Great, device connected!</h2>
+        <img  src="../../assets/slide-2-ok.png"/>
+        <p>You <b>successfully</b> connected to rESCue device:</p>
+        <p><b>Name: {{deviceName}}</b></p>
+        <p><b>ID: {{deviceId}}</b></p>
+        <p>Let's start configuring it! Please swipe left.</p>
+      </div>
+      <div class="slide" *ngIf="!connected">
+        <h2>Whoops, not connected!</h2>
+        <img  src="../../assets/slide-2-nok.png"/>
+        <p>Seems like we couldn't connect to any rESCue device.</p>
+        <p>Please make sure your rESCue device is <b>turned on</b> and you enabled Bluetooth on this computer.</p>
+        <ion-button (click)="goBack()" fill="clear"><ion-icon slot="start" name="arrow-back"></ion-icon>Back</ion-button>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Configure CANBUS</h2>
+      <img src="assets/slide-3.png"/>
+      <p>First let's configure the <b>CANBUS</b>. To allow rESCue to communicate with your <b>®VESC</b> it must know the
+        VESC-ID of your controller. Please find out what's the VESC-ID of your ®VESC by connecting to it via
+        ®VESC TOOL and looking up under <i>App-Settings -> General</i>.</p>
+      <ion-card>
+        <ion-card-content>
+          Please configure your VESC-ID appropriately to match the ID in ®VESC.
+          <ion-item>
+            <ion-label>VESC-ID</ion-label>
+            <ion-input type="number" value="25"></ion-input>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Configure Lights</h2>
+      <img src="assets/slide-4.png"/>
+      <p>rESCue uses <b>addressable LEDs</b> (aka Neopixel) for front- and backlight. Please connect them to the JST-header
+        labeled <i>LIGHTS1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
+      <ion-card>
+        <ion-card-content>
+          <ion-item>
+            <ion-label>Number of pixel</ion-label>
+            <ion-input type="number" value="32"></ion-input>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Congratulation </h2>
+      <img src="assets/slide-5.gif"/>
+      <p>You <b>successfully</b> configured your rESCue device.</p>
+      <ion-button size="large" (click)="endWizard()" fill="clear">Continue <ion-icon slot="end" name="arrow-forward" ></ion-icon></ion-button>
+    </ion-slide>
+
+  </ion-slides>
+
+</ion-content>

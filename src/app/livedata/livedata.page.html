@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>
+      Live data (beta)
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button id="settingsBackButton"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+  <ion-list-header color="light">VESC data</ion-list-header>
+  <ion-grid>
+    <ion-row >
+      <ion-col>
+        <app-battery-gauge></app-battery-gauge>
+      </ion-col>
+      <ion-col>
+        <app-dual-gauge></app-dual-gauge>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list-header color="light">Charts</ion-list-header>
+  <ion-button size="small" fill="clear" (click)="toggleArea()">Toggle type</ion-button>
+  <app-riding-chart></app-riding-chart>
+  <app-battery-chart></app-battery-chart>
+  <app-temperature-chart></app-temperature-chart>
+</ion-content>

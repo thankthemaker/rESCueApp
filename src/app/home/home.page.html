@@ -1,12 +1,12 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-title>
       rESCue App
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" color="light">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">rESCue App</ion-title>
@@ -18,17 +18,32 @@
   </div>
   <div id="container">
     <strong>Welcome to rESCue App!</strong>
-    <p>Start scanning for your device.</p>
-    <!--<ion-button color="primary" (click)="scan()">Scan</ion-button>-->
-    <ion-button (click)="scan()" color="primary" id="scanButton">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
+    <p>Start <b>scanning</b> for your device.</p><br/>
+    <ion-button size="large" (click)="connect(false)" color="primary" id="scanButton">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button><br/>
+    <ion-button *ngIf="connected" size="small" (click)="disconnect()" color="danger">Disconnect <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
+  </div>
+  <div  id="autoconnect" *ngIf="autoconnect">
+    <br/>
+    <h4>Autoconnect <span style="color:green">active</span></h4><p> Trying to connect to your device...</p><br/>
   </div>
 </ion-content>
 <ion-footer>
+  <div class="ion-text-end">
+    <ion-button (click)="startWizard()" buttonType="light"><ion-icon slot="start" name="construct-outline"></ion-icon></ion-button>
+  </div>
   <ion-toolbar>
-    <ion-item>
-      <ion-note slot="start">&copy; 2021 ThankTheMaker</ion-note>
+    <ion-item color="dark">
+      <ion-note slot="start">
+        <ion-text color="light">
+          &copy; 2021 ThankTheMaker
+        </ion-text>
+      </ion-note>
       <ion-button size="small" fill="clear" slot="end" *ngIf="!showVersionInfo" align="right" (click)="toggleVersionInfo()">Versioninfo</ion-button>
-      <ion-note slot="end" *ngIf="showVersionInfo">Version: {{version}}</ion-note>
+      <ion-note slot="end" *ngIf="showVersionInfo">
+        <ion-text color="light">
+          Version: {{version}}
+        </ion-text>
+      </ion-note>
     </ion-item>
   </ion-toolbar>
 </ion-footer>

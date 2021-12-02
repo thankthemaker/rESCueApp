@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
     <ion-title>rESCUe settings</ion-title>
     <ion-buttons slot="start">
       <ion-back-button id="settingsBackButton"></ion-back-button>
@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" color="light">
 
   <ion-card>
     <ion-card-header>
@@ -17,84 +17,132 @@
 
     <ion-card-content>
       <p>Hardware-Version: {{hardwareVersion}}</p>
-      <p>Firmware-Version: {{softwareVersion}}</p><br />
+      <p>Firmware-Version: {{softwareVersion}}</p>
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>
-        LEDs Front-/Backlight
-        <ion-icon name="bulb-outline" ></ion-icon>
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label>Number of pixel</ion-label>
-        <ion-input type="number" value="32" [(ngModel)]="ledPixel"></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+  <ion-list>
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="bulb-outline" slot="start"></ion-icon>
+        Lights
+      </ion-label>
+    </ion-item-divider>
+    <app-lights #lightComponent
+                [rescueConf]="rescueConf"
+                (ledTypeUpdate)="updateLedType()">
+    </app-lights>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="musical-notes-outline" slot="start"></ion-icon>
+        Sounds
+      </ion-label>
+    </ion-item-divider>
+    <app-sounds #soundsComponent
+                [rescueConf]="rescueConf">
+    </app-sounds>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="battery-half-outline" slot="start"></ion-icon>
         Battery Monitor
-        <ion-icon name="battery-half-outline" ></ion-icon>
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label>Number of pixel</ion-label>
-        <ion-input type="number" value="5" [(ngModel)]="batmonPixel"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Min. Battery Voltage (V)</ion-label>
-        <ion-input type="number" inputmode="decimal" value="40.0" step="0.1"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Low Battery Warning (V)</ion-label>
-        <ion-input type="number" inputmode="decimal" value="42.0" step="0.1"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Max. Battery Voltage (V)</ion-label>
-        <ion-input type="number" inputmode="decimal" value="50.4" step="0.1"></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+      </ion-label>
+    </ion-item-divider>
+    <app-battery #batteryComponent
+                 [rescueConf]="rescueConf">
+    </app-battery>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="bonfire-outline"></ion-icon>
         Blynk
-        <ion-icon name="bonfire-outline" ></ion-icon>
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-item>
-        <ion-label>Auth Token</ion-label>
-        <ion-input placeholder="Enter your Token" [(ngModel)]="authToken"></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label position="stacked">Auth Token</ion-label>
+      <ion-input class="ion-text-right" placeholder="Enter your Token" slot="end"
+                 [(ngModel)]="rescueConf.authToken"></ion-input>
+    </ion-item>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="bus-outline"></ion-icon>
         CANBUS
-        <ion-icon name="bus-outline" ></ion-icon>
-      </ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
+      </ion-label>
+    </ion-item-divider>
+    <app-canbus #canbusComponent
+                [rescueConf]="rescueConf">
+    </app-canbus>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="notifications-outline"></ion-icon>
+        Notifications
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-text>
+        <p>Send local push notifications if supported by your system.</p>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label>Enable Notifications</ion-label>
+      <ion-toggle slot="end" name="notificationsEnabled" checked
+                  (ionChange)="toggleNotificationsEnabled($event)"></ion-toggle>
+    </ion-item>
+
+    <ion-item-group *ngIf="rescueConf.notificationsEnabled">
+      <ion-item-divider>
+        <ion-label>
+          Notification types
+        </ion-label>
+      </ion-item-divider>
       <ion-item>
-        <ion-label>VESC-ID</ion-label>
-        <ion-input type="number" value="25" [(ngModel)]="vescId"></ion-input>
+        <ion-label>Battery Warnings</ion-label>
+        <ion-toggle slot="end" name="batteryNotificationEnabled" checked></ion-toggle>
       </ion-item>
-    </ion-card-content>
-  </ion-card>
+      <ion-item>
+        <ion-label>Current Warnings</ion-label>
+        <ion-toggle slot="end" name="currentNotificationEnabled" checked></ion-toggle>
+      </ion-item>
+      <ion-item>
+        <ion-label>DutyCycle Warnings</ion-label>
+        <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked></ion-toggle>
+      </ion-item>
+    </ion-item-group>
 
-  <ion-button (click)="save()" color="primary" expand="block">Save and reboot <ion-icon slot="start" name="save">
-    </ion-icon>
-  </ion-button>
-
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="document-text-outline"></ion-icon>
+        Logging
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>LogLevel</ion-label>
+      <ion-select value="{{rescueConf.logLevel}}"
+                  (ionChange)="changeLoglevel($event)">
+        <ion-select-option value="0">Verbose</ion-select-option>
+        <ion-select-option value="1">Notice</ion-select-option>
+        <ion-select-option value="2">Warning</ion-select-option>
+        <ion-select-option value="3">Error</ion-select-option>
+        <ion-select-option value="4">Fatal</ion-select-option>
+        <ion-select-option value="5">Silent</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-item-divider>
+    <ion-label class="item-divider">
+      &nbsp;
+    </ion-label>
+  </ion-item-divider>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button (click)="save()" expand="full" color="primary">Save and reboot
+      <ion-icon slot="start" name="save">
+      </ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

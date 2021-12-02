@@ -1,0 +1,34 @@
+<ion-item>
+  <ion-text>
+    <p>Please configure your VESC-ID appropriately to match the ID in VESC.</p>
+  </ion-text>
+</ion-item>
+<ion-item>
+  <ion-label position="stacked">VESC-ID</ion-label>
+  <ion-input class="ion-text-right" type="number" value="25" [(ngModel)]="rescueConf.vescId" slot="end"></ion-input>
+</ion-item>
+<ion-item-divider>
+  <ion-label>
+    Time settings
+  </ion-label>
+</ion-item-divider>
+<ion-item>
+  <ion-label class="ion-text-wrap">Realtime-Data Interval
+    <ion-range min="200" max="1000" step="50" value="{{rescueConf.realtimeDataInterval}}"
+               (ionChange)="changeRealtimeDataInterval($event)" pin snaps color="secondary">
+      <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
+      <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
+    </ion-range>
+  </ion-label>
+  <ion-note slot="end">{{rescueConf.realtimeDataInterval}} ms</ion-note>
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">Balance-Data Interval
+    <ion-range min="200" max="1000" step="50" value="{{rescueConf.balanceDataInterval}}"
+               (ionChange)="changeBalanceDataInterval($event)" pin snaps color="secondary">
+      <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
+      <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
+    </ion-range>
+  </ion-label>
+  <ion-note slot="end">{{rescueConf.balanceDataInterval}} ms</ion-note>
+</ion-item>
