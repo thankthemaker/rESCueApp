@@ -1,0 +1,19 @@
+<ion-list>
+  <ion-list-header>Select Battery Type</ion-list-header>
+  <ion-item>
+    <ion-label position="stacked">Cell Count {{batteryCells}}</ion-label>
+    <ion-range min="10" max="20" step="1" pin value="{{batteryCells}}"
+               (ionChange)="changeCellCount($event)" snaps color="secondary"></ion-range>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Group Count {{batteryGroups}}</ion-label>
+    <ion-range min="1" max="4" step="1" pin value="{{batteryGroups}}"
+               (ionChange)="changeGroupCount($event)" snaps color="secondary"></ion-range>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Cell Capacity {{cellCapacity}}</ion-label>
+    <ion-range min="1800" max="4000" step="100" pin value="{{cellCapacity}}"
+               (ionChange)="changeCapacity($event)" snaps color="secondary"></ion-range>
+  </ion-item>
+</ion-list>
+<ion-button (click)="close()" color="primary" expand="block">Set</ion-button>

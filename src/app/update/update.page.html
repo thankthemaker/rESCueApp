@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
     <ion-title>Updating your rESCue device</ion-title>
     <ion-buttons slot="start">
       <ion-back-button id="updateBackButton"></ion-back-button>
@@ -7,16 +7,14 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" color="light">
 
   <div id="container">
-
     <ion-card>
       <ion-card-header>
         <ion-card-title>Updating your rESCue device!</ion-card-title>
         <ion-card-subtitle>Hardware version: {{hardwareVersion}}, Name: {{deviceName}}</ion-card-subtitle>
       </ion-card-header>
-
       <ion-card-content>
         <ion-chip outline color="secondary" (click)="loadVersions()" id="loadVersionsChip">
           <ion-icon name="pricetags-outline"></ion-icon>
@@ -26,49 +24,62 @@
           <p>
             Downloading firmware version: {{softwareVersion}}, please wait...
           </p>
-          <br />
+          <br/>
         </div>
-        <div *ngIf="downloadFinished">
+        <div *ngIf="downloadFinished && !downloadFailed">
           <p>
             Downloaded firmware version: {{softwareVersion}}, size {{totalSize}} bytes
             <ion-icon name="checkmark-circle" color="success"></ion-icon>
           </p>
-          <br />
+          <br/>
           <p>
-            Checking firmware integrity:<br />
+            Checking firmware integrity:<br/>
             checksum {{checksum | slice:0:30}}
             <ion-icon name="shield-checkmark" color="success"></ion-icon>
+          </p>
+        </div>
+        <div *ngIf="downloadFailed">
+          <br/>
+          <p>
+            <span style="color:darkred"><b>This firmware couldn't be found on our server.</b></span>
+          </p><br/>
+          <p>
+            Maybe you're running a beta version.
+          </p><br/>
+          <p>
+            If you want to update your device to a stable version, please select another version by clicking the
+            "change version" button above.
           </p>
         </div>
       </ion-card-content>
     </ion-card>
 
-    <ion-card>
+    <ion-card *ngIf="updateInProgress">
       <ion-card-content>
 
-        <div *ngIf="updateInProgress">
-          <br />
+        <div>
+          <br/>
           <p>Now updating your rESCue device.</p>
           <p>Please be patient, the update might take several minutes.</p>
-          <br />
+          <br/>
           <p>
             <ion-progress-bar value="{{progressNum}}"></ion-progress-bar>
             Progress: {{progress}}
             <i *ngIf="resentCounter > 0">, packages resent: {{resentCounter}}</i>
           </p>
         </div>
-
+<!--
         <div *ngIf="!updateInProgress && !wifiEnabled && wifiSupported">
           <p>
             Normally the update is done via Bluetooth (BLE). If you like to use WiFi instead, please mark the checkbox
-            <i>"enable WiFi update"</i> below<br />
+            <i>"enable WiFi update"</i> below<br/>
           </p>
         </div>
 
         <div *ngIf="!updateInProgress && wifiEnabled">
           <p>
             WiFi activated please connect to the access point <i>"rESCue Updates"</i> via WiFi.
-            Once connected, please start the update.<br /><br />
+            Once connected, please start the update.<br/><br/>
             <ion-item *ngIf="!isWifiConnected">
               Waiting for WiFi connection
               <ion-spinner name="dots"></ion-spinner>
@@ -78,7 +89,7 @@
               <ion-icon name="checkmark-circle" color="success"></ion-icon>
             </ion-item>
             If you want to update via Bluetooth instead, please unmark the checkbox
-            <i>"enable WiFi update"</i> below<br />
+            <i>"enable WiFi update"</i> below<br/>
           </p>
 
         </div>
@@ -86,12 +97,15 @@
           <ion-label>enable WiFi update</ion-label>
           <ion-checkbox color="primary" (click)="toggle()" slot="start" id="enableWifiCheckbox"></ion-checkbox>
         </ion-item>
+-->
       </ion-card-content>
     </ion-card>
-
-    <ion-button (click)="updateDevice()" color="primary" expand="block" *ngIf="!updateInProgress" [disabled]="disabled">Start Update <ion-icon slot="start"
-        name="update" id="updateButton"></ion-icon>
-    </ion-button>
-
   </div>
 </ion-content>
+
+<ion-footer>
+  <ion-button (click)="updateDevice()" color="primary" expand="block" *ngIf="!updateInProgress" [disabled]="disabled">
+    Start Update
+    <ion-icon slot="start" name="update" id="updateButton"></ion-icon>
+  </ion-button>
+</ion-footer>

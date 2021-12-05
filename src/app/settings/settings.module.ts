@@ -7,14 +7,24 @@ import { IonicModule } from '@ionic/angular';
 import { SettingsPageRoutingModule } from './settings-routing.module';
 
 import { SettingsPage } from './settings.page';
+import {LightsComponent} from './lights/lights.component';
+import {SoundsComponent} from './sounds/sounds.component';
+import {BatteryComponent} from './battery/battery.component';
+import {CanbusComponent} from './canbus/canbus.component';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SettingsPageRoutingModule
+    SettingsPageRoutingModule,
   ],
-  declarations: [SettingsPage]
+  declarations: [
+    SettingsPage,
+    LightsComponent,
+    SoundsComponent,
+    BatteryComponent,
+    CanbusComponent
+  ]
 })
 export class SettingsPageModule {}

@@ -1,0 +1,33 @@
+<ion-item>
+  <ion-label position="stacked">Type: {{rescueConf.batteryType}}</ion-label>
+  <ion-chip outline color="secondary" (click)="changeBatteryType($event)">
+    <ion-icon name="battery-charging-outline"></ion-icon>
+    <ion-label>Select Battery Presets</ion-label>
+  </ion-chip>
+</ion-item>
+<ion-item>
+  <ion-label position="stacked">Number of pixel</ion-label>
+  <ion-input class="ion-text-right" type="number" value="5" slot="end"
+             [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
+</ion-item>
+<ion-item-divider>
+  <ion-label>
+    Battery Voltage settings
+  </ion-label>
+</ion-item-divider>
+<ion-item>
+  <ion-label position="stacked">Min. Voltage (V)</ion-label>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.minBatteryVoltage" step="0.1" slot="end"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="stacked">Low Bat. Warning (V)</ion-label>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.lowBatteryVoltage"
+             step="0.1" slot="end"></ion-input>
+</ion-item>
+<ion-item>
+  <ion-label position="stacked">Max. Voltage (V)</ion-label>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.maxBatteryVoltage" step="0.1" slot="end"></ion-input>
+</ion-item>

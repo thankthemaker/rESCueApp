@@ -1,0 +1,24 @@
+<ion-content>
+  <div align="center">
+    <h2>LED Type</h2>
+  </div>
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Type</ion-label>
+      <ion-select [(ngModel)]="ledType">
+        <ion-select-option value="GRB">GRB</ion-select-option>
+        <ion-select-option value="RGB">RGB</ion-select-option>
+        <ion-select-option value="GRBW">GRBW</ion-select-option>
+        <ion-select-option value="RGBW">RGBW</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Frequency</ion-label>
+      <ion-select [(ngModel)]="ledFrequency">
+        <ion-select-option value="400kHz">400kHz</ion-select-option>
+        <ion-select-option value="800kHz">800kHz</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-button (click)="close()" color="primary" expand="block">Set</ion-button>
+</ion-content>

@@ -18,15 +18,18 @@ export class BleService {
     private toastCtrl: ToastController) {
   }
 
-  async connect() {
+  async connect(autoconnect: boolean) {
+    this.device = undefined;
+    console.log('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
-      if(this.info.isVirtual) {
+      //this.info.isVirtual = true;
+      if (this.info.isVirtual) {
         console.log('running on virtual device, faking BLE device');
         this.device = {
           deviceId: 'dmlydHVhbCByRVNDdWUK',
           name: 'virtual rESCue',
-          uuids: [ AppSettings.ESP_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID ]
+          uuids: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID]
         };
         return true;
       }
@@ -36,23 +39,38 @@ export class BleService {
       const isEnabled = await BleClient.getEnabled();
       console.log('Is BLE enabled: ' + isEnabled);
 
-      this.device = await BleClient.requestDevice({
-        services: [AppSettings.ESP_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID],
-        optionalServices: [AppSettings.OTA_SERVICE_UUID]
-      });
+      if (autoconnect && localStorage.getItem('autoconnect') === 'true') {
+        const savedDeviceId = localStorage.getItem('deviceId');
+        console.log('Trying autoconnect for device: ' + savedDeviceId);
+        const devices = await BleClient.getDevices([ savedDeviceId ]);
+        console.log('Devices: ' + JSON.stringify(devices));
+        if(devices.length === 1) {
+          this.device = devices.pop();
+        } else {
+          console.log('Device not found ');
+          this.presentWarningToast('Couldn\'t autoconnect to device ' + savedDeviceId);
+          this.device = undefined;
+        }
+      }
 
+      if(this.device === undefined) {
+        this.device = await BleClient.requestDevice({
+          services: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID],
+          optionalServices: [AppSettings.RESCUE_SERVICE_UUID],
+        });
+      }
       await BleClient.connect(this.device.deviceId);
 
       console.log('connected to device ' + this.device.name + '(' + this.device.deviceId + ')');
       return true;
     } catch (error) {
-      this.presentToast(error);
+      this.presentErrorToast(error);
       return false;
     }
   }
 
   async disconnect() {
-    if(this.info.isVirtual) {
+    if (this.info.isVirtual) {
       return;
     }
 
@@ -64,8 +82,22 @@ export class BleService {
     });
   }
 
+  async checkServiceAvailable(serviceId): Promise<boolean> {
+    const services = await BleClient.getServices(this.device.deviceId);
+    return services.map(service => service.uuid).filter((uuid) => uuid === serviceId).length > 0;
+  }
+
+  async startNotifications(callback) {
+    BleClient.startNotifications(
+      this.device.deviceId,
+      AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,
+      callback
+    );
+  }
+
   async write(str: string) {
-    if(this.info.isVirtual) {
+    if (this.info.isVirtual) {
       return;
     }
 
@@ -76,25 +108,46 @@ export class BleService {
     }
     await BleClient.write(
       this.device.deviceId,
-      AppSettings.ESP_SERVICE_UUID,
-      AppSettings.CONF_CHAR_UUID,
+      AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,
       new DataView(buf)
     );
   }
 
   async readVersion() {
-    if(this.info.isVirtual) {
-      return numbersToDataView([ 3 ,1 ,1 ,3 ,0 ]);
+    if (this.info.isVirtual) {
+      return numbersToDataView([3, 1, 1, 3, 0]);
     }
 
     return await BleClient.read(
       this.device.deviceId,
-      AppSettings.OTA_SERVICE_UUID,
-      AppSettings.VERSION_CHAR_UUID,
+      AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_HW_VERSION,
     );
   }
 
-  async presentToast(error) {
+  async presentWarningToast(warning) {
+    const toast = await this.toastCtrl.create({
+      header: 'Device not reachable',
+      message: warning,
+      animated: true,
+      color: 'warning',
+      position: 'top',
+      duration: 3000,
+      buttons: [
+        {
+          text: 'Close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Close clicked');
+          }
+        }
+      ]
+    });
+    await toast.present();
+  }
+
+  async presentErrorToast(error) {
     const toast = await this.toastCtrl.create({
       header: 'No BLE connection to rESCue device',
       message: 'Either your browser doesn\'t support BLE or it isn\'t activated or an error occured.\n' +

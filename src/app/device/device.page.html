@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
     <ion-title>Your rESCue device</ion-title>
     <ion-buttons slot="start">
       <ion-back-button id="deviceBackButton"></ion-back-button>
@@ -7,39 +7,57 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true" color="light">
 
   <ion-card>
     <ion-card-header>
-      <ion-card-subtitle>rESCue device {{deviceId}}</ion-card-subtitle>
+      <ion-card-subtitle>rESCue device: {{deviceId}}</ion-card-subtitle>
       <ion-card-title>Name: {{deviceName}}</ion-card-title>
     </ion-card-header>
 
-    <ion-card-content>
-      <p>Hardware-Version: {{hardwareVersion}}</p>
-      <p>Firmware-Version: {{softwareVersion}}</p>
+    <ion-card-content *ngIf="showCardDetails">
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <p>HW-Version: {{hardwareVersion}}</p>
+          </ion-col>
+          <ion-col>
+            <p>Looptime: {{rescueData.loopTime}}</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p>FW-Version: {{softwareVersion}}</p>
+          </ion-col>
+          <ion-col>
+            <p>Max. Looptime: {{rescueData.maxLoopTime}}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-item>
+        <ion-label>Autoconnect</ion-label>
+        <ion-toggle slot="end" name="" [(ngModel)]="autoconnect" (ionChange)="toggleAutoconnect($event)"></ion-toggle>
+      </ion-item>
     </ion-card-content>
-
-    <ion-chip outline color="secondary" (click)="settings()" id="settingsChip">
-      <ion-icon name="key"></ion-icon>
-      <ion-label>Settings</ion-label>
-      <!--ion-icon name="close-circle"></ion-icon-->
-    </ion-chip>
-    <ion-chip outline color="warning" (click)="getFirmwareVersions()" id="updateChip">
-      <ion-icon name="construct"></ion-icon>
-      <ion-label>Check for update</ion-label>
-      <!--<ion-icon name="close-circle"></ion-icon>-->
-    </ion-chip>
-    <ion-chip outline color="primary" (click)="disconnect(false)" id="disconnectChip">
-      <ion-icon name="bluetooth"></ion-icon>
-      <ion-label>Disconnect</ion-label>
-      <!--<ion-icon name="close-circle"></ion-icon>-->
-    </ion-chip>
-    <ion-chip outline color="danger" (click)="disconnect(true)" id="rebootChip">
-      <ion-icon name="bluetooth"></ion-icon>
-      <ion-label>Reboot to rESCue</ion-label>
-      <!--<ion-icon name="close-circle"></ion-icon>-->
-    </ion-chip>
+    <div class="ion-text-end">
+      <ion-chip outline color="secondary" (click)="settings()" id="settingsChip">
+        <ion-icon name="construct"></ion-icon>
+        <ion-label>Settings</ion-label>
+      </ion-chip>
+      <ion-chip outline color="warning" (click)="getFirmwareVersions()" id="updateChip">
+        <ion-icon name="download-outline"></ion-icon>
+        <ion-label>Update</ion-label>
+      </ion-chip>
+      <ion-button size="small" buttonType="light" (click)="toggleCard()">{{showCardDetailsText}}</ion-button>
+    </div>
   </ion-card>
 
+  <app-overview-chart #overviewChart></app-overview-chart>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button size="small" (click)="livedata()">Livedata (beta)</ion-button>
+    <!--<ion-button size="small" (click)="push()">Push</ion-button>-->
+  </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,63 @@
+<ion-grid>
+  <ion-row>
+    <ion-col>
+      <div id="dutyGaugeDiv" align="center">
+        <span style="font-size:14px;opacity:0.6">DutyCycle</span>
+        <highcharts-chart
+          *ngIf="isHighcharts"
+          [Highcharts]="dutyGaugeChart"
+          [options]="dutyGaugeOptions"
+          [(update)]="dutyUpdateFlag"
+        ></highcharts-chart>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div id="speedGaugeDiv" align="center">
+        <span style="font-size:14px;opacity:0.6">Speed</span>
+        <highcharts-chart
+          *ngIf="isHighcharts"
+          [Highcharts]="speedGaugeChart"
+          [options]="speedGaugeOptions"
+          [(update)]="speedUpdateFlag"
+        ></highcharts-chart>
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <div id="batteryGaugeDiv" align="center">
+        <span style="font-size:12px;opacity:0.6">Battery</span>
+        <highcharts-chart
+          *ngIf="isHighcharts"
+          [Highcharts]="batteryGaugeChart"
+          [options]="batteryGaugeOptions"
+          [(update)]="batteryUpdateFlag"
+        ></highcharts-chart>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div id="erpmGaugeDiv" align="center">
+        <span style="font-size:12px;opacity:0.6">ERPM</span>
+        <highcharts-chart
+          *ngIf="isHighcharts"
+          [Highcharts]="erpmGaugeChart"
+          [options]="erpmGaugeOptions"
+          [(update)]="erpmUpdateFlag"
+        ></highcharts-chart>
+      </div>
+    </ion-col>
+    <ion-col>
+      <div id="currentGaugeDiv" align="center">
+        <span style="font-size:12px;opacity:0.6">Current</span>
+        <highcharts-chart
+          *ngIf="isHighcharts"
+          [Highcharts]="currentGaugeChart"
+          [options]="currentGaugeOptions"
+          [(update)]="currentUpdateFlag"
+        ></highcharts-chart>
+      </div>
+    </ion-col>
+  </ion-row>
+<!--  <button (click)="updateValue()">click</button>-->
+</ion-grid>
+

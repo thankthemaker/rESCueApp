@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BleService } from '../services/ble.service';
-
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {PopoverController} from '@ionic/angular';
+import {BleService} from '../services/ble.service';
+import {LightsComponent} from './lights/lights.component';
 
 @Component({
   selector: 'app-enroll',
@@ -10,22 +11,51 @@ import { BleService } from '../services/ble.service';
 })
 export class SettingsPage implements OnInit {
 
+  @ViewChild(LightsComponent)
+  lightsComponent: LightsComponent;
+
   deviceName: string;
   softwareVersion: string;
   hardwareVersion: string;
-  authToken: string;
-  vescId: number;
-  ledPixel: number;
-  batmonPixel: number;
+  rescueConf = {
+    lowBatteryVoltage: 42.0,
+    minBatteryVoltage: 40.0,
+    maxBatteryVoltage: 50.4,
+    startSoundIndex: 1,
+    startLightIndex: 1,
+    batteryWarningSoundIndex: 1,
+    batteryAlarmSoundIndex: 1,
+    startLightDuration: 1000,
+    idleLightIndex: 1,
+    idleLightTimeout: 60000,
+    lightFadingDuration: 50,
+    lightMaxBrightness: 100,
+    lightColorPrimary: 0,
+    lightColorSecondary: 0,
+    brakeLightEnabled: false,
+    brakeLightMinAmp: 4,
+    numberPixelLight: 16,
+    numberPixelBatMon: 5,
+    vescId: 25,
+    authToken: '',
+    logLevel: 0,
+    realtimeDataInterval: 300,
+    balanceDataInterval: 300,
+    ledType: 'GRB',
+    ledFrequency: '800kHz',
+    batteryType: '12s2p, 6Ah',
+    isNotificationEnabled: true,
+    isBatteryNotificationEnabled: true,
+    isCurrentNotificationEnabled: true,
+    isErpmNotificationEnabled: true,
+  };
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private popoverController: PopoverController,
     private bleService: BleService) {
 
-    this.vescId = 25;
-    this.ledPixel = 16;
-    this.batmonPixel = 5;
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         this.hardwareVersion = this.router.getCurrentNavigation().extras.state.hardwareVersion;
@@ -36,21 +66,39 @@ export class SettingsPage implements OnInit {
 
   ngOnInit() {
     this.deviceName = this.bleService.device.name;
+    this.bleService.startNotifications((value: DataView) => {
+      const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
+      console.log('Received: ' + values );
+      this.rescueConf[values[0]] = values[1];
+    });
+    this.bleService.write('config=true');
   }
 
   async save() {
-    await this.saveProperty('authToken', this.authToken);
-    await this.saveProperty('vescId', '' + this.vescId);
-    await this.saveProperty('numberPixelLight', '' + this.ledPixel);
-    await this.saveProperty('numberPixelBatMon', '' + this.batmonPixel);
-    await this.saveProperty('otaUpdateActive', 'false');
+    for (const [key, value] of Object.entries(this.rescueConf)) {
+      await this.saveProperty(key, String(value));
+    }
     await this.saveProperty('save', 'true');
-
     this.router.navigate(['']);
   }
 
   async saveProperty(key: string, value: string) {
     const str = key + '=' + value;
+    console.log('Sending: ' + str);
     return this.bleService.write(str);
+  }
+
+  async updateLedType() {
+    await this.saveProperty('ledType', this.rescueConf.ledType);
+    await this.saveProperty('ledFrequency', this.rescueConf.ledFrequency);
+    await this.saveProperty('save', 'true');
+    console.log('ledType and ledFrequency updated');
+  }
+
+  toggleNotificationsEnabled(event){
+  }
+
+  changeLoglevel(event){
+    this.rescueConf.logLevel= event.detail.value;
   }
 }
