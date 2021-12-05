@@ -89,10 +89,11 @@
     <ion-item>
       <ion-label>Enable Notifications</ion-label>
       <ion-toggle slot="end" name="notificationsEnabled" checked
+                  [(ngModel)]="rescueConf.isNotificationEnabled"
                   (ionChange)="toggleNotificationsEnabled($event)"></ion-toggle>
     </ion-item>
 
-    <ion-item-group *ngIf="rescueConf.notificationsEnabled">
+    <ion-item-group *ngIf="rescueConf.isNotificationEnabled">
       <ion-item-divider>
         <ion-label>
           Notification types
@@ -100,15 +101,18 @@
       </ion-item-divider>
       <ion-item>
         <ion-label>Battery Warnings</ion-label>
-        <ion-toggle slot="end" name="batteryNotificationEnabled" checked></ion-toggle>
+        <ion-toggle slot="end" name="batteryNotificationEnabled" checked
+                    [(ngModel)]="rescueConf.isBatteryNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>Current Warnings</ion-label>
-        <ion-toggle slot="end" name="currentNotificationEnabled" checked></ion-toggle>
+        <ion-toggle slot="end" name="currentNotificationEnabled" checked
+                    [(ngModel)]="rescueConf.isCurrentNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
         <ion-label>DutyCycle Warnings</ion-label>
-        <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked></ion-toggle>
+        <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked
+                    [(ngModel)]="rescueConf.isErpmNotificationEnabled"></ion-toggle>
       </ion-item>
     </ion-item-group>
 

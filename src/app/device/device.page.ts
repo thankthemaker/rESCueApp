@@ -6,6 +6,7 @@ import {BleService} from '../services/ble.service';
 import {RescueData} from '../RescueData';
 import {OverviewChartComponent} from '../charts/overview-chart/overview-chart.component';
 import {AppSettings} from '../AppSettings';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-device',
@@ -32,7 +33,9 @@ export class DevicePage implements OnInit, OnDestroy {
     private toastCtrl: ToastController,
     private firmwareService: FirmwareService,
     private bleService: BleService,
-    public rescueData: RescueData) {
+    public rescueData: RescueData,
+    private localNotifications: LocalNotifications
+   ) {
   }
 
   ngOnInit() {
@@ -84,6 +87,8 @@ export class DevicePage implements OnInit, OnDestroy {
           this.rescueData.maxLoopTime = Number(values[1]);
         }
       });
+
+      //this.checkValues();
 
       this.timerId = setInterval(() => {
         this.update();
@@ -283,5 +288,32 @@ export class DevicePage implements OnInit, OnDestroy {
       this.showCardDetailsText = 'Show details';
     }
     localStorage.setItem('showCardDetails', String(this.showCardDetails));
+  }
+
+  push(title: string, message: string) {
+    this.localNotifications.schedule({
+      title,
+      text: message,
+      foreground: true
+    });
+  }
+
+  checkValues() {
+    const minVoltage = 42;
+    const maxVoltage = 50;
+    const maxCurrent = 10;
+    const maxErpm = 8000;
+    if(this.rescueData.battery < minVoltage) {
+      this.push('Warning: Battery low', 'Battery level under ' + minVoltage + 'V');
+    }
+    if(this.rescueData.battery > maxVoltage) {
+      this.push('Warning: Battery high', 'Battery level over ' + maxVoltage + 'V');
+    }
+    if(this.rescueData.current < maxCurrent) {
+      this.push('Warning: Current high', 'Current is above ' + maxCurrent + 'A for over 10 seconds');
+    }
+    if(this.rescueData.erpm > maxErpm) {
+      this.push('Warning: ERPM high', 'ERPM is over ' + maxErpm + 'V');
+    }
   }
 }

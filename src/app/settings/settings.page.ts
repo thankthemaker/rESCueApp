@@ -18,6 +18,7 @@ export class SettingsPage implements OnInit {
   softwareVersion: string;
   hardwareVersion: string;
   rescueConf = {
+    lowBatteryVoltage: 42.0,
     minBatteryVoltage: 40.0,
     maxBatteryVoltage: 50.4,
     startSoundIndex: 1,
@@ -26,6 +27,7 @@ export class SettingsPage implements OnInit {
     batteryAlarmSoundIndex: 1,
     startLightDuration: 1000,
     idleLightIndex: 1,
+    idleLightTimeout: 60000,
     lightFadingDuration: 50,
     lightMaxBrightness: 100,
     lightColorPrimary: 0,
@@ -42,7 +44,10 @@ export class SettingsPage implements OnInit {
     ledType: 'GRB',
     ledFrequency: '800kHz',
     batteryType: '12s2p, 6Ah',
-    notificationsEnabled: true,
+    isNotificationEnabled: true,
+    isBatteryNotificationEnabled: true,
+    isCurrentNotificationEnabled: true,
+    isErpmNotificationEnabled: true,
   };
 
   constructor(
@@ -91,7 +96,6 @@ export class SettingsPage implements OnInit {
   }
 
   toggleNotificationsEnabled(event){
-    this.rescueConf.notificationsEnabled = !this.rescueConf.notificationsEnabled;
   }
 
   changeLoglevel(event){

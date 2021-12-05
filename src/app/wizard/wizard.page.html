@@ -5,10 +5,13 @@
         <h2>Welcome to rESCue !</h2>
         <img src="assets/slide-1.png"/>
         <p>This <b>wizard</b> will guide you to the initial setup of your new rESCue device.</p>
-        <p>Please <b>turn on your rESCue device</b> and hit the <i>scan</i> button below. Connect to the Bluetooth Low Energy
+        <p>Please <b>turn on your rESCue device</b> and hit the <i>scan</i> button below. Connect to the Bluetooth Low
+          Energy
           device named <b>rESCue</b></p>
       </div>
-      <ion-button size="large" (click)="scan()" color="primary" id="scanButton">Scan <ion-icon slot="end" name="bluetooth"></ion-icon></ion-button>
+      <ion-button size="large" (click)="scan()" color="primary" id="scanButton">Scan
+        <ion-icon slot="end" name="bluetooth"></ion-icon>
+      </ion-button>
       <br/>
       <ion-button (click)="skipWizard()" buttonType="outline">Skip wizard</ion-button>
     </ion-slide>
@@ -16,7 +19,7 @@
     <ion-slide>
       <div class="slide" *ngIf="connected">
         <h2>Great, device connected!</h2>
-        <img  src="../../assets/slide-2-ok.png"/>
+        <img src="../../assets/slide-2-ok.png"/>
         <p>You <b>successfully</b> connected to rESCue device:</p>
         <p><b>Name: {{deviceName}}</b></p>
         <p><b>ID: {{deviceId}}</b></p>
@@ -24,10 +27,13 @@
       </div>
       <div class="slide" *ngIf="!connected">
         <h2>Whoops, not connected!</h2>
-        <img  src="../../assets/slide-2-nok.png"/>
+        <img src="../../assets/slide-2-nok.png"/>
         <p>Seems like we couldn't connect to any rESCue device.</p>
         <p>Please make sure your rESCue device is <b>turned on</b> and you enabled Bluetooth on this computer.</p>
-        <ion-button (click)="goBack()" fill="clear"><ion-icon slot="start" name="arrow-back"></ion-icon>Back</ion-button>
+        <ion-button (click)="goBack()" fill="clear">
+          <ion-icon slot="start" name="arrow-back"></ion-icon>
+          Back
+        </ion-button>
       </div>
     </ion-slide>
 
@@ -52,7 +58,8 @@
     <ion-slide>
       <h2>Configure Lights</h2>
       <img src="assets/slide-4.png"/>
-      <p>rESCue uses <b>addressable LEDs</b> (aka Neopixel) for front- and backlight. Please connect them to the JST-header
+      <p>rESCue uses <b>addressable LEDs</b> (aka Neopixel) for front- and backlight. Please connect them to the
+        JST-header
         labeled <i>LIGHTS1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
       <ion-card>
         <ion-card-content>
@@ -65,10 +72,56 @@
     </ion-slide>
 
     <ion-slide>
+      <h2>Configure Battery</h2>
+      <img src="assets/slide-6.png"/>
+      <p>Please configure your battery. How many cells in series and parallel do you have?</p>
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Cell Count {{batteryCells}}s</ion-label>
+          <ion-range min="10" max="20" step="1" pin [(ngModel)]="batteryCells"
+                     snaps color="secondary"></ion-range>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Group Count {{batteryGroups}}p</ion-label>
+          <ion-range min="1" max="4" step="1" pin [(ngModel)]="batteryGroups"
+                     snaps color="secondary"></ion-range>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Cell Capacity {{cellCapacity}}mAh</ion-label>
+          <ion-range min="1800" max="4000" step="100" pin  [(ngModel)]="cellCapacity"
+                     snaps color="secondary"></ion-range>
+        </ion-item>
+      </ion-list>
+    </ion-slide>
+
+    <ion-slide>
+      <h2>Configure Lightbar</h2>
+      <img src="assets/slide-6.png"/>
+      <p>rESCue can use <b>addressable LEDs</b> (aka Neopixel) as a <b>Lightbar</b>. Please connect them to the
+        JST-header labeled <i>LIGHTBAR1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
+      <p>If you don't have a <b>Lightbar</b>, just check not to use it.</p>
+      <ion-card>
+        <ion-card-content>
+          <ion-item>
+            <ion-label>Number of pixel</ion-label>
+            <ion-input type="number" value="5"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-checkbox [(ngModel)]="noLightbar"></ion-checkbox>
+            <ion-label>Don't use Lightbar</ion-label>
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+    </ion-slide>
+
+    <ion-slide>
       <h2>Congratulation </h2>
       <img src="assets/slide-5.gif"/>
       <p>You <b>successfully</b> configured your rESCue device.</p>
-      <ion-button size="large" (click)="endWizard()" fill="clear">Continue <ion-icon slot="end" name="arrow-forward" ></ion-icon></ion-button>
+      <ion-button size="large" (click)="endWizard()" fill="clear">Continue
+        <ion-icon slot="end" name="arrow-forward"></ion-icon>
+      </ion-button>
     </ion-slide>
 
   </ion-slides>

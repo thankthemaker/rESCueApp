@@ -7,7 +7,8 @@
 </ion-item>
 <ion-item>
   <ion-label position="stacked">Number of pixel</ion-label>
-  <ion-input class="ion-text-right" type="number" value="5" slot="end" [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
+  <ion-input class="ion-text-right" type="number" value="5" slot="end"
+             [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
 </ion-item>
 <ion-item-divider>
   <ion-label>
@@ -16,15 +17,17 @@
 </ion-item-divider>
 <ion-item>
   <ion-label position="stacked">Min. Voltage (V)</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal" value="{{rescueConf.minBatteryVoltage}}"
-             step="0.1" slot="end" (ionChange)="changeMinBatteryVoltage($event)"></ion-input>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.minBatteryVoltage" step="0.1" slot="end"></ion-input>
 </ion-item>
-<!--      <ion-item>
-        <ion-label>Low Battery Warning (V)</ion-label>
-        <ion-input type="number" inputmode="decimal" value="{{rescueConf.}}" step="0.1"></ion-input>
-      </ion-item>-->
+<ion-item>
+  <ion-label position="stacked">Low Bat. Warning (V)</ion-label>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.lowBatteryVoltage"
+             step="0.1" slot="end"></ion-input>
+</ion-item>
 <ion-item>
   <ion-label position="stacked">Max. Voltage (V)</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal" value="{{rescueConf.maxBatteryVoltage}}"
-             step="0.1" slot="end" (ionChange)="changeMaxBatteryVoltage($event)"></ion-input>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.maxBatteryVoltage" step="0.1" slot="end"></ion-input>
 </ion-item>

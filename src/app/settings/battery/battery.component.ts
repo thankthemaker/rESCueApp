@@ -39,16 +39,9 @@ export class BatteryComponent implements OnInit {
       lowVoltage: (data.batteryCells * 3.5).toFixed(1)
     };
     this.rescueConf.minBatteryVoltage = this.batteryPresets.minVoltage;
+    this.rescueConf.lowBatteryVoltage = this.batteryPresets.lowVoltage;
     this.rescueConf.maxBatteryVoltage = this.batteryPresets.maxVoltage;
     console.log('Selected BatteryType: ' + this.rescueConf.batteryType);
     this.ngOnInit();
-  }
-
-  changeMinBatteryVoltage(event) {
-    this.rescueConf.minBatteryVoltage = event.detail.value;
-  }
-
-  changeMaxBatteryVoltage(event) {
-    this.rescueConf.maxBatteryVoltage = event.detail.value;
   }
 }

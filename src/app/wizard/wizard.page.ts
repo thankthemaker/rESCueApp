@@ -19,6 +19,10 @@ export class WizardPage implements OnInit {
     initialSlide: 1,
     speed: 400
   };
+  batteryCells = 12;
+  batteryGroups = 2;
+  cellCapacity = 3000;
+  noLightbar = false;
 
   constructor(
     private router: Router,

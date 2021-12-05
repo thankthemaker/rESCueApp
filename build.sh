@@ -12,7 +12,7 @@ ionic build --prod --aot --output-hashing=all && npx cap sync
 
 if [[ "$os" == "android" ]]; then
  cd android/fastlane
- fastlane beta
+ fastlane internal
  cd -
 fi
 

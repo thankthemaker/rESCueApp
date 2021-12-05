@@ -8,6 +8,7 @@ import { DevicePageRoutingModule } from './device-routing.module';
 
 import { DevicePage } from './device.page';
 import {ChartsModule} from "../charts/charts.module";
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @NgModule({
     imports: [
@@ -17,6 +18,9 @@ import {ChartsModule} from "../charts/charts.module";
         DevicePageRoutingModule,
         ChartsModule
     ],
+  providers: [
+      LocalNotifications
+  ],
   declarations: [DevicePage]
 })
 export class DevicePageModule {}

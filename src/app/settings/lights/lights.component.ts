@@ -34,24 +34,4 @@ export class LightsComponent implements OnInit {
     this.ledTypeUpdate.emit('updateValues');
     this.ngOnInit();
   }
-
-  changeIdleLightIndex(event) {
-    this.rescueConf.idleLightIndex = event.detail.value;
-  }
-
-  changeStartLightIndex(event) {
-    this.rescueConf.startLightIndex = event.detail.value;
-  }
-
-  changeLedFadingDuration(event) {
-    this.rescueConf.lightFadingDuration = event.detail.value;
-  }
-
-  changeLedMaxBrightness(event) {
-    this.rescueConf.lightMaxBrightness = event.detail.value;
-  }
-
-  changeMinBrakeLightsAmp(event) {
-    this.rescueConf.brakeLightMinAmp = event.detail.value;
-  }
 }
