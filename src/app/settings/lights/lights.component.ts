@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
-import { PopoverController} from '@ionic/angular';
+import {PopoverController} from '@ionic/angular';
+import {BatteryTypeComponent} from "../battery-type/battery-type.component";
+import {ColorpickerComponent} from "../colorpicker/colorpicker.component";
 
 @Component({
   selector: 'app-lights',
@@ -11,11 +13,14 @@ export class LightsComponent implements OnInit {
 
   @Input() rescueConf: any;
 
-  constructor(private popoverController: PopoverController) { }
+  constructor(private popoverController: PopoverController) {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   @Output() ledTypeUpdate = new EventEmitter();
+
   async changeLedType(event) {
     const popover = await this.popoverController.create({
       //event,
@@ -27,11 +32,25 @@ export class LightsComponent implements OnInit {
     });
     popover.present();
 
-    const { data } = await popover.onDidDismiss();
+    const {data} = await popover.onDidDismiss();
     this.rescueConf.ledType = data.ledType;
     this.rescueConf.ledFrequency = data.ledFrequency;
     console.log('Selected LED-Type: ' + this.rescueConf.ledType + ' ' + this.rescueConf.ledFrequency);
     this.ledTypeUpdate.emit('updateValues');
     this.ngOnInit();
+  }
+
+  async showColorPicker() {
+    const popover = await this.popoverController.create({
+      //event,
+      component: ColorpickerComponent,
+      translucent: true,
+      showBackdrop: true,
+      //backdropDismiss: false,
+      cssClass: 'led-type-popover',
+    });
+    popover.present();
+
+    const {data} = await popover.onDidDismiss();
   }
 }

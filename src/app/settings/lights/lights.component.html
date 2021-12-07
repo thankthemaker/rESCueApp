@@ -38,6 +38,18 @@
   </ion-label>
 </ion-item-divider>
 <ion-item>
+  <ion-label class="ion-text-wrap">Front color</ion-label>
+  <ion-note slot="end" (click)="showColorPicker()">
+    <div style="width: 75px; height: 25px; background-color: #2dd36f; border:1px solid black"></div>
+  </ion-note>
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">Back color</ion-label>
+  <ion-note slot="end">
+    <div style="width: 75px; height: 25px; background-color: #36abe0; border:1px solid black"></div>
+  </ion-note>
+</ion-item>
+<ion-item>
   <ion-label class="ion-text-wrap">LED Maximum Brightness
     <ion-range min="0" max="255" step="1" [(ngModel)]="rescueConf.lightMaxBrightness" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>

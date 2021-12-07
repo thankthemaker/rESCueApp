@@ -35,3 +35,14 @@
     }
   }
 }
+
+.led-colorpicker-popover {
+  --max-height: 400px;
+  --width: 250px;
+  --max-width: 250px;
+  ion-content {
+    &::part(background) {
+      //background: #2dd36f;
+    }
+  }
+}

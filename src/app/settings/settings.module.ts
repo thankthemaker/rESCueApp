@@ -11,6 +11,7 @@ import {LightsComponent} from './lights/lights.component';
 import {SoundsComponent} from './sounds/sounds.component';
 import {BatteryComponent} from './battery/battery.component';
 import {CanbusComponent} from './canbus/canbus.component';
+import {ColorpickerComponent} from "./colorpicker/colorpicker.component";
 
 @NgModule({
   imports: [
@@ -19,12 +20,13 @@ import {CanbusComponent} from './canbus/canbus.component';
     IonicModule,
     SettingsPageRoutingModule,
   ],
-  declarations: [
-    SettingsPage,
-    LightsComponent,
-    SoundsComponent,
-    BatteryComponent,
-    CanbusComponent
-  ]
+    declarations: [
+        SettingsPage,
+        LightsComponent,
+        SoundsComponent,
+        BatteryComponent,
+        CanbusComponent,
+        ColorpickerComponent
+    ]
 })
 export class SettingsPageModule {}
