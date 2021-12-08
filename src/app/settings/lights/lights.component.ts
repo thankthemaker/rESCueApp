@@ -1,8 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
 import {PopoverController} from '@ionic/angular';
-import {BatteryTypeComponent} from "../battery-type/battery-type.component";
-import {ColorpickerComponent} from "../colorpicker/colorpicker.component";
 
 @Component({
   selector: 'app-lights',
@@ -11,12 +9,18 @@ import {ColorpickerComponent} from "../colorpicker/colorpicker.component";
 })
 export class LightsComponent implements OnInit {
 
+  colorPickerControlsStr: any = 'no-alpha';
+  colorPickerFormat = 'hex';
+  lightColorPrimary = '';
+  lightColorSecondary = '';
   @Input() rescueConf: any;
 
   constructor(private popoverController: PopoverController) {
   }
 
   ngOnInit() {
+    this.lightColorPrimary = '#' + Number(this.rescueConf.lightColorPrimary).toString(16);
+    this.lightColorSecondary = '#' + Number(this.rescueConf.lightColorSecondary).toString(16);
   }
 
   @Output() ledTypeUpdate = new EventEmitter();
@@ -40,17 +44,15 @@ export class LightsComponent implements OnInit {
     this.ngOnInit();
   }
 
-  async showColorPicker() {
-    const popover = await this.popoverController.create({
-      //event,
-      component: ColorpickerComponent,
-      translucent: true,
-      showBackdrop: true,
-      //backdropDismiss: false,
-      cssClass: 'led-type-popover',
-    });
-    popover.present();
+  updatePrimaryColor(event) {
+    console.log('updatePrimaryColor: ' + event);
+    this.rescueConf.lightColorPrimary = Number('0x' + event.substr(1));
+    console.log('this.rescueConf.lightColorPrimary: ' + this.rescueConf.lightColorPrimary);
+  }
 
-    const {data} = await popover.onDidDismiss();
+  updateSecondaryColor(event) {
+    console.log('updateSecondaryColor: ' + event);
+    this.rescueConf.lightColorSecondary = Number('0x' + event.substr(1));
+    console.log('this.rescueConf.lightColorSecondary: ' + this.rescueConf.lightColorSecondary);
   }
 }

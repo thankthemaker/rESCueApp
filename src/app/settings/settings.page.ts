@@ -30,8 +30,8 @@ export class SettingsPage implements OnInit {
     idleLightTimeout: 60000,
     lightFadingDuration: 50,
     lightMaxBrightness: 100,
-    lightColorPrimary: 0,
-    lightColorSecondary: 0,
+    lightColorPrimary: 16777215,
+    lightColorSecondary: 16711680,
     brakeLightEnabled: false,
     brakeLightMinAmp: 4,
     numberPixelLight: 16,
@@ -76,22 +76,22 @@ export class SettingsPage implements OnInit {
 
   async save() {
     for (const [key, value] of Object.entries(this.rescueConf)) {
-      await this.saveProperty(key, String(value));
+      await this.saveProperty({key, value: String(value)});
     }
-    await this.saveProperty('save', 'true');
+    await this.saveProperty({key: 'save', value: 'true'});
     this.router.navigate(['']);
   }
 
-  async saveProperty(key: string, value: string) {
-    const str = key + '=' + value;
+  async saveProperty(property) {
+    const str = property.key + '=' + property.value;
     console.log('Sending: ' + str);
     return this.bleService.write(str);
   }
 
   async updateLedType() {
-    await this.saveProperty('ledType', this.rescueConf.ledType);
-    await this.saveProperty('ledFrequency', this.rescueConf.ledFrequency);
-    await this.saveProperty('save', 'true');
+    await this.saveProperty({key: 'ledType', value: this.rescueConf.ledType});
+    await this.saveProperty({key: 'ledFrequency', value: this.rescueConf.ledFrequency});
+    await this.saveProperty({key: 'save', value: 'true'});
     console.log('ledType and ledFrequency updated');
   }
 

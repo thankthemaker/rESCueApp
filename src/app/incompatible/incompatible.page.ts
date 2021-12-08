@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {BleService} from '../services/ble.service';
 
 @Component({
   selector: 'app-incompatible',
@@ -7,9 +8,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class IncompatiblePage implements OnInit {
 
-  constructor() { }
+  services: string[] = [];
+  skipIncompatibleCheck = false;
 
-  ngOnInit() {
+  constructor(private bleService: BleService
+  ) {
   }
 
+  ngOnInit() {
+    this.skipIncompatibleCheck = localStorage.getItem('skipIncompatibleCheck') === 'true';
+
+    this.bleService.getServices().then(serviceIds => {
+      this.services = serviceIds;
+    });
+  }
+
+  toggleIncompatibleCheck(event) {
+    const skipIncompatibleCheck = event.detail.checked;
+    console.log('skipIncompatibleCheck is now ' + skipIncompatibleCheck);
+    localStorage.setItem('skipIncompatibleCheck', skipIncompatibleCheck);
+  }
 }
