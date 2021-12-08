@@ -1,7 +1,8 @@
 <ion-item>
   <ion-label position="stacked">Start Melody</ion-label>
   <ion-select value="{{rescueConf.startSoundIndex}}"
-              (ionChange)="changeStartSoundIndex($event)">
+              (ionChange)="changeStartSoundIndex($event)"
+              (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
     <ion-select-option value="0">No Sound</ion-select-option>
     <ion-select-option value="100">Simpsons</ion-select-option>
     <ion-select-option value="101">Topgun</ion-select-option>
@@ -22,8 +23,9 @@
 <ion-item>
   <ion-label position="stacked">Battery Warning Sound</ion-label>
   <ion-select value="{{rescueConf.batteryWarningSoundIndex}}"
-              (ionChange)="changeBatteryWarningSoundIndex($event)">
-    <ion-select-option value="0">No Sound</ion-select-option>
+              (ionChange)="changeBatteryWarningSoundIndex($event)"
+              (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
+  <ion-select-option value="0">No Sound</ion-select-option>
     <ion-select-option value="400">Two Short Beeps</ion-select-option>
     <ion-select-option value="402">Siren</ion-select-option>
     <ion-select-option value="406">Negative Feedback Beep</ion-select-option>
@@ -32,8 +34,9 @@
 <ion-item>
   <ion-label position="stacked">Battery Alarm Sound</ion-label>
   <ion-select value="{{rescueConf.batteryAlarmSoundIndex}}"
-              (ionChange)="changeBatteryAlarmSoundIndex($event)">
-    <ion-select-option value="0">No Sound</ion-select-option>
+              (ionChange)="changeBatteryAlarmSoundIndex($event)"
+              (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
+  <ion-select-option value="0">No Sound</ion-select-option>
     <ion-select-option value="402">Siren</ion-select-option>
     <ion-select-option value="300">Death March</ion-select-option>
   </ion-select>

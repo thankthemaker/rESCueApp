@@ -18,6 +18,7 @@ export class DevicePage implements OnInit, OnDestroy {
   @ViewChild('overviewChart')
   overviewChart: OverviewChartComponent;
 
+  skipIncompatibleCheck = false;
   autoconnect = false;
   showCardDetails = true;
   showCardDetailsText = '';
@@ -40,6 +41,7 @@ export class DevicePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('entered device page');
+    this.skipIncompatibleCheck = localStorage.getItem('skipIncompatibleCheck') === 'true';
     this.autoconnect = localStorage.getItem('autoconnect') === 'true';
     this.showCardDetails = localStorage.getItem('showCardDetails') === 'true';
     if(this.showCardDetails) {
@@ -52,7 +54,7 @@ export class DevicePage implements OnInit, OnDestroy {
     this.deviceName = this.bleService.device.name;
 
     this.bleService.checkServiceAvailable(AppSettings.RESCUE_SERVICE_UUID).then((available) => {
-      if(!available) {
+      if(!available && ! this.skipIncompatibleCheck) {
         console.log('Incompatible version of rESCue firmware');
         this.router.navigate(['/incompatible']);
         return;

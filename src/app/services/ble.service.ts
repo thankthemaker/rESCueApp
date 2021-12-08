@@ -23,7 +23,7 @@ export class BleService {
     console.log('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
-      //this.info.isVirtual = true;
+      ////this.info.isVirtual = true;
       if (this.info.isVirtual) {
         console.log('running on virtual device, faking BLE device');
         this.device = {
@@ -84,7 +84,14 @@ export class BleService {
 
   async checkServiceAvailable(serviceId): Promise<boolean> {
     const services = await BleClient.getServices(this.device.deviceId);
+    console.log('Available BLE-Services: ' + JSON.stringify(services));
     return services.map(service => service.uuid).filter((uuid) => uuid === serviceId).length > 0;
+  }
+
+  async getServices(): Promise<string[]> {
+    const services = await BleClient.getServices(this.device.deviceId);
+    console.log('Available BLE-Services: ' + JSON.stringify(services));
+    return services.map(service => service.uuid);
   }
 
   async startNotifications(callback) {

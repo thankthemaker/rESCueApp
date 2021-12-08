@@ -40,7 +40,8 @@
       </ion-label>
     </ion-item-divider>
     <app-sounds #soundsComponent
-                [rescueConf]="rescueConf">
+                [rescueConf]="rescueConf"
+                (changeEvent)="saveProperty($event)">
     </app-sounds>
 
     <ion-item-divider>
@@ -125,7 +126,8 @@
     <ion-item>
       <ion-label>LogLevel</ion-label>
       <ion-select value="{{rescueConf.logLevel}}"
-                  (ionChange)="changeLoglevel($event)">
+                  (ionChange)="changeLoglevel($event)"
+                  interface="action-sheet">
         <ion-select-option value="0">Verbose</ion-select-option>
         <ion-select-option value="1">Notice</ion-select-option>
         <ion-select-option value="2">Warning</ion-select-option>

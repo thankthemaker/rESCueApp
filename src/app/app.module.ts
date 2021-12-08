@@ -13,11 +13,12 @@ import {VersionsComponent} from './update/versions/versions.component';
 import {BatteryTypeComponent} from './settings/battery-type/battery-type.component';
 import {LedTypeComponent} from './settings/led-type/led-type.component';
 import {FormsModule} from '@angular/forms';
+import { NgxColorsModule } from 'ngx-colors';
 
 @NgModule({
     declarations: [AppComponent, VersionsComponent, BatteryTypeComponent, LedTypeComponent],
     entryComponents: [],
-    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule],
+    imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, FormsModule, NgxColorsModule],
     providers: [BleService, {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}],
     bootstrap: [AppComponent]
 })

@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-sounds',
@@ -7,24 +7,44 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class SoundsComponent implements OnInit {
 
+  locked = true;
   @Input() rescueConf: any;
+  @Output() changeEvent = new EventEmitter<{ key: string, value: string }>();
 
-  constructor() { }
+  constructor() {
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   changeBatteryWarningSoundIndex(event) {
-    this.rescueConf.batteryWarningSoundIndex= event.detail.value;
-    //this.saveProperty('batteryWarningSoundIndex', String(this.rescueConf.batteryWarningSoundIndex));
+    this.rescueConf.batteryWarningSoundIndex = event.detail.value;
+    if(!this.locked) {
+      this.changeEvent.emit({key: 'batteryWarningSoundIndex', value: event.detail.value});
+    }
   }
 
   changeBatteryAlarmSoundIndex(event) {
-    this.rescueConf.batteryAlarmSoundIndex= event.detail.value;
-    //this.saveProperty('batteryAlarmSoundIndex', String(this.rescueConf.batteryAlarmSoundIndex));
+    this.rescueConf.batteryAlarmSoundIndex = event.detail.value;
+    if(!this.locked) {
+      this.changeEvent.emit({key: 'batteryAlarmSoundIndex', value: event.detail.value});
+    }
   }
 
   changeStartSoundIndex(event) {
-    this.rescueConf.startSoundIndex= event.detail.value;
-    //this.saveProperty('startSoundIndex', String(this.rescueConf.startSoundIndex));
+    this.rescueConf.startSoundIndex = event.detail.value;
+    if(!this.locked) {
+      this.changeEvent.emit({key: 'startSoundIndex', value: event.detail.value});
+    }
+  }
+
+  lock() {
+    console.log("lock");
+    this.locked = true;
+  }
+
+  unlock() {
+    console.log("unlock");
+    this.locked = false;
   }
 }

@@ -16,7 +16,7 @@
 </ion-item-divider>
 <ion-item>
   <ion-label position="stacked">Start Light Pattern</ion-label>
-  <ion-select [(ngModel)]="rescueConf.startLightIndex">
+  <ion-select [(ngModel)]="rescueConf.startLightIndex" interface="action-sheet">
     <ion-select-option value="1">Chasing</ion-select-option>
     <ion-select-option value="2">Cylone</ion-select-option>
     <ion-select-option value="3">Rainbow</ion-select-option>
@@ -25,7 +25,7 @@
 </ion-item>
 <ion-item>
   <ion-label position="stacked">Idle Light Pattern</ion-label>
-  <ion-select [(ngModel)]="rescueConf.idleLightIndex">
+  <ion-select [(ngModel)]="rescueConf.idleLightIndex" interface="action-sheet">
     <ion-select-option value="1">Chasing</ion-select-option>
     <ion-select-option value="2">Cylone</ion-select-option>
     <ion-select-option value="3">Rainbow</ion-select-option>
@@ -37,6 +37,30 @@
     Light settings
   </ion-label>
 </ion-item-divider>
+<ion-item>
+  <ion-label class="ion-text-wrap">Front color</ion-label>
+  {{lightColorPrimary}}
+  <ion-note slot="end">
+    <ngx-colors ngx-colors-trigger
+                [(ngModel)]="lightColorPrimary"
+                (input)="updatePrimaryColor($event)"
+                (change)="updatePrimaryColor($event)"
+                [colorPickerControls]="colorPickerControlsStr"
+                [format]="colorPickerFormat"></ngx-colors>
+  </ion-note>
+</ion-item>
+<ion-item>
+  <ion-label class="ion-text-wrap">Back color</ion-label>
+  {{lightColorSecondary}}
+  <ion-note slot="end">
+    <ngx-colors ngx-colors-trigger
+                [(ngModel)]="lightColorSecondary"
+                (input)="updateSecondaryColor($event)"
+                (change)="updateSecondaryColor($event)"
+                [colorPickerControls]="colorPickerControlsStr"
+                [format]="colorPickerFormat"></ngx-colors>
+  </ion-note>
+</ion-item>
 <ion-item>
   <ion-label class="ion-text-wrap">LED Maximum Brightness
     <ion-range min="0" max="255" step="1" [(ngModel)]="rescueConf.lightMaxBrightness" pin snaps color="secondary">

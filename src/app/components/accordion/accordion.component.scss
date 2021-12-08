@@ -1,0 +1,36 @@
+h4 {
+  cursor: pointer;
+  position: relative;
+  padding: 1em 0.35em;
+  font-size: 1em;
+  font-family: Verdana;
+  border-bottom: 1px solid rgba(210,210,210,1);
+  margin: 0;
+
+
+  /* Define the style rules for the 'arrow icons' */
+  span {
+    position: absolute;
+    right: 1em;
+    top: 1.2em;
+    font-size: 0.95em;
+  }
+}
+
+div {
+  position: relative;
+  padding: 0.5em;
+  background: rgba(230, 230, 230, 1);
+  border-bottom: 1px solid rgba(210, 210, 210, 1);
+}
+
+/* Following classes display/hide the 'menu'
+// based on the state change detection in the
+// component class */
+.active {
+  display: block
+}
+
+.inactive {
+  display: none;
+}

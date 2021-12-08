@@ -11,20 +11,22 @@ import {LightsComponent} from './lights/lights.component';
 import {SoundsComponent} from './sounds/sounds.component';
 import {BatteryComponent} from './battery/battery.component';
 import {CanbusComponent} from './canbus/canbus.component';
+import {NgxColorsModule} from 'ngx-colors';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SettingsPageRoutingModule,
-  ],
-  declarations: [
-    SettingsPage,
-    LightsComponent,
-    SoundsComponent,
-    BatteryComponent,
-    CanbusComponent
-  ]
+    imports: [
+        CommonModule,
+        FormsModule,
+        IonicModule,
+        SettingsPageRoutingModule,
+        NgxColorsModule,
+    ],
+    declarations: [
+        SettingsPage,
+        LightsComponent,
+        SoundsComponent,
+        BatteryComponent,
+        CanbusComponent
+    ]
 })
 export class SettingsPageModule {}

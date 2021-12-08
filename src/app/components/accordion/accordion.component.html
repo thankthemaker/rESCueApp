@@ -1,0 +1,9 @@
+<h4 (click)="toggleAccordion()">
+  {{ name }}
+  <span *ngIf="isMenuOpen">&#9650;</span>
+  <span *ngIf="!isMenuOpen">&#9660;</span>
+</h4>
+<div
+  [ngClass]="this.isMenuOpen ? 'active' : 'inactive'">
+  <ng-content></ng-content>
+</div>
