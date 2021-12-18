@@ -80,13 +80,10 @@ export class BleService {
       return;
     }
 
-    BleClient.disconnect(this.device.deviceId).then(() => {
-      this.logger.info('Disconnected from device ');
-      this.connected = false;
-      this.router.navigate(['']);
-    }).catch((error) => {
-      this.logger.error('Unable to disconnect ' + error);
-    });
+    await BleClient.disconnect(this.device.deviceId);
+    this.logger.info('Disconnected from device ');
+    this.connected = false;
+    this.router.navigate(['']);
   }
 
   async checkServiceAvailable(serviceId): Promise<boolean> {

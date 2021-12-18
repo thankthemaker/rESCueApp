@@ -26,10 +26,10 @@ export class SettingsPage implements OnInit {
     minBatteryVoltage: 40.0,
     maxBatteryVoltage: 50.4,
     batteryDrift: 0,
-    startSoundIndex: 1,
+    startSoundIndex: 0,
     startLightIndex: 1,
-    batteryWarningSoundIndex: 1,
-    batteryAlarmSoundIndex: 1,
+    batteryWarningSoundIndex: 0,
+    batteryAlarmSoundIndex: 0,
     startLightDuration: 1000,
     idleLightIndex: 1,
     idleLightTimeout: 60000,
@@ -140,5 +140,13 @@ export class SettingsPage implements OnInit {
 
   changeLoglevel(event){
     this.rescueConf.logLevel= event.detail.value;
+  }
+
+  doRefresh(event) {
+    setTimeout(() => {
+      this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
+        AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
+      event.target.complete();
+    }, 1000);
   }
 }

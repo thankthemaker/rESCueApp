@@ -2,7 +2,8 @@
   <ion-label position="stacked">Start Melody</ion-label>
   <ion-select [(ngModel)]="rescueConf.startSoundIndex"
               (ionChange)="changeStartSoundIndex($event)"
-              (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
+              (ionFocus)="lock()" (ionBlur)="unlock()"
+              interface="action-sheet">
     <ion-select-option value="0">No Sound</ion-select-option>
     <ion-select-option value="100">Simpsons</ion-select-option>
     <ion-select-option value="101">Topgun</ion-select-option>
