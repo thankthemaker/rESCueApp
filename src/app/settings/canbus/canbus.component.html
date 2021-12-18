@@ -13,7 +13,7 @@
   </ion-label>
 </ion-item-divider>
 <ion-item>
-  <ion-label class="ion-text-wrap">Realtime-Data Interval
+  <ion-label position="stacked" class="ion-text-wrap">Realtime-Data Interval
     <ion-range min="200" max="1000" step="50" value="{{rescueConf.realtimeDataInterval}}"
                (ionChange)="changeRealtimeDataInterval($event)" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
@@ -23,7 +23,7 @@
   <ion-note slot="end">{{rescueConf.realtimeDataInterval}} ms</ion-note>
 </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">Balance-Data Interval
+  <ion-label position="stacked" class="ion-text-wrap">Balance-Data Interval
     <ion-range min="200" max="1000" step="50" value="{{rescueConf.balanceDataInterval}}"
                (ionChange)="changeBalanceDataInterval($event)" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>

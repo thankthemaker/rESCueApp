@@ -1,8 +1,11 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {PopoverController} from '@ionic/angular';
+import { LoadingController, PopoverController} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
 import {LightsComponent} from './lights/lights.component';
+import {AppSettings} from '../AppSettings';
+import {NGXLogger} from 'ngx-logger';
+import {TextinputComponent} from '../components/textinput/textinput.component';
 
 @Component({
   selector: 'app-enroll',
@@ -14,13 +17,15 @@ export class SettingsPage implements OnInit {
   @ViewChild(LightsComponent)
   lightsComponent: LightsComponent;
 
-  deviceName: string;
+  stateDirty = true;
   softwareVersion: string;
   hardwareVersion: string;
   rescueConf = {
+    deviceName: 'rESCue',
     lowBatteryVoltage: 42.0,
     minBatteryVoltage: 40.0,
     maxBatteryVoltage: 50.4,
+    batteryDrift: 0,
     startSoundIndex: 1,
     startLightIndex: 1,
     batteryWarningSoundIndex: 1,
@@ -54,7 +59,9 @@ export class SettingsPage implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private popoverController: PopoverController,
-    private bleService: BleService) {
+    private loadingController: LoadingController,
+    private bleService: BleService,
+    private logger: NGXLogger) {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -65,37 +72,70 @@ export class SettingsPage implements OnInit {
    }
 
   ngOnInit() {
-    this.deviceName = this.bleService.device.name;
-    this.bleService.startNotifications((value: DataView) => {
+    this.rescueConf.deviceName = this.bleService.device.name;
+    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,(value: DataView) => {
       const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-      console.log('Received: ' + values );
-      this.rescueConf[values[0]] = values[1];
+      if(!String(values[0]).startsWith('vesc')) {
+        this.logger.debug('Received: ' + values );
+        this.rescueConf[values[0]] = values[1];
+      }
     });
-    this.bleService.write('config=true');
+    this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
   }
 
   async save() {
+    const loading = await this.loadingController.create({
+      message: 'Saving configuration: ',
+      spinner: 'bubbles',
+      duration: 5000
+    });
+    await loading.present();
+
     for (const [key, value] of Object.entries(this.rescueConf)) {
+      loading.message = `Saving configuration: ${key}`;
       await this.saveProperty({key, value: String(value)});
     }
     await this.saveProperty({key: 'save', value: 'true'});
-    this.router.navigate(['']);
+    await loading.dismiss();
+    await this.bleService.disconnect();
+    await this.router.navigate(['']);
   }
 
   async saveProperty(property) {
     const str = property.key + '=' + property.value;
-    console.log('Sending: ' + str);
-    return this.bleService.write(str);
+    this.logger.debug('Sending: ' + str);
+    return this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str);
   }
 
   async updateLedType() {
     await this.saveProperty({key: 'ledType', value: this.rescueConf.ledType});
     await this.saveProperty({key: 'ledFrequency', value: this.rescueConf.ledFrequency});
     await this.saveProperty({key: 'save', value: 'true'});
-    console.log('ledType and ledFrequency updated');
+    this.logger.debug('ledType and ledFrequency updated');
   }
 
   toggleNotificationsEnabled(event){
+  }
+
+  async changeName(event) {
+    const popover = await this.popoverController.create({
+      component: TextinputComponent,
+      event,
+      componentProps: {
+        deviceName: this.rescueConf.deviceName
+      },
+      keyboardClose: true,
+      translucent: true
+    });
+    popover.present();
+
+    const {data} = await popover.onDidDismiss();
+    if(data !== undefined && data !== null) {
+      this.rescueConf.deviceName = data;
+    }
   }
 
   changeLoglevel(event){

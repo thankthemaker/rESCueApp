@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
 import {PopoverController} from '@ionic/angular';
+import {NGXLogger} from "ngx-logger";
 
 @Component({
   selector: 'app-lights',
@@ -15,8 +16,9 @@ export class LightsComponent implements OnInit {
   lightColorSecondary = '';
   @Input() rescueConf: any;
 
-  constructor(private popoverController: PopoverController) {
-  }
+  constructor(
+    private popoverController: PopoverController,
+    private logger: NGXLogger) {}
 
   ngOnInit() {
     this.lightColorPrimary = '#' + Number(this.rescueConf.lightColorPrimary).toString(16);
@@ -39,20 +41,27 @@ export class LightsComponent implements OnInit {
     const {data} = await popover.onDidDismiss();
     this.rescueConf.ledType = data.ledType;
     this.rescueConf.ledFrequency = data.ledFrequency;
-    console.log('Selected LED-Type: ' + this.rescueConf.ledType + ' ' + this.rescueConf.ledFrequency);
+    this.logger.debug('Selected LED-Type: ' + this.rescueConf.ledType + ' ' + this.rescueConf.ledFrequency);
     this.ledTypeUpdate.emit('updateValues');
     this.ngOnInit();
   }
 
   updatePrimaryColor(event) {
-    console.log('updatePrimaryColor: ' + event);
+    this.logger.debug('updatePrimaryColor: ' + event);
+    if(event === undefined || event === null) {
+      return;
+    }
     this.rescueConf.lightColorPrimary = Number('0x' + event.substr(1));
-    console.log('this.rescueConf.lightColorPrimary: ' + this.rescueConf.lightColorPrimary);
+    this.logger.debug('this.rescueConf.lightColorPrimary: ' + this.rescueConf.lightColorPrimary);
   }
 
   updateSecondaryColor(event) {
-    console.log('updateSecondaryColor: ' + event);
+    this.logger.debug('updateSecondaryColor: ' + event);
+    this.logger.debug('updatePrimaryColor: ' + event);
+    if(event === undefined || event === null) {
+      return;
+    }
     this.rescueConf.lightColorSecondary = Number('0x' + event.substr(1));
-    console.log('this.rescueConf.lightColorSecondary: ' + this.rescueConf.lightColorSecondary);
+    this.logger.debug('this.rescueConf.lightColorSecondary: ' + this.rescueConf.lightColorSecondary);
   }
 }

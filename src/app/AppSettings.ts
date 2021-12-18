@@ -5,4 +5,6 @@ export class AppSettings {
   public static CHARACTERISTIC_UUID_FW = '99eb1514-a9e9-4024-b0a4-3dc4b4fabfb0';
 
   public static VESC_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  public static VESC_CHARACTERISTICS_RX_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
+  public static VESC_CHARACTERISTICS_TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 }

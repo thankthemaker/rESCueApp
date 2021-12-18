@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {BleService} from '../services/ble.service';
 import {environment} from '../../environments/environment';
+import {NGXLogger} from "ngx-logger";
 
 @Component({
   selector: 'app-home',
@@ -13,15 +14,15 @@ export class HomePage implements OnInit {
   version: string;
   showVersionInfo = true;
   autoconnect = false;
-  connected = false;
   deactivateWizard = false;
 
   constructor(
     private router: Router,
-    private bleService: BleService) {
+    private bleService: BleService,
+    private logger: NGXLogger) {
     this.deactivateWizard = Boolean(localStorage.getItem('deactivateWizard'));
     this.version = environment.appVersion;
-    console.log(`Application version is: version (from package.json)=${this.version}`);
+    logger.info(`Application version is: version (from package.json)=${this.version}`);
   }
 
   ngOnInit() {
@@ -30,7 +31,7 @@ export class HomePage implements OnInit {
     }
     if(localStorage.getItem('autoconnect') === 'true') {
       this.autoconnect = true;
-      console.log('Autoconnect detected, trying to connect device');
+      this.logger.info('Autoconnect detected, trying to connect device');
       this.connect(true);
     }
   }
@@ -38,14 +39,16 @@ export class HomePage implements OnInit {
   async connect(autoconnect: boolean) {
     const success = await this.bleService.connect(autoconnect);
     if (success) {
-      this.connected = true;
       await this.router.navigate(['/device']);
     }
   }
 
   disconnect() {
     this.bleService.disconnect();
-    this.connected = false;
+  }
+
+  isConnected() {
+    return this.bleService.connected;
   }
 
   toggleVersionInfo() {

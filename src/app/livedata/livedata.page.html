@@ -6,13 +6,15 @@
     <ion-buttons slot="start">
       <ion-back-button id="settingsBackButton"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" color="light">
-  <ion-list-header color="light">VESC data</ion-list-header>
   <ion-grid>
-    <ion-row >
+    <ion-row>
       <ion-col>
         <app-battery-gauge></app-battery-gauge>
       </ion-col>
@@ -23,8 +25,44 @@
   </ion-grid>
 
   <ion-list-header color="light">Charts</ion-list-header>
-  <ion-button size="small" fill="clear" (click)="toggleArea()">Toggle type</ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button size="small" fill="clear" (click)="toggleArea()">Toggle type</ion-button>
+      </ion-col>
+      <ion-col>
+        <div *ngIf="!liveDataActive" align="right">
+          (Livedata <span style="color: darkred"><b>paused</b></span>)
+          <ion-icon name="pause-circle-outline"></ion-icon>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <app-riding-chart></app-riding-chart>
   <app-battery-chart></app-battery-chart>
   <app-temperature-chart></app-temperature-chart>
+
+
+  <ion-fab horizontal="end" vertical="top" slot="fixed">
+    <ion-fab-button color="medium">
+      <ion-icon md="caret-down" ios="chevron-down-circle-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="bottom">
+      <ion-fab-button *ngIf="liveDataActive" color="medium" (click)="stopLiveData()">
+        <ion-icon name="pause-circle-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button *ngIf="!liveDataActive" color="medium" (click)="startLiveData()">
+        <ion-icon name="play-circle-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="medium" (click)="listData()">
+        <ion-icon name="folder-open-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="medium" (click)="saveData()">
+        <ion-icon name="save-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button color="danger" (click)="clearData()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
 </ion-content>

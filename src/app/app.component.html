@@ -1,3 +1,56 @@
 <ion-app>
-  <ion-router-outlet></ion-router-outlet>
+  <ion-menu menuId="main-menu" contentId="main">
+    <ion-content>
+      <div class="menu-header-bg"></div>
+      <div class="header-content">
+        <img src="../assets/icon/favicon.png">
+        <ion-label>
+          <h2>rESCue</h2>
+          <p>Version {{version}}</p><br/>
+          <p>enjoy your ride!</p>
+        </ion-label>
+      </div>
+      <ion-list class="menu-items" lines="none">
+        <!--<ion-item class="active" (click)="selectMenu('/home')">-->
+        <ion-item (click)="selectMenu('/home')">
+          <ion-icon name="home-outline"></ion-icon>
+          Home
+        </ion-item>
+        <ion-item (click)="selectMenu('/wizard')">
+          <ion-icon name="color-wand-outline"></ion-icon>
+          Wizard
+        </ion-item>
+        <ion-item (click)="selectMenu('/appsettings')">
+          <ion-icon name="settings-outline"></ion-icon>
+          Settings
+        </ion-item>
+      </ion-list>
+
+    </ion-content>
+    <ion-footer>
+      <ion-list *ngIf="isConnected()" class="menu-items" lines="none">
+        <ion-item-divider>
+          <ion-icon name="rocket-outline"></ion-icon>
+          Device "{{getDeviceName()}}"
+        </ion-item-divider>
+        <ion-item (click)="selectMenu('/device')">
+          <ion-icon name="information-circle-outline"></ion-icon>
+          Device Info
+        </ion-item>
+        <ion-item (click)="selectMenu('/livedata')">
+          <ion-icon name="pulse-outline"></ion-icon>
+          Livedata (beta)
+        </ion-item>
+        <ion-item (click)="selectMenu('/settings')">
+          <ion-icon name="construct-outline"></ion-icon>
+          Settings
+        </ion-item>
+        <ion-item class="red" (click)="disconnect()">
+          <ion-icon name="bluetooth-outline"></ion-icon>
+          Disconnect
+        </ion-item>
+      </ion-list>
+    </ion-footer>
+  </ion-menu>
+  <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>

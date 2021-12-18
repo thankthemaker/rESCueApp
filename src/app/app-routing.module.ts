@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'incompatible',
     loadChildren: () => import('./incompatible/incompatible.module').then( m => m.IncompatiblePageModule)
   },
+  {
+    path: 'appsettings',
+    loadChildren: () => import('./appsettings/appsettings.module').then( m => m.AppsettingsPageModule)
+  },
 ];
 
 @NgModule({

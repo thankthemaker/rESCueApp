@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {BatteryTypeComponent} from '../battery-type/battery-type.component';
-import {PopoverController} from '@ionic/angular';
+import {PickerController, PopoverController} from '@ionic/angular';
+import {PickerOptions} from "@ionic/core/dist/types/components/picker/picker-interface";
+import {NGXLogger} from "ngx-logger";
 
 @Component({
   selector: 'app-battery',
@@ -12,7 +14,10 @@ export class BatteryComponent implements OnInit {
   @Input() rescueConf: any;
   batteryPresets: any;
 
-  constructor(private popoverController: PopoverController) {
+  constructor(
+    private popoverController: PopoverController,
+    private pickerController: PickerController,
+    private logger: NGXLogger) {
     this.batteryPresets = {
       minVoltage: 40.0,
       maxVoltage: 50.4,
@@ -41,7 +46,38 @@ export class BatteryComponent implements OnInit {
     this.rescueConf.minBatteryVoltage = this.batteryPresets.minVoltage;
     this.rescueConf.lowBatteryVoltage = this.batteryPresets.lowVoltage;
     this.rescueConf.maxBatteryVoltage = this.batteryPresets.maxVoltage;
-    console.log('Selected BatteryType: ' + this.rescueConf.batteryType);
+    this.logger.debug('Selected BatteryType: ' + this.rescueConf.batteryType);
     this.ngOnInit();
   }
-}
+
+  async showPicker() {
+    const opts: PickerOptions = {
+      buttons: [
+        {
+          text: 'Done'
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ],
+      columns: [
+        {
+          name: 'full',
+          options: [
+            {
+              text: 'bla',
+              value: 'bla'
+            },
+            {
+              text: 'blubb',
+              value: 'blubb'
+            }
+          ]
+        }
+      ]
+    };
+    const picker = await this.pickerController.create(opts);
+    await picker.present();
+  }
+  }

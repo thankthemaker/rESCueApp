@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { timeout, catchError } from 'rxjs/operators';
+import {NGXLogger} from "ngx-logger";
 
 
 @Injectable({
@@ -17,7 +18,9 @@ import { timeout, catchError } from 'rxjs/operators';
      * Constructor of the Service with Dependency Injection
      * @param http The standard Angular HttpClient to make requests
      */
-    constructor(private http: HttpClient) { }
+    constructor(
+      private http: HttpClient,
+      private logger: NGXLogger) { }
 
     /**
     * Get version file from remote
@@ -52,7 +55,7 @@ import { timeout, catchError } from 'rxjs/operators';
 
     postUpdateData(data: ArrayBuffer): Observable<any> {
       const formData: any = new FormData();
-      console.log('sending ' + data.byteLength + ' bytes');
+      this.logger.debug('sending ' + data.byteLength + ' bytes');
 
       formData.append('data', btoa(String.fromCharCode.apply(null, new Uint8Array(data))));
       //formData.append("data", new Uint8Array(data));

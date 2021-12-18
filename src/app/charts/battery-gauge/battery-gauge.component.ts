@@ -26,7 +26,7 @@ export type GaugeOptions = {
 })
 export class BatteryGaugeComponent implements OnInit {
 
-  @ViewChild('chart') chart: ChartComponent;
+  @ViewChild('batteryGauge') chart: ChartComponent;
   public batteryGaugeOptions: Partial<GaugeOptions>;
 
   constructor() {
@@ -38,7 +38,7 @@ export class BatteryGaugeComponent implements OnInit {
 
   buildGaugeOptions() {
     this.batteryGaugeOptions = {
-      series: [40],
+      series: [0],
       chart: {
         type: 'radialBar',
         offsetY: -10
@@ -48,7 +48,7 @@ export class BatteryGaugeComponent implements OnInit {
           hollow: {
             margin: 15,
             size: '70%',
-            image: '../../assets/40percent.png',
+            image: '../../assets/0percent.png',
             imageWidth: 64,
             imageHeight: 64,
             imageClipped: false

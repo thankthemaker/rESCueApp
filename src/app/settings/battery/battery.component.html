@@ -16,18 +16,26 @@
   </ion-label>
 </ion-item-divider>
 <ion-item>
+  <ion-label position="stacked">Battery drift</ion-label>
+  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             [(ngModel)]="rescueConf.batteryDrift" step="0.1" slot="end"></ion-input>
+</ion-item>
+<ion-item>
   <ion-label position="stacked">Min. Voltage (V)</ion-label>
   <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             min="{{batteryPresets.minVoltage - 1}}" max="{{batteryPresets.maxVoltage}}"
              [(ngModel)]="rescueConf.minBatteryVoltage" step="0.1" slot="end"></ion-input>
 </ion-item>
 <ion-item>
   <ion-label position="stacked">Low Bat. Warning (V)</ion-label>
   <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             min="{{batteryPresets.minVoltage}}" max="{{batteryPresets.maxVoltage}}"
              [(ngModel)]="rescueConf.lowBatteryVoltage"
              step="0.1" slot="end"></ion-input>
 </ion-item>
 <ion-item>
   <ion-label position="stacked">Max. Voltage (V)</ion-label>
   <ion-input class="ion-text-right" type="number" inputmode="decimal"
+             min="{{batteryPresets.minVoltage}}" max="{{batteryPresets.maxVoltage + 1}}"
              [(ngModel)]="rescueConf.maxBatteryVoltage" step="0.1" slot="end"></ion-input>
 </ion-item>

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BleService} from '../services/ble.service';
+import {NGXLogger} from "ngx-logger";
 
 @Component({
   selector: 'app-incompatible',
@@ -11,8 +12,9 @@ export class IncompatiblePage implements OnInit {
   services: string[] = [];
   skipIncompatibleCheck = false;
 
-  constructor(private bleService: BleService
-  ) {
+  constructor(
+    private bleService: BleService,
+    private logger: NGXLogger) {
   }
 
   ngOnInit() {
@@ -25,7 +27,7 @@ export class IncompatiblePage implements OnInit {
 
   toggleIncompatibleCheck(event) {
     const skipIncompatibleCheck = event.detail.checked;
-    console.log('skipIncompatibleCheck is now ' + skipIncompatibleCheck);
+    this.logger.debug('skipIncompatibleCheck is now ' + skipIncompatibleCheck);
     localStorage.setItem('skipIncompatibleCheck', skipIncompatibleCheck);
   }
 }

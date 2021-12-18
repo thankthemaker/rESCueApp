@@ -4,6 +4,9 @@
     <ion-buttons slot="start">
       <ion-back-button id="settingsBackButton"></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -12,7 +15,11 @@
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle>Set up rESCue device</ion-card-subtitle>
-      <ion-card-title>Name: {{deviceName}}</ion-card-title>
+      <ion-card-title>Name: {{rescueConf.deviceName}}
+        <ion-label>
+          <ion-icon slot="end" name="create-outline" size="small" (click)="changeName($event)"></ion-icon>
+        </ion-label>
+      </ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
@@ -88,7 +95,7 @@
       </ion-text>
     </ion-item>
     <ion-item>
-      <ion-label>Enable Notifications</ion-label>
+      <ion-label position="stacked">Enable Notifications</ion-label>
       <ion-toggle slot="end" name="notificationsEnabled" checked
                   [(ngModel)]="rescueConf.isNotificationEnabled"
                   (ionChange)="toggleNotificationsEnabled($event)"></ion-toggle>
@@ -101,17 +108,17 @@
         </ion-label>
       </ion-item-divider>
       <ion-item>
-        <ion-label>Battery Warnings</ion-label>
+        <ion-label position="stacked">Battery Warnings</ion-label>
         <ion-toggle slot="end" name="batteryNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isBatteryNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label>Current Warnings</ion-label>
+        <ion-label position="stacked">Current Warnings</ion-label>
         <ion-toggle slot="end" name="currentNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isCurrentNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label>DutyCycle Warnings</ion-label>
+        <ion-label position="stacked">DutyCycle Warnings</ion-label>
         <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isErpmNotificationEnabled"></ion-toggle>
       </ion-item>
@@ -124,7 +131,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label>LogLevel</ion-label>
+      <ion-label position="stacked">LogLevel</ion-label>
       <ion-select value="{{rescueConf.logLevel}}"
                   (ionChange)="changeLoglevel($event)"
                   interface="action-sheet">
@@ -144,7 +151,7 @@
   </ion-item-divider>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="stateDirty">
   <ion-toolbar>
     <ion-button (click)="save()" expand="full" color="primary">Save and reboot
       <ion-icon slot="start" name="save">
