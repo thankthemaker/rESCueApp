@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {NGXLogger} from "ngx-logger";
 
 @Component({
   selector: 'app-sounds',
@@ -11,8 +12,8 @@ export class SoundsComponent implements OnInit {
   @Input() rescueConf: any;
   @Output() changeEvent = new EventEmitter<{ key: string, value: string }>();
 
-  constructor() {
-  }
+  constructor(
+    private logger: NGXLogger) {}
 
   ngOnInit() {
   }
@@ -39,12 +40,12 @@ export class SoundsComponent implements OnInit {
   }
 
   lock() {
-    console.log("lock");
+    this.logger.debug('lock');
     this.locked = true;
   }
 
   unlock() {
-    console.log("unlock");
+    this.logger.debug('unlock');
     this.locked = false;
   }
 }

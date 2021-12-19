@@ -88,6 +88,7 @@ export class BatteryChartComponent implements OnInit {
       yaxis: [
         {
           seriesName: 'Voltage',
+          min: 35,
           title: {
             text: 'Voltage',
             style: {

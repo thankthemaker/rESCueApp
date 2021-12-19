@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>App Settings</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button id="deviceBackButton"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+  <ion-list>
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="settings-outline" slot="start"></ion-icon>
+        General Settings
+      </ion-label>
+    </ion-item-divider>
+    <!--ion-item>
+      <ion-label>Dark theme enabled</ion-label>
+      <ion-toggle slot="end" name="darkThemeSupport" [(ngModel)]="darkThemeSupport" (ionChange)="toggleDarkThemeSupported($event)"></ion-toggle>
+    </ion-item-->
+    <ion-item>
+      <ion-label>Use metric system</ion-label>
+      <ion-toggle slot="end" name="metricSystem" checked></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Allow Push-Notifications</ion-label>
+      <ion-toggle slot="end" name="notificationsEnabled" checked></ion-toggle>
+    </ion-item>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        App Information
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>App-Version</ion-label>
+      <ion-label>{{version}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Saved rides</ion-label>
+      <ion-label>{{numberOfRides}}</ion-label>
+    </ion-item>
+    <ion-item>
+      <ion-label>Used space</ion-label>
+      <ion-label></ion-label>
+    </ion-item>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="document-outline" slot="start"></ion-icon>
+        App Data
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>Clear all app data</ion-label>
+      <ion-button (click)="deleteAppData()" expand="full" color="danger">Remove data
+        <ion-icon slot="start" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-label>&copy; 2021 ThankTheMaker</ion-label>
+  </ion-toolbar>
+</ion-footer>

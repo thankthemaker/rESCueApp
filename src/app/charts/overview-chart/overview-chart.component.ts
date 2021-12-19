@@ -214,7 +214,7 @@ export class OverviewChartComponent implements OnInit {
         data: this.speedData,
         dataLabels: {
           format:
-            '<div style="text-align:center">' +
+            '<div class="gauge-data-label" style="text-align:center">' +
             '<span style="font-size:16px">{y}<br/></span>' +
             '<span style="font-size:10px;opacity:0.4">&nbsp;</span>' +
             '</div>'

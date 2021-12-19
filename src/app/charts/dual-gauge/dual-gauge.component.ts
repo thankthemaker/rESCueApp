@@ -100,7 +100,7 @@ const legendMini: ApexLegend = {
 })
 export class DualGaugeComponent implements OnInit {
 
-  @ViewChild('chart') chart: ChartComponent;
+  @ViewChild('dualGauge') chart: ChartComponent;
   public dualGaugeOptions: Partial<GaugeOptions>;
   public erpm = 0;
   public dutyCycle = 50;

@@ -4,56 +4,60 @@ import {BleClient, BleDevice, numbersToDataView} from '@capacitor-community/blue
 import {Device, DeviceInfo} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {AppSettings} from '../AppSettings';
+import {NGXLogger} from 'ngx-logger';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BleService {
 
+  connected = false;
   device: BleDevice;
   info: DeviceInfo;
 
   constructor(
     private router: Router,
-    private toastCtrl: ToastController) {
+    private toastCtrl: ToastController,
+    private logger: NGXLogger) {
   }
 
   async connect(autoconnect: boolean) {
     this.device = undefined;
-    console.log('Connect with autoconnect: ' + autoconnect);
+    this.logger.info('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
-      ////this.info.isVirtual = true;
+      //this.info.isVirtual = true;
       if (this.info.isVirtual) {
-        console.log('running on virtual device, faking BLE device');
+        this.logger.warn('running on virtual device, faking BLE device');
         this.device = {
           deviceId: 'dmlydHVhbCByRVNDdWUK',
           name: 'virtual rESCue',
           uuids: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID]
         };
+        this.connected = true;
         return true;
       }
       await BleClient.initialize();
 
       //check if BLE is enabled on device, otherwise ask the user to turn on
       const isEnabled = await BleClient.getEnabled();
-      console.log('Is BLE enabled: ' + isEnabled);
+      this.logger.debug('Is BLE enabled: ' + isEnabled);
 
       if (autoconnect && localStorage.getItem('autoconnect') === 'true') {
         const savedDeviceId = localStorage.getItem('deviceId');
-        console.log('Trying autoconnect for device: ' + savedDeviceId);
-        const devices = await BleClient.getDevices([ savedDeviceId ]);
-        console.log('Devices: ' + JSON.stringify(devices));
-        if(devices.length === 1) {
+        this.logger.info('Trying autoconnect for device: ' + savedDeviceId);
+        const devices = await BleClient.getDevices([savedDeviceId]);
+        this.logger.debug('Devices: ' + JSON.stringify(devices));
+        if (devices.length === 1) {
           this.device = devices.pop();
         } else {
-          console.log('Device not found ');
+          this.logger.warn('Device not found ');
           this.presentWarningToast('Couldn\'t autoconnect to device ' + savedDeviceId);
           this.device = undefined;
         }
       }
 
-      if(this.device === undefined) {
+      if (this.device === undefined) {
         this.device = await BleClient.requestDevice({
           services: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID],
           optionalServices: [AppSettings.RESCUE_SERVICE_UUID],
@@ -61,7 +65,8 @@ export class BleService {
       }
       await BleClient.connect(this.device.deviceId);
 
-      console.log('connected to device ' + this.device.name + '(' + this.device.deviceId + ')');
+      this.logger.info('connected to device ' + this.device.name + '(' + this.device.deviceId + ')');
+      this.connected = true;
       return true;
     } catch (error) {
       this.presentErrorToast(error);
@@ -71,40 +76,60 @@ export class BleService {
 
   async disconnect() {
     if (this.info.isVirtual) {
+      this.connected = false;
       return;
     }
 
-    BleClient.disconnect(this.device.deviceId).then(() => {
-      console.log('Disconnected from device ');
-      this.router.navigate(['']);
-    }).catch((error) => {
-      console.error('Unable to disconnect ' + error);
-    });
+    await BleClient.disconnect(this.device.deviceId);
+    this.logger.info('Disconnected from device ');
+    this.connected = false;
+    this.router.navigate(['']);
   }
 
   async checkServiceAvailable(serviceId): Promise<boolean> {
+    if (this.info.isVirtual) {
+      return true;
+    }
     const services = await BleClient.getServices(this.device.deviceId);
-    console.log('Available BLE-Services: ' + JSON.stringify(services));
+    this.logger.debug('Available BLE-Services: ' + JSON.stringify(services));
     return services.map(service => service.uuid).filter((uuid) => uuid === serviceId).length > 0;
   }
 
   async getServices(): Promise<string[]> {
     const services = await BleClient.getServices(this.device.deviceId);
-    console.log('Available BLE-Services: ' + JSON.stringify(services));
+    this.logger.debug('Available BLE-Services: ' + JSON.stringify(services));
     return services.map(service => service.uuid);
   }
 
-  async startNotifications(callback) {
+  async startNotifications(serviceId, characteristicId, callback) {
+    if (this.info.isVirtual) {
+      return;
+    }
     BleClient.startNotifications(
       this.device.deviceId,
-      AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,
+      serviceId,
+      characteristicId,
       callback
     );
   }
 
-  async write(str: string) {
+  async writeDataView(serviceId, characteristicId, data: DataView) {
     if (this.info.isVirtual) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+      return;
+    }
+
+    await BleClient.write(
+      this.device.deviceId,
+      serviceId,
+      characteristicId,
+      data
+    );
+  }
+
+  async write(serviceId, characteristicId, str: string) {
+    if (this.info.isVirtual) {
+      await new Promise(resolve => setTimeout(resolve, 50));
       return;
     }
 
@@ -115,8 +140,8 @@ export class BleService {
     }
     await BleClient.write(
       this.device.deviceId,
-      AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,
+      serviceId,
+      characteristicId,
       new DataView(buf)
     );
   }
@@ -146,7 +171,7 @@ export class BleService {
           text: 'Close',
           role: 'cancel',
           handler: () => {
-            console.log('Close clicked');
+            this.logger.debug('Close clicked');
           }
         }
       ]
@@ -167,7 +192,7 @@ export class BleService {
           text: 'Close',
           role: 'cancel',
           handler: () => {
-            console.log('Close clicked');
+            this.logger.debug('Close clicked');
           }
         }
       ]

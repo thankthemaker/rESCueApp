@@ -1,0 +1,8 @@
+<ion-list>
+  <ion-list-header>{{title}}:</ion-list-header>
+  <ion-item *ngFor="let item of items" button (click)="close(item)">{{item}}</ion-item>
+  <ion-item *ngIf="items.length === 0">
+    <span style="color: red">No data available!</span>
+  </ion-item>
+  <ion-button *ngIf="items.length === 0" size="small" (click)="close(undefined)">Close</ion-button>
+</ion-list>
