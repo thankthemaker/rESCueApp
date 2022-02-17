@@ -108,6 +108,9 @@ export class OverviewChartComponent implements OnInit {
       },
     },
     plotOptions: {
+      series: {
+        animation: false
+      },
       gauge: {
         dataLabels: {
           y: 90,
@@ -174,6 +177,9 @@ export class OverviewChartComponent implements OnInit {
       }
     },
     plotOptions: {
+      series: {
+        animation: false
+      },
       solidgauge: {
         dataLabels: {
             y: 14,
@@ -215,7 +221,7 @@ export class OverviewChartComponent implements OnInit {
         dataLabels: {
           format:
             '<div class="gauge-data-label" style="text-align:center">' +
-            '<span style="font-size:16px">{y}<br/></span>' +
+            '<span style="font-size:16px">{y:.1f}<br/></span>' +
             '<span style="font-size:10px;opacity:0.4">&nbsp;</span>' +
             '</div>'
         },      tooltip: {
@@ -253,7 +259,7 @@ export class OverviewChartComponent implements OnInit {
         dataLabels: {
           format:
             '<div style="text-align:center">' +
-            '<span style="font-size:16px">{y}<br/></span>' +
+            '<span style="font-size:16px">{y:.0f}<br/></span>' +
             '<span style="font-size:10px;opacity:0.4">&nbsp;</span>' +
             '</div>'
         },
@@ -266,11 +272,11 @@ export class OverviewChartComponent implements OnInit {
     this.erpmGaugeOptions = Highcharts.merge(this.solidGaugeOptions, {
       yAxis: {
         min: 0,
-        max: 10000,
+        max: 50000,
         plotBands: [
-          { from: 0, to: 5000, color: 'green', outerRadius: '38', innerRadius: '35'},
-          { from: 5000, to: 7000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
-          { from: 7000, to: 10000, color: 'red', outerRadius: '38', innerRadius: '35'},
+          { from: 0, to: 30000, color: 'green', outerRadius: '38', innerRadius: '35'},
+          { from: 30000, to: 40000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
+          { from: 40000, to: 50000, color: 'red', outerRadius: '38', innerRadius: '35'},
         ]
       },
       series: [{

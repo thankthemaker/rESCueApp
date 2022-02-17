@@ -3,9 +3,10 @@ import {ActivatedRoute, Router} from '@angular/router';
 import { LoadingController, PopoverController} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
 import {LightsComponent} from './lights/lights.component';
-import {AppSettings} from '../AppSettings';
+import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
 import {TextinputComponent} from '../components/textinput/textinput.component';
+import {RescueConf} from '../models/RescueConf';
 
 @Component({
   selector: 'app-enroll',
@@ -20,40 +21,6 @@ export class SettingsPage implements OnInit {
   stateDirty = true;
   softwareVersion: string;
   hardwareVersion: string;
-  rescueConf = {
-    deviceName: 'rESCue',
-    lowBatteryVoltage: 42.0,
-    minBatteryVoltage: 40.0,
-    maxBatteryVoltage: 50.4,
-    batteryDrift: 0,
-    startSoundIndex: 0,
-    startLightIndex: 1,
-    batteryWarningSoundIndex: 0,
-    batteryAlarmSoundIndex: 0,
-    startLightDuration: 1000,
-    idleLightIndex: 1,
-    idleLightTimeout: 60000,
-    lightFadingDuration: 50,
-    lightMaxBrightness: 100,
-    lightColorPrimary: 16777215,
-    lightColorSecondary: 16711680,
-    brakeLightEnabled: false,
-    brakeLightMinAmp: 4,
-    numberPixelLight: 16,
-    numberPixelBatMon: 5,
-    vescId: 25,
-    authToken: '',
-    logLevel: 0,
-    realtimeDataInterval: 300,
-    balanceDataInterval: 300,
-    ledType: 'GRB',
-    ledFrequency: '800kHz',
-    batteryType: '12s2p, 6Ah',
-    isNotificationEnabled: true,
-    isBatteryNotificationEnabled: true,
-    isCurrentNotificationEnabled: true,
-    isErpmNotificationEnabled: true,
-  };
 
   constructor(
     private route: ActivatedRoute,
@@ -61,7 +28,8 @@ export class SettingsPage implements OnInit {
     private popoverController: PopoverController,
     private loadingController: LoadingController,
     private bleService: BleService,
-    private logger: NGXLogger) {
+    private logger: NGXLogger,
+    public rescueConf: RescueConf) {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {

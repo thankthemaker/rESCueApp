@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {environment} from '../../environments/environment';
 import {Storage} from '@capacitor/storage';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
+import {AppSettings} from '../models/AppSettings';
 
 @Component({
   selector: 'app-appsettings',
@@ -13,17 +13,14 @@ export class AppsettingsPage implements OnInit {
 
   version: string;
   numberOfRides = 0;
-  darkThemeSupport = true;
 
   constructor(
     private toastController: ToastController,
-    private logger: NGXLogger) {
-    this.darkThemeSupport = localStorage.getItem('supportDarkTheme') === 'true';
-  }
+    private logger: NGXLogger,
+    public appSettings: AppSettings) {
+}
 
-  ngOnInit() {
-    this.version = environment.appVersion;
-  }
+  ngOnInit() {}
 
   async getSavedRides() {
     const rides = await Storage.keys();
@@ -55,10 +52,4 @@ export class AppsettingsPage implements OnInit {
     });
     await toast.present();
   };
-
-  toggleDarkThemeSupported(event) {
-    const darkThemeSupported = event.detail.checked;
-    this.logger.info('darkThemeSupported is now ' + darkThemeSupported);
-    localStorage.setItem('supportDarkTheme', darkThemeSupported);
-  }
 }

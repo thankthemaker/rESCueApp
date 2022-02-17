@@ -48,7 +48,7 @@
           Please configure your VESC-ID appropriately to match the ID in ®VESC.
           <ion-item>
             <ion-label>VESC-ID</ion-label>
-            <ion-input type="number" value="25"></ion-input>
+            <ion-input type="number" [(ngModel)]="vescId"></ion-input>
           </ion-item>
         </ion-card-content>
       </ion-card>
@@ -65,7 +65,7 @@
         <ion-card-content>
           <ion-item>
             <ion-label>Number of pixel</ion-label>
-            <ion-input type="number" value="32"></ion-input>
+            <ion-input type="number" [(ngModel)]="numberOfPixelLights"></ion-input>
           </ion-item>
         </ion-card-content>
       </ion-card>
@@ -96,7 +96,7 @@
 
     <ion-slide>
       <h2>Configure Lightbar</h2>
-      <img src="assets/slide-6.png"/>
+      <img src="assets/slide-7.png"/>
       <p>rESCue can use <b>addressable LEDs</b> (aka Neopixel) as a <b>Lightbar</b>. Please connect them to the
         JST-header labeled <i>LIGHTBAR1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
       <p>If you don't have a <b>Lightbar</b>, just check not to use it.</p>
@@ -104,7 +104,7 @@
         <ion-card-content>
           <ion-item>
             <ion-label>Number of pixel</ion-label>
-            <ion-input type="number" value="5"></ion-input>
+            <ion-input type="number" [(ngModel)]="numberOfPixelLightbar"></ion-input>
           </ion-item>
           <ion-item>
             <ion-checkbox [(ngModel)]="noLightbar"></ion-checkbox>
@@ -116,9 +116,29 @@
     </ion-slide>
 
     <ion-slide>
+      <h2>Configure Push Notifications</h2>
+      <img src="assets/slide-8.png"/>
+      <p>rESCue can use local notifications to send messages to your
+        <span *ngIf="platform === 'ios'">iOS device </span>
+        <span *ngIf="platform === 'android'">Android device </span>
+        <span *ngIf="platform === 'web'">Web-Browser </span>
+        to inform you about alerts. Do you want to enable notifications?
+      </p>
+      <ion-card>
+        <ion-card-content>
+          <ion-item>
+            <ion-label>Enable notifications</ion-label>
+            <ion-toggle [(ngModel)]="notificationsEnabled" (ionChange)="notificationService.toggleNotifications()"></ion-toggle>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+
+    </ion-slide>
+
+    <ion-slide>
       <h2>Congratulation </h2>
       <img src="assets/slide-5.gif"/>
-      <p>You <b>successfully</b> configured your rESCue device.</p>
+      <p>You <b>successfully</b> configured your rESCue device. The device will reboot now, please connect again.</p>
       <ion-button size="large" (click)="endWizard()" fill="clear">Continue
         <ion-icon slot="end" name="arrow-forward"></ion-icon>
       </ion-button>

@@ -10,6 +10,7 @@
       <ion-menu-button menu="main-menu"></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
+  <app-map></app-map>
 </ion-header>
 
 <ion-content [fullscreen]="true" color="light">
@@ -43,11 +44,11 @@
   <app-temperature-chart></app-temperature-chart>
 
 
-  <ion-fab horizontal="end" vertical="top" slot="fixed">
+  <ion-fab horizontal="end" vertical="bottom" slot="fixed">
     <ion-fab-button color="medium">
-      <ion-icon md="caret-down" ios="chevron-down-circle-outline"></ion-icon>
+      <ion-icon md="caret-up" ios="chevron-up-circle-outline"></ion-icon>
     </ion-fab-button>
-    <ion-fab-list side="bottom">
+    <ion-fab-list side="top">
       <ion-fab-button *ngIf="liveDataActive" color="medium" (click)="stopLiveData()">
         <ion-icon name="pause-circle-outline"></ion-icon>
       </ion-fab-button>

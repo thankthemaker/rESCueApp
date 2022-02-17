@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {LoadingController, ToastController, PopoverController} from '@ionic/angular';
-import _filter from 'lodash/filter';
+import _filter from 'lodash-es/filter';
 import {FirmwareService} from '../services/firmware.service';
 import {BleService} from '../services/ble.service';
-import {AppSettings} from '../AppSettings';
+import {AppSettings} from '../models/AppSettings';
 import {ListpickerComponent} from '../components/listpicker/listpicker.component';
 import {NGXLogger} from 'ngx-logger';
 
@@ -62,7 +62,7 @@ export class UpdatePage implements OnInit {
         this.softwareVersion = this.router.getCurrentNavigation().extras.state.softwareVersion;
         this.hardwareVersion = this.router.getCurrentNavigation().extras.state.hardwareVersion;
         //this.wifiSupported = this.router.getCurrentNavigation().extras.state.currentVersion >= 110;
-        this.wifiSupported = true;
+        this.wifiSupported = bleService.info.platform !== 'web';
       }
     });
   }
@@ -95,6 +95,18 @@ export class UpdatePage implements OnInit {
   }
 
   async updateDevice() {
+    if(this.bleService.info.isVirtual) {
+      const toast = await this.toastCtrl.create({
+        header: 'Virtual device detected.',
+        message: 'Guess what? Update on virtual device not supported!',
+        position: 'bottom',
+        color: 'warning',
+        animated: true,
+        duration: 3000,
+      });
+      await toast.present();
+      return;
+    }
     this.updateInProgress = true;
     const byteCount = this.updateData.byteLength;
     this.logger.info('started update to version ' + this.softwareVersion);

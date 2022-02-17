@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {BleClient, BleDevice, numbersToDataView} from '@capacitor-community/bluetooth-le';
 import {Device, DeviceInfo} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
-import {AppSettings} from '../AppSettings';
+import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
 
 @Injectable({
@@ -11,6 +11,7 @@ import {NGXLogger} from 'ngx-logger';
 })
 export class BleService {
 
+  isRescueDevice = true;
   connected = false;
   device: BleDevice;
   info: DeviceInfo;
@@ -26,7 +27,10 @@ export class BleService {
     this.logger.info('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
-      //this.info.isVirtual = true;
+      if(localStorage.getItem('useVirtualDevice') === 'true') {
+        this.info.isVirtual = true;
+
+      }
       if (this.info.isVirtual) {
         this.logger.warn('running on virtual device, faking BLE device');
         this.device = {
@@ -75,13 +79,10 @@ export class BleService {
   }
 
   async disconnect() {
-    if (this.info.isVirtual) {
-      this.connected = false;
-      return;
+    if (!this.info.isVirtual) {
+      await BleClient.disconnect(this.device.deviceId);
+      this.logger.info('Disconnected from device ');
     }
-
-    await BleClient.disconnect(this.device.deviceId);
-    this.logger.info('Disconnected from device ');
     this.connected = false;
     this.router.navigate(['']);
   }

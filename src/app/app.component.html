@@ -41,7 +41,7 @@
           <ion-icon name="pulse-outline"></ion-icon>
           Livedata (beta)
         </ion-item>
-        <ion-item (click)="selectMenu('/settings')">
+        <ion-item *ngIf="bleService.isRescueDevice" (click)="selectMenu('/settings')">
           <ion-icon name="construct-outline"></ion-icon>
           Settings
         </ion-item>
