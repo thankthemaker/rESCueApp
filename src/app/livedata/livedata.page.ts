@@ -55,7 +55,7 @@ export class LivedataPage implements OnInit, OnDestroy {
   }
 
   update() {
-    const bat = Math.trunc(((this.rescueData.battery * 100.00 - 4000) / (5040 - 4000) * 100.00));
+    const bat = this.rescueData.batteryLevel;
     this.logger.debug('battery: ' + bat);
 
     const now = new Date().toISOString();
@@ -75,12 +75,12 @@ export class LivedataPage implements OnInit, OnDestroy {
 
     this.ridingChart.chart.appendData(
       [
-        {data: [{y: this.rescueData.erpm, x: now}]},
-        {data: [{y: this.rescueData.dutyCycle, x: now}]},
+        {data: [{y: this.rescueData.erpm.toFixed(0), x: now}]},
+        {data: [{y: this.rescueData.dutyCycle.toFixed(0), x: now}]},
       ]
     );
 
-    this.dualGauge.dualGaugeOptions.series = [(this.rescueData.erpm * 100) / 10000, this.rescueData.dutyCycle, this.rescueData.battery];
+    this.dualGauge.dualGaugeOptions.series = [(this.rescueData.erpm * 100) / 10000, this.rescueData.dutyCycle, this.rescueData.batteryLevel];
 
     this.batteryGauge.batteryGaugeOptions.series = [bat];
     const oldImage = this.batteryGauge.chart.plotOptions.radialBar.hollow.image;

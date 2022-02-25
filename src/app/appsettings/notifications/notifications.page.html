@@ -32,19 +32,22 @@
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Min</ion-label>
-                <ion-input name="minVoltage" placeholder="40.0"></ion-input>
+                <ion-input name="minVoltage" placeholder="40.0" [(ngModel)]="appSettings.minVoltage"
+                           (ngModelChange)="appSettings.updateValue('notification.minVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Low</ion-label>
-                <ion-input name="lowVoltage" placeholder="42.0"></ion-input>
+                <ion-input name="lowVoltage" placeholder="42.0" [(ngModel)]="appSettings.lowVoltage"
+                           (ngModelChange)="appSettings.updateValue('notification.lowVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Max</ion-label>
-                <ion-input name="maxVoltage" placeholder="50.4"></ion-input>
+                <ion-input name="maxVoltage" placeholder="50.4" [(ngModel)]="appSettings.maxVoltage"
+                           (ngModelChange)="appSettings.updateValue('notification.maxVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -60,13 +63,15 @@
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Max Amp</ion-label>
-                <ion-input name="maxCurrent" placeholder="40"></ion-input>
+                <ion-input name="maxCurrent" placeholder="40" [(ngModel)]="appSettings.maxCurrent"
+                           (ngModelChange)="appSettings.updateValue('notification.maxCurrent',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Time (ms)</ion-label>
-                <ion-input name="timeCurrent" placeholder="3000"></ion-input>
+                <ion-input name="timeCurrent" placeholder="5000" [(ngModel)]="appSettings.interval"
+                           (ngModelChange)="appSettings.updateValue('notification.interval',$event)"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -81,7 +86,8 @@
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Max RPM</ion-label>
-                <ion-input name="maxErpm" placeholder="8000"></ion-input>
+                <ion-input name="maxErpm" placeholder="45000" [(ngModel)]="appSettings.maxErpm"
+                           (ngModelChange)="appSettings.updateValue('notification.maxErpm',$event)"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -96,7 +102,24 @@
             <ion-col>
               <ion-item>
                 <ion-label position="stacked">Max Duty</ion-label>
-                <ion-input name="maxDuty" placeholder="80"></ion-input>
+                <ion-input name="maxDuty" placeholder="80" [(ngModel)]="appSettings.maxDuty"
+                           (ngModelChange)="appSettings.updateValue('notification.maxDuty',$event)"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Speed  Warnings</ion-label>
+        <ion-toggle slot="end" name="speedNotificationEnabled" [(ngModel)]="appSettings.speedNotificationEnabled"
+                    (ionChange)="appSettings.toggleValue('speedNotificationEnabled', $event)"></ion-toggle>
+        <ion-grid *ngIf="appSettings.speedNotificationEnabled">
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Max Speed (kmH)</ion-label>
+                <ion-input name="maxSpeed" placeholder="28" [ngModel]="appSettings.maxSpeed"
+                           (ngModelChange)="appSettings.updateValue('notification.maxSpeed',$event)"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>

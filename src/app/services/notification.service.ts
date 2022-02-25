@@ -4,6 +4,7 @@ import {Device} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from "../models/AppSettings";
+import {Storage} from "@capacitor/storage";
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +27,7 @@ export class NotificationsService {
   }
 
   async push(title: string, message: string) {
-    if (localStorage.getItem('notificationsEnabled') === 'true') {
+    if ((await Storage.get({key: 'notificationsEnabled'})).value === 'true') {
       if (this.platform === 'web') {
         const toast = await this.toastCtrl.create({
           header: title,
@@ -47,7 +48,7 @@ export class NotificationsService {
     }
   }
 
-  toggleNotifications() {
+  async toggleNotifications() {
     if (this.platform !== 'web') {
       this.localNotifications.hasPermission().then((hasPermissions) => {
         if (!hasPermissions) {
@@ -57,26 +58,25 @@ export class NotificationsService {
         }
       });
     }
-    const notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
-    this.updatePermissions(!notificationsEnabled);
-
+    const notificationsEnabled = (await Storage.get({key: 'notificationsEnabled'})).value  === 'true';
+    await this.updatePermissions(!notificationsEnabled);
   }
 
-  updatePermissions(permissionsGranted) {
+  async updatePermissions(permissionsGranted) {
     if (permissionsGranted) {
       this.appSettings.notificationsEnabled = true;
       this.appSettings.batteryNotificationEnabled = true;
       this.appSettings.currentNotificationEnabled = true;
       this.appSettings.erpmNotificationEnabled = true;
       this.appSettings.dutycycleNotificationEnabled = true;
-      localStorage.setItem('notificationsEnabled', 'true');
-      localStorage.setItem('batteryNotificationEnabled', 'true');
-      localStorage.setItem('currentNotificationEnabled', 'true');
-      localStorage.setItem('erpmNotificationEnabled', 'true');
-      localStorage.setItem('dutycycleNotificationEnabled', 'true');
+      await Storage.set({key: 'notificationsEnabled', value: 'true'});
+      await Storage.set({key: 'batteryNotificationEnabled', value: 'true'});
+      await Storage.set({key: 'currentNotificationEnabled', value: 'true'});
+      await Storage.set({key: 'erpmNotificationEnabled', value: 'true'});
+      await Storage.set({key: 'dutycycleNotificationEnabled', value: 'true'});
     } else {
       this.appSettings.notificationsEnabled = false;
-      localStorage.setItem('notificationsEnabled', 'false');
+      await Storage.set({key: 'notificationsEnabled', value: 'false'});
     }
   }
 }

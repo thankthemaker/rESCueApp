@@ -5,6 +5,7 @@ import {BleService} from '../services/ble.service';
 import {AppSettings} from '../models/AppSettings';
 import {Device, DeviceInfo} from '@capacitor/device';
 import {NotificationsService} from '../services/notification.service';
+import {Storage} from '@capacitor/storage';
 
 @Component({
   selector: 'app-wizard',
@@ -57,9 +58,9 @@ export class WizardPage implements OnInit {
     }
   }
 
-  skipWizard() {
-    localStorage.setItem('deactivateWizard', String(true));
-    this.router.navigate(['/home']);
+  async skipWizard() {
+    await Storage.set({key: 'deactivateWizard', value: String(true)});
+    await this.router.navigate(['/home']);
   }
 
   async saveValue(key, value) {
@@ -80,8 +81,8 @@ export class WizardPage implements OnInit {
     await this.saveValue('lowBatteryVoltage', lowVoltage);
     await this.saveValue('maxBatteryVoltage', maxVoltage);
     await this.saveValue('save', 'true');
-    localStorage.setItem('deactivateWizard', String(true));
-    this.bleService.disconnect();
+    await Storage.set({key: 'deactivateWizard', value: String(true)});
+    await this.bleService.disconnect();
   }
 
   goBack() {

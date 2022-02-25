@@ -272,11 +272,11 @@ export class OverviewChartComponent implements OnInit {
     this.erpmGaugeOptions = Highcharts.merge(this.solidGaugeOptions, {
       yAxis: {
         min: 0,
-        max: 50000,
+        max: 100000,
         plotBands: [
-          { from: 0, to: 30000, color: 'green', outerRadius: '38', innerRadius: '35'},
-          { from: 30000, to: 40000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
-          { from: 40000, to: 50000, color: 'red', outerRadius: '38', innerRadius: '35'},
+          { from: 0, to: 60000, color: 'green', outerRadius: '38', innerRadius: '35'},
+          { from: 60000, to: 80000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
+          { from: 80000, to: 100000, color: 'red', outerRadius: '38', innerRadius: '35'},
         ]
       },
       series: [{
