@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {BleService} from '../services/ble.service';
 import {environment} from '../../environments/environment';
-import {NGXLogger} from "ngx-logger";
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-home',

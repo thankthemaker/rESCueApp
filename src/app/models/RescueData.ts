@@ -8,12 +8,13 @@ export class RescueData {
   tachometer = 0;
   erpm = 0;
   current = 0;
-  dutyCycle = 50;
-  battery = 45.9;
+  dutyCycle = 0;
+  battery = 0;
   wattHours = 0;
   ampHours = 0;
-  motTemp = 21;
-  fetTemp = 30;
+  motTemp = 0;
+  fetTemp = 0;
+  faultCode = 0;
   loopTime = 0;
   maxLoopTime = 0;
 

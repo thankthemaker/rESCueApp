@@ -2,6 +2,9 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {IonSlides} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
+import {AppSettings} from '../models/AppSettings';
+import {Device, DeviceInfo} from '@capacitor/device';
+import {NotificationsService} from '../services/notification.service';
 
 @Component({
   selector: 'app-wizard',
@@ -10,11 +13,14 @@ import {BleService} from '../services/ble.service';
 })
 export class WizardPage implements OnInit {
 
-  @ViewChild('wizard', { static: false }) wizard: IonSlides;
+  @ViewChild('wizard', {static: false}) wizard: IonSlides;
 
+  info: DeviceInfo;
+  platform = 'unknown';
   connected: boolean;
   deviceId: string;
   deviceName: string;
+  notificationsEnabled = false;
   slideOpts = {
     initialSlide: 1,
     speed: 400
@@ -23,16 +29,22 @@ export class WizardPage implements OnInit {
   batteryGroups = 2;
   cellCapacity = 3000;
   noLightbar = false;
+  vescId = 25;
+  numberOfPixelLights = 32;
+  numberOfPixelLightbar = 5;
 
   constructor(
     private router: Router,
-    private bleService: BleService) {
+    private bleService: BleService,
+    public notificationService: NotificationsService) {
     this.connected = false;
     this.deviceName = '';
     this.deviceId = '';
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.info = await Device.getInfo();
+    this.platform = this.info.platform;
   }
 
   async scan() {
@@ -50,9 +62,26 @@ export class WizardPage implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  endWizard() {
+  async saveValue(key, value) {
+    await this.bleService.write(
+      AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,
+      `${key}=${value}`);
+  }
+
+  async endWizard() {
+    const minVoltage = (this.batteryCells * 3.3333).toFixed(1);
+    const maxVoltage = (this.batteryCells * 4.2).toFixed(1);
+    const lowVoltage = (this.batteryCells * 3.5).toFixed(1);
+    await this.saveValue('vescId', this.vescId);
+    await this.saveValue('numberPixelLight', this.numberOfPixelLights);
+    await this.saveValue('numberPixelBatMon', this.numberOfPixelLightbar);
+    await this.saveValue('minBatteryVoltage', minVoltage);
+    await this.saveValue('lowBatteryVoltage', lowVoltage);
+    await this.saveValue('maxBatteryVoltage', maxVoltage);
+    await this.saveValue('save', 'true');
     localStorage.setItem('deactivateWizard', String(true));
-    this.router.navigate(['/device']);
+    this.bleService.disconnect();
   }
 
   goBack() {
@@ -60,9 +89,9 @@ export class WizardPage implements OnInit {
   }
 
   slideChanged() {
-    if(!this.connected) {
+    if (!this.connected) {
       this.wizard.getActiveIndex().then((index) => {
-        if(index > 1) {
+        if (index > 1) {
           this.wizard.slideTo(1, 50);
         }
       });

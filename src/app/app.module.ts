@@ -15,7 +15,13 @@ import {LedTypeComponent} from './settings/led-type/led-type.component';
 import {FormsModule} from '@angular/forms';
 import { NgxColorsModule } from 'ngx-colors';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import {NotificationsService} from './services/notification.service';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
 
 @NgModule({
     declarations: [AppComponent, ListpickerComponent, BatteryTypeComponent, LedTypeComponent],
@@ -31,9 +37,19 @@ import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
       LoggerModule.forRoot({
           level: NgxLoggerLevel.DEBUG,
         }
-      )
+      ),
+      FontAwesomeModule
     ],
-    providers: [BleService, {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}],
+    providers: [
+      BleService,
+      NotificationsService,
+      LocalNotifications,
+      {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+    ],
     bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas, fab, far);
+  }
+}

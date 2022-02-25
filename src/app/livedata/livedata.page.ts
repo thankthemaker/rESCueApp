@@ -1,14 +1,15 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { LoadingController, PopoverController} from '@ionic/angular';
+import {LoadingController, PopoverController} from '@ionic/angular';
 import {KeysResult, Storage} from '@capacitor/storage';
 import {BatteryGaugeComponent} from '../charts/battery-gauge/battery-gauge.component';
 import {DualGaugeComponent} from '../charts/dual-gauge/dual-gauge.component';
 import {RidingChartComponent} from '../charts/riding-chart/riding-chart.component';
 import {BatteryChartComponent} from '../charts/battery-chart/battery-chart.component';
 import {TemperatureChartComponent} from '../charts/temperature-chart/temperature-chart.component';
-import {RescueData} from '../RescueData';
+import {RescueData} from '../models/RescueData';
 import {ListpickerComponent} from '../components/listpicker/listpicker.component';
 import {NGXLogger} from 'ngx-logger';
+import {MapComponent} from '../components/map/map.component';
 
 @Component({
   selector: 'app-livedata',
@@ -17,6 +18,8 @@ import {NGXLogger} from 'ngx-logger';
 })
 export class LivedataPage implements OnInit, OnDestroy {
 
+  @ViewChild(MapComponent)
+  map: MapComponent;
   @ViewChild(BatteryGaugeComponent)
   batteryGauge: BatteryGaugeComponent;
   @ViewChild(DualGaugeComponent)
@@ -32,12 +35,15 @@ export class LivedataPage implements OnInit, OnDestroy {
   rideId: string;
   rides: string[];
   liveDataActive = false;
+  google: any;
+  geoOptions : PositionOptions;
 
   constructor(
     private popupController: PopoverController,
     private loadingController: LoadingController,
-    private rescueData: RescueData,
-    private logger: NGXLogger) {}
+    public rescueData: RescueData,
+    private logger: NGXLogger) {
+  }
 
   ngOnInit() {
     this.rideId = new Date().toISOString();
@@ -49,28 +55,28 @@ export class LivedataPage implements OnInit, OnDestroy {
   }
 
   update() {
-    const bat = Math.trunc(((this.rescueData.battery*100.00 - 4000) / (5040-4000) * 100.00));
+    const bat = Math.trunc(((this.rescueData.battery * 100.00 - 4000) / (5040 - 4000) * 100.00));
     this.logger.debug('battery: ' + bat);
 
     const now = new Date().toISOString();
 
     this.batteryChart.chart.appendData(
-    [
-      { data: [ { y: this.rescueData.battery, x: now }] },
-      { data: [ { y: this.rescueData.wattHours, x: now }] },
-      { data: [ { y: this.rescueData.ampHours, x: now }] }
-    ]);
+      [
+        {data: [{y: this.rescueData.battery, x: now}]},
+        {data: [{y: this.rescueData.wattHours, x: now}]},
+        {data: [{y: this.rescueData.ampHours, x: now}]}
+      ]);
 
     this.temperatureChart.chart.appendData(
-     [
-       { data: [ { y: this.rescueData.motTemp, x: now }] },
-       { data: [ { y: this.rescueData.fetTemp, x: now }] }
-     ]);
+      [
+        {data: [{y: this.rescueData.fetTemp, x: now}]},
+        {data: [{y: this.rescueData.motTemp, x: now}]}
+      ]);
 
     this.ridingChart.chart.appendData(
       [
-        { data: [ { y: this.rescueData.erpm, x: now }] },
-        { data: [ { y: this.rescueData.dutyCycle, x: now }] },
+        {data: [{y: this.rescueData.erpm, x: now}]},
+        {data: [{y: this.rescueData.dutyCycle, x: now}]},
       ]
     );
 
@@ -79,25 +85,26 @@ export class LivedataPage implements OnInit, OnDestroy {
     this.batteryGauge.batteryGaugeOptions.series = [bat];
     const oldImage = this.batteryGauge.chart.plotOptions.radialBar.hollow.image;
     let newImage = '../../assets/100percent.png';
-    if(bat >= 80) {
+    if (bat >= 80) {
       newImage = '../../assets/100percent.png';
-    } else if(bat >= 60 && bat < 80) {
+    } else if (bat >= 60 && bat < 80) {
       newImage = '../../assets/80percent.png';
-    } else if(bat >= 40 && bat < 60) {
+    } else if (bat >= 40 && bat < 60) {
       newImage = '../../assets/60percent.png';
-    } else if(bat >= 20 && bat < 40) {
+    } else if (bat >= 20 && bat < 40) {
       newImage = '../../assets/40percent.png';
-    } else if(bat >= 0) {
+    } else if (bat >= 0) {
       newImage = '../../assets/20percent.png';
-    };
+    }
+    ;
 
-    if(oldImage !== newImage){
+    if (oldImage !== newImage) {
       this.batteryGauge.batteryGaugeOptions.plotOptions = {
         radialBar: {
           hollow: {
             margin: 15,
             size: '70%',
-            image:  newImage,
+            image: newImage,
             imageWidth: 64,
             imageHeight: 64,
             imageClipped: false
@@ -122,6 +129,7 @@ export class LivedataPage implements OnInit, OnDestroy {
         }
       };
     }
+    this.map.infowindow.setContent(`<div id="content"><b>Trip:</b> ${this.rescueData.tachometer}</div>`);
   }
 
   toggleArea() {
@@ -150,7 +158,7 @@ export class LivedataPage implements OnInit, OnDestroy {
     popover.present();
 
     const {data} = await popover.onDidDismiss();
-    if(data !== undefined) {
+    if (data !== undefined) {
       this.logger.info('Chosen ride: ' + data);
       await this.loadData(data);
     }
@@ -166,27 +174,29 @@ export class LivedataPage implements OnInit, OnDestroy {
 
     this.stopLiveData();
     this.clearData();
-    const { value } = await Storage.get({ key: name });
+    const {value} = await Storage.get({key: name});
     const ride = JSON.parse(value);
     this.batteryChart.chart.series = ride.batteryData;
     this.batteryChart.chart.appendData(
       [
-        { data: ride.batteryData[0].data },
-        { data: ride.batteryData[1].data },
-        { data: ride.batteryData[2].data }
+        {data: ride.batteryData[0].data},
+        {data: ride.batteryData[1].data},
+        {data: ride.batteryData[2].data}
       ]);
     this.temperatureChart.chart.appendData(
       [
-        { data: ride.temperatureDate[0].data },
-        { data: ride.temperatureDate[1].data }
+        {data: ride.temperatureDate[0].data},
+        {data: ride.temperatureDate[1].data}
       ]
     );
     this.ridingChart.chart.appendData(
       [
-        { data: ride.ridingData[0].data },
-        { data: ride.ridingData[1].data }
+        {data: ride.ridingData[0].data},
+        {data: ride.ridingData[1].data}
       ]
     );
+    this.map.currentWaypoints = ride.wayPoints;
+    this.map.currentTrack.setMap(this.map.map);
     await loading.dismiss();
     this.logger.info('Loaded ride ' + name);
   }
@@ -197,7 +207,8 @@ export class LivedataPage implements OnInit, OnDestroy {
       name,
       temperatureDate: this.temperatureChart.chart.series,
       batteryData: this.batteryChart.chart.series,
-      ridingData: this.ridingChart.chart.series
+      ridingData: this.ridingChart.chart.series,
+      wayPoints: this.map.currentWaypoints,
     };
     await Storage.set({
       key: name,
@@ -207,27 +218,30 @@ export class LivedataPage implements OnInit, OnDestroy {
 
   async clearData() {
     this.batteryChart.chart.updateSeries([
-      { data: [] },
-      { data: [] },
-      { data: [] }
+      {data: []},
+      {data: []},
+      {data: []}
     ]);
     this.temperatureChart.chart.updateSeries([
-      { data: [] },
-      { data: [] }
+      {data: []},
+      {data: []}
     ]);
     this.ridingChart.chart.updateSeries([
-      { data: [] },
-      { data: [] }
+      {data: []},
+      {data: []}
     ]);
+    this.map.currentTrack.setMap(null);
+    this.map.currentWaypoints = [];
   }
 
   async startLiveData() {
-    if(!this.liveDataActive) {
+    if (!this.liveDataActive) {
       this.liveDataActive = true;
       this.timerId = setInterval(() => {
         this.update();
       }, 1000);
     }
+    this.map.addWatch();
   }
 
   async stopLiveData() {
@@ -235,5 +249,6 @@ export class LivedataPage implements OnInit, OnDestroy {
       clearInterval(this.timerId);
       this.liveDataActive = false;
     }
+    this.map.stopWatch();
   }
 }

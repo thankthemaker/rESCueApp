@@ -3,12 +3,14 @@ import {NavigationExtras, NavigationStart, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {FirmwareService} from '../services/firmware.service';
 import {BleService} from '../services/ble.service';
-import {RescueData} from '../RescueData';
+import {RescueData} from '../models/RescueData';
 import {OverviewChartComponent} from '../charts/overview-chart/overview-chart.component';
-import {AppSettings} from '../AppSettings';
-import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
+import {AppSettings} from '../models/AppSettings';
 import {filter} from 'rxjs/operators';
-import { NGXLogger } from 'ngx-logger';
+import {NGXLogger} from 'ngx-logger';
+import {generatePacket, VescMessageHandler, VescMessageParser} from '@thankthemaker/vesc-protocol';
+import {Buffer} from 'buffer';
+import {NotificationsService} from '../services/notification.service';
 
 @Component({
   selector: 'app-device',
@@ -20,6 +22,8 @@ export class DevicePage implements OnInit, OnDestroy {
   @ViewChild('overviewChart')
   overviewChart: OverviewChartComponent;
 
+  connected = false;
+  lastVescMessage = 0;
   skipIncompatibleCheck = false;
   autoconnect = false;
   showCardDetails = true;
@@ -30,16 +34,44 @@ export class DevicePage implements OnInit, OnDestroy {
   hardwareVersion: string;
   isFirstUpdateCheck = true;
   timerId: any;
+  lastNotifications: any = [];
+  vescMessageParser: VescMessageParser;
+  vescMessageHandler: VescMessageHandler;
+  vescWorker: Worker;
 
   constructor(
     private router: Router,
     private toastCtrl: ToastController,
     private firmwareService: FirmwareService,
-    private bleService: BleService,
+    public bleService: BleService,
     public rescueData: RescueData,
-    private localNotifications: LocalNotifications,
+    public notificationService: NotificationsService,
     private logger: NGXLogger
-) {
+  ) {
+    this.vescMessageParser = new VescMessageParser();
+    this.vescMessageHandler = new VescMessageHandler(this.vescMessageParser);
+    this.vescMessageParser.subscribe((message) => {
+      this.logger.info(`message: ${JSON.stringify(message)}`);
+      if (message.type === 'COMM_GET_VALUES') {
+        this.rescueData.erpm = message.payload.erpm;
+        this.rescueData.dutyCycle = message.payload.dutyCycle*100;
+        this.rescueData.battery = message.payload.voltage;
+        this.rescueData.tachometer = message.payload.tachometer.abs;
+        if(message.payload.temp.motor > 0) {
+          this.rescueData.motTemp = message.payload.temp.motor;
+        } else {
+          this.rescueData.motTemp = 0;
+        }
+        this.rescueData.fetTemp = message.payload.temp.mosfet;
+        this.rescueData.current = message.payload.current.motor ;
+        this.rescueData.ampHours = message.payload.ampHours.consumed;
+        this.rescueData.wattHours = message.payload.wattHours.charged;
+        this.rescueData.faultCode = message.payload.faultCode;
+        this.connected = true;
+        this.lastVescMessage = new Date().getMilliseconds();
+      }
+    });
+
     router.events
       .pipe(filter((event: NavigationStart) => {
         return (event instanceof NavigationStart);
@@ -47,13 +79,17 @@ export class DevicePage implements OnInit, OnDestroy {
       .subscribe((event: NavigationStart) => {
         if (event.restoredState !== undefined) {
           this.logger.debug('restoredState');
-          this.subscribeRescueConf();
+          this.subscribeVesc();
         }
       });
   }
 
   ngOnInit() {
     this.logger.debug('entered device page');
+    this.lastNotifications.minVoltage = 0;
+    this.lastNotifications.maxVoltage = 0;
+    this.lastNotifications.maxCurrent = 0;
+    this.lastNotifications.maxErpm = 0;
     this.skipIncompatibleCheck = localStorage.getItem('skipIncompatibleCheck') === 'true';
     this.autoconnect = localStorage.getItem('autoconnect') === 'true';
     this.showCardDetails = localStorage.getItem('showCardDetails') === 'true';
@@ -66,58 +102,62 @@ export class DevicePage implements OnInit, OnDestroy {
     this.deviceId = this.bleService.device.deviceId;
     this.deviceName = this.bleService.device.name;
 
-    this.bleService.checkServiceAvailable(AppSettings.RESCUE_SERVICE_UUID).then((available) => {
-      if (!available && !this.skipIncompatibleCheck) {
-        this.logger.warn('Incompatible version of rESCue firmware');
-        this.router.navigate(['/incompatible']);
-        return;
+    this.bleService.checkServiceAvailable(AppSettings.RESCUE_SERVICE_UUID).then((isRescue) => {
+      this.logger.debug(`RESCUE_SERVICE_UUID available: ${isRescue}`);
+      if (!isRescue && !this.skipIncompatibleCheck) {
+        this.bleService.checkServiceAvailable(AppSettings.BLYNK_SERVICE_UUID).then((isOldRescue) => {
+          this.logger.debug(`BLYNK_SERVICE_UUID available: ${isOldRescue}`);
+          if (isOldRescue) {
+            this.logger.warn('Incompatible version of rESCue firmware');
+            this.router.navigate(['/incompatible']);
+            return;
+          } else {
+            this.bleService.isRescueDevice = false;
+          }
+        });
       }
-
-      this.readVersion().then(() => {
-        this.getFirmwareVersions();
-      });
-
-      this.subscribeRescueConf();
-      this.subscribeVesc();
-
-      //this.checkValues();
-      this.startTimer();
     });
+
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      this.logger.debug('created web-worker for VESC');
+      this.vescWorker = new Worker(new URL('../vesc-worker.worker', import.meta.url), { type: 'module' });
+      this.vescWorker.onmessage = ({ data }) => {
+        console.log(`page got message: ${data}`);
+      };
+    } else {
+      this.logger.error('web-worker not supported');
+    }
+
+    this.readVersion().then(() => {
+      this.getFirmwareVersions();
+    });
+
+    this.subscribeVesc();
+    this.startTimer();
   }
 
-  private startTimer() {
+  startTimer() {
     this.timerId = setInterval(() => {
+      const packet = generatePacket(Buffer.from([0x04])).buffer;
+      this.bleService.writeDataView(
+        AppSettings.VESC_SERVICE_UUID,
+        AppSettings.VESC_CHARACTERISTICS_RX_UUID,
+        new DataView(packet)
+      );
       this.update();
-    }, 1000);
+      this.checkValues();
+      if(new Date().getMilliseconds() - this.lastVescMessage < 2000) {
+        this.connected = false;
+      }
+    }, 333);
   }
 
-  private subscribeVesc() {
+  subscribeVesc() {
     this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
       AppSettings.VESC_CHARACTERISTICS_TX_UUID, (value: DataView) => {
-        // this.parser.push(value.buffer);
-      });
-  }
-
-  private subscribeRescueConf() {
-    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
-        const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-        this.logger.debug('Received: ' + values);
-        if (values[0] === 'vesc.current') {
-          this.rescueData.current = Math.abs(Number(values[1]));
-        } else if (values[0] === 'vesc.tachometer') {
-          this.rescueData.tachometer = Math.abs(Number(values[1]));
-        } else if (values[0] === 'vesc.dutyCycle') {
-          this.rescueData.dutyCycle = Math.abs(Number(values[1]));
-        } else if (values[0] === 'vesc.erpm') {
-          this.rescueData.erpm = Math.abs(Number(values[1]));
-        } else if (values[0] === 'vesc.voltage') {
-          this.rescueData.battery = Number(values[1]);
-        } else if (values[0] === 'loopTime') {
-          this.rescueData.loopTime = Number(values[1]);
-        } else if (values[0] === 'maxLoopTime') {
-          this.rescueData.maxLoopTime = Number(values[1]);
-        }
+        this.logger.info('VESC data (', value.byteLength, ')byte: ', new Uint8Array(value.buffer).toString());
+        this.vescMessageHandler.queueMessage(Buffer.from(value.buffer));
       });
   }
 
@@ -275,13 +315,15 @@ export class DevicePage implements OnInit, OnDestroy {
   }
 
   async update() {
-    if (this.overviewChart.speedData[0] !== this.rescueData.tachometer) {
-      this.overviewChart.speedData[0] = this.rescueData.tachometer;
+    const rpm = Math.abs(this.rescueData.erpm / 15);
+    const speed = rpm * 0.27 * Math.PI * 2 / 1000;
+    if (this.overviewChart.speedData[0] !== speed) {
+      this.overviewChart.speedData[0] = speed;
       this.overviewChart.speedUpdateFlag = true;
     }
 
     if (this.overviewChart.dutyData[0] !== this.rescueData.dutyCycle) {
-      this.overviewChart.dutyData[0] = this.rescueData.dutyCycle;
+      this.overviewChart.dutyData[0] = Math.abs(this.rescueData.dutyCycle);
       this.overviewChart.dutyUpdateFlag = true;
     }
 
@@ -291,15 +333,14 @@ export class DevicePage implements OnInit, OnDestroy {
     }
 
     if (this.overviewChart.erpmData[0] !== this.rescueData.erpm) {
-      this.overviewChart.erpmData[0] = this.rescueData.erpm;
+      this.overviewChart.erpmData[0] = Math.abs(this.rescueData.erpm);
       this.overviewChart.erpmUpdateFlag = true;
     }
 
     if (this.overviewChart.currentData[0] !== this.rescueData.current) {
-      this.overviewChart.currentData[0] = this.rescueData.current;
+      this.overviewChart.currentData[0] = Math.abs(this.rescueData.current);
       this.overviewChart.currentUpdateFlag = true;
     }
-
   }
 
   toggleAutoconnect(event) {
@@ -319,30 +360,39 @@ export class DevicePage implements OnInit, OnDestroy {
     localStorage.setItem('showCardDetails', String(this.showCardDetails));
   }
 
-  push(title: string, message: string) {
-    this.localNotifications.schedule({
-      title,
-      text: message,
-      foreground: true
-    });
-  }
-
   checkValues() {
+    const millies = Date.now();
+    const interval = 5000;
     const minVoltage = 42;
     const maxVoltage = 50;
     const maxCurrent = 10;
-    const maxErpm = 8000;
+    const maxErpm = 45000;
+    if (!this.connected) {
+      return;
+    }
     if (this.rescueData.battery < minVoltage) {
-      this.push('Warning: Battery low', 'Battery level under ' + minVoltage + 'V');
+      if (millies - this.lastNotifications.minVoltage > interval) {
+        this.lastNotifications.minVoltage = millies;
+        this.notificationService.push('Warning: Battery low', 'Battery level under ' + minVoltage + 'V');
+      }
     }
     if (this.rescueData.battery > maxVoltage) {
-      this.push('Warning: Battery high', 'Battery level over ' + maxVoltage + 'V');
+      if (millies - this.lastNotifications.maxVoltage > interval) {
+        this.lastNotifications.maxVoltage = millies;
+        this.notificationService.push('Warning: Battery high', 'Battery level over ' + maxVoltage + 'V');
+      }
     }
-    if (this.rescueData.current < maxCurrent) {
-      this.push('Warning: Current high', 'Current is above ' + maxCurrent + 'A for over 10 seconds');
+    if (Math.abs(this.rescueData.current) > maxCurrent) {
+      if (millies - this.lastNotifications.maxCurrent > interval) {
+        this.lastNotifications.maxCurrent = millies;
+        this.notificationService.push('Warning: Current high', 'Current is above ' + maxCurrent + 'A for over 10 seconds');
+      }
     }
-    if (this.rescueData.erpm > maxErpm) {
-      this.push('Warning: ERPM high', 'ERPM is over ' + maxErpm + 'V');
+    if (Math.abs(this.rescueData.erpm) > maxErpm) {
+      if (millies - this.lastNotifications.maxErpm > interval) {
+        this.lastNotifications.maxErpm = millies;
+        this.notificationService.push('Warning: ERPM high', 'ERPM is over ' + maxErpm);
+      }
     }
   }
 }

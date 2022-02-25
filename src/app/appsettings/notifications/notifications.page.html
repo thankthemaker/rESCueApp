@@ -1,0 +1,108 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>Notifications</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Allow Push-Notifications</ion-label>
+      <ion-toggle slot="end" name="notificationsEnabled" [(ngModel)]="appSettings.notificationsEnabled"
+                  (ionChange)="appSettings.toggleValue('notificationsEnabled', $event)"></ion-toggle>
+    </ion-item>
+    <ion-item-group *ngIf="appSettings.notificationsEnabled">
+      <ion-item-divider>
+        <ion-label>
+          Notification types
+        </ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label position="stacked">Battery Warnings</ion-label>
+        <ion-toggle slot="end" name="batteryNotificationEnabled" [(ngModel)]="appSettings.batteryNotificationEnabled"
+                    (ionChange)="appSettings.toggleValue('batteryNotificationEnabled', $event)"></ion-toggle>
+        <ion-grid>
+          <ion-row *ngIf="appSettings.batteryNotificationEnabled">
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Min</ion-label>
+                <ion-input name="minVoltage" placeholder="40.0"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Low</ion-label>
+                <ion-input name="lowVoltage" placeholder="42.0"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Max</ion-label>
+                <ion-input name="maxVoltage" placeholder="50.4"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Current Warnings</ion-label>
+        <ion-toggle slot="end" name="currentNotificationEnabled" [(ngModel)]="appSettings.currentNotificationEnabled"
+                    (ionChange)="appSettings.toggleValue('currentNotificationEnabled', $event)"></ion-toggle>
+        <ion-grid *ngIf="appSettings.currentNotificationEnabled">
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Max Amp</ion-label>
+                <ion-input name="maxCurrent" placeholder="40"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Time (ms)</ion-label>
+                <ion-input name="timeCurrent" placeholder="3000"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">ERPM Warnings</ion-label>
+        <ion-toggle slot="end" name="erpmNotificationEnabled" [(ngModel)]="appSettings.erpmNotificationEnabled"
+                    (ionChange)="appSettings.toggleValue('erpmNotificationEnabled', $event)"></ion-toggle>
+        <ion-grid *ngIf="appSettings.erpmNotificationEnabled">
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Max RPM</ion-label>
+                <ion-input name="maxErpm" placeholder="8000"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">DutyCycle Warnings</ion-label>
+        <ion-toggle slot="end" name="dutycycleNotificationEnabled" [(ngModel)]="appSettings.dutycycleNotificationEnabled"
+                    (ionChange)="appSettings.toggleValue('dutycycleNotificationEnabled', $event)"></ion-toggle>
+        <ion-grid *ngIf="appSettings.dutycycleNotificationEnabled">
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="stacked">Max Duty</ion-label>
+                <ion-input name="maxDuty" placeholder="80"></ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
+
+</ion-content>

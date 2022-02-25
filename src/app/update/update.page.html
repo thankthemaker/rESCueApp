@@ -57,10 +57,9 @@
       </ion-card-content>
     </ion-card>
 
-    <ion-card *ngIf="updateInProgress">
+    <ion-card>
       <ion-card-content>
-
-        <div>
+        <div *ngIf="updateInProgress">
           <br/>
           <p>Now updating your rESCue device.</p>
           <p>Please be patient, the update might take several minutes.</p>
@@ -71,14 +70,12 @@
             <i *ngIf="resentCounter > 0">, packages resent: {{resentCounter}}</i>
           </p>
         </div>
-<!--
         <div *ngIf="!updateInProgress && !wifiEnabled && wifiSupported">
           <p>
             Normally the update is done via Bluetooth (BLE). If you like to use WiFi instead, please mark the checkbox
             <i>"enable WiFi update"</i> below<br/>
           </p>
         </div>
-
         <div *ngIf="!updateInProgress && wifiEnabled">
           <p>
             WiFi activated please connect to the access point <i>"rESCue Updates"</i> via WiFi.
@@ -94,13 +91,11 @@
             If you want to update via Bluetooth instead, please unmark the checkbox
             <i>"enable WiFi update"</i> below<br/>
           </p>
-
         </div>
         <ion-item *ngIf="!updateInProgress && wifiSupported">
           <ion-label>enable WiFi update</ion-label>
           <ion-checkbox color="primary" (click)="toggle()" slot="start" id="enableWifiCheckbox"></ion-checkbox>
         </ion-item>
--->
       </ion-card-content>
     </ion-card>
   </div>
