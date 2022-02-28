@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import {NGXLogger} from 'ngx-logger';
-import {Storage} from '@capacitor/storage';
+import {StorageService} from '../services/storage.service';
+import {ToastController} from '@ionic/angular';
+
+const requiresReload = ['darkThemeSupported', 'metricSystemEnabled']
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppSettings {
+  public static KM_2_MILES = 0.621371;
   public static RESCUE_SERVICE_UUID = '99eb1511-a9e9-4024-b0a4-3dc4b4fabfb0';
   public static RESCUE_CHARACTERISTIC_UUID_CONF = '99eb1513-a9e9-4024-b0a4-3dc4b4fabfb0';
   public static RESCUE_CHARACTERISTIC_UUID_HW_VERSION = '99eb1515-a9e9-4024-b0a4-3dc4b4fabfb0';
@@ -18,14 +22,15 @@ export class AppSettings {
   public static VESC_CHARACTERISTICS_TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
 
   public darkThemeSupported = true;
-  public useVirtualDevice = false;
   public metricSystemEnabled = true;
-  public notificationsEnabled = true;
-  public batteryNotificationEnabled = true;
-  public currentNotificationEnabled = true;
-  public erpmNotificationEnabled = true;
-  public dutycycleNotificationEnabled = true;
-  public speedNotificationEnabled = true;
+  public useVirtualDevice = false;
+  public useOdometer = false;
+  public notificationsEnabled = false;
+  public batteryNotificationEnabled = false;
+  public currentNotificationEnabled = false;
+  public erpmNotificationEnabled = false;
+  public dutycycleNotificationEnabled = false;
+  public speedNotificationEnabled = false;
   public interval;
   public minVoltage;
   public lowVoltage;
@@ -34,36 +39,62 @@ export class AppSettings {
   public maxErpm;
   public maxDuty;
   public maxSpeed;
-  constructor(private logger: NGXLogger) {
+
+  constructor(
+    private toastController: ToastController,
+    private storageService: StorageService,
+    private logger: NGXLogger
+  ) {
     this.loadConfig().then();
   }
 
-  public async toggleValue(property: string, event) {
-    const value = event.detail.checked;
+  public async toggleValue(property: string, value) {
+    if(value === await this.storageService.getBoolean(property)) {
+      return; // no change detected, abort
+    }
     this.logger.info(`${property} is now ${value}`);
-    await Storage.set({key: property, value});
+    await this.storageService.set(property, value);
+    if (requiresReload.includes(property)) {
+      const toast = await this.toastController.create({
+        header: 'App restart required!',
+        message: 'For your changes to take effect, please restart your rESCueApp.',
+        color: 'primary',
+        position: 'middle',
+        buttons: [
+          {
+            icon: 'close-circle',
+            text: 'Close',
+            role: 'cancel'
+          }
+        ]
+      });
+      await toast.present();
+    }
   }
 
   public async updateValue(property: string, value) {
     this.logger.info(`${property} is now ${value}`);
-    await Storage.set({key: property, value});
+    await this.storageService.set(property, value);
   }
 
   private async loadConfig() {
-    this.darkThemeSupported = (await Storage.get({key: 'darkThemeSupported'})).value === 'true';
-    this.useVirtualDevice = (await Storage.get({key: 'useVirtualDevice'})).value === 'true';
-    this.notificationsEnabled = (await Storage.get({key: 'notificationsEnabled'})).value === 'true';
-    this.batteryNotificationEnabled = (await Storage.get({key: 'batteryNotificationEnabled'})).value === 'true';
-    this.currentNotificationEnabled = (await Storage.get({key: 'currentNotificationEnabled'})).value === 'true';
-    this.erpmNotificationEnabled = (await Storage.get({key: 'erpmNotificationEnabled'})).value === 'true';
-    this.dutycycleNotificationEnabled = (await Storage.get({key: 'dutycycleNotificationEnabled'})).value === 'true';
-    this.interval = Number((await Storage.get({key: 'notification.interval'})).value) || 5000;
-    this.minVoltage = Number((await Storage.get({key: 'notification.minVoltage'})).value) || 40;
-    this.lowVoltage = Number((await Storage.get({key: 'notification.lowVoltage'})).value) || 42;
-    this.maxVoltage = Number((await Storage.get({key: 'notification.maxVoltage'})).value) || 50;
-    this.maxCurrent = Number((await Storage.get({key: 'notification.maxCurrent'})).value) || 10;
-    this.maxErpm = Number((await Storage.get({key: 'notification.maxErpm'})).value) || 45000;
-    this.maxDuty = Number((await Storage.get({key: 'notification.maxDuty'})).value) || 80;
-    this.maxSpeed = Number((await Storage.get({key: 'notification.maxSpeed'})).value) || 28;
+    this.darkThemeSupported = await this.storageService.getBoolean('darkThemeSupported') || true;
+    this.metricSystemEnabled = await this.storageService.getBoolean('metricSystemEnabled') || true;
+    this.useVirtualDevice = await this.storageService.getBoolean('useVirtualDevice');
+    this.useOdometer = await this.storageService.getBoolean('useOdometer');
+    this.notificationsEnabled = await this.storageService.getBoolean('notificationsEnabled');
+    this.batteryNotificationEnabled = await this.storageService.getBoolean('batteryNotificationEnabled');
+    this.currentNotificationEnabled = await this.storageService.getBoolean('currentNotificationEnabled');
+    this.erpmNotificationEnabled = await this.storageService.getBoolean('erpmNotificationEnabled');
+    this.dutycycleNotificationEnabled = await this.storageService.getBoolean('dutycycleNotificationEnabled');
+    this.speedNotificationEnabled = await this.storageService.getBoolean('speedNotificationEnabled');
+    this.interval = Number((await this.storageService.get('notification.interval'))) || 5000;
+    this.minVoltage = Number((await this.storageService.get('notification.minVoltage'))) || 40;
+    this.lowVoltage = Number((await this.storageService.get('notification.lowVoltage'))) || 42;
+    this.maxVoltage = Number((await this.storageService.get('notification.maxVoltage'))) || 50.4;
+    this.maxCurrent = Number((await this.storageService.get('notification.maxCurrent'))) || 10;
+    this.maxErpm = Number((await this.storageService.get('notification.maxErpm'))) || 45000;
+    this.maxDuty = Number((await this.storageService.get('notification.maxDuty'))) || 80;
+    this.maxSpeed = Number((await this.storageService.get('notification.maxSpeed'))) || 28;
   }
 }

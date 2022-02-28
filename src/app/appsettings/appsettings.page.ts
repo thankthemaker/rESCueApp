@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {Storage} from '@capacitor/storage';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from '../models/AppSettings';
+import {environment} from '../../environments/environment';
+import {StorageService} from '../services/storage.service';
+import {KeysResult} from '@capacitor/storage';
 
 @Component({
   selector: 'app-appsettings',
@@ -12,19 +14,28 @@ import {AppSettings} from '../models/AppSettings';
 export class AppsettingsPage implements OnInit {
 
   version: string;
+  footer: string;
   numberOfRides = 0;
+  usedSpace = 0;
 
   constructor(
     private toastController: ToastController,
     private logger: NGXLogger,
+    private storageService: StorageService,
     public appSettings: AppSettings) {
-}
+    this.version = environment.appVersion;
+    this.footer = environment.footer;
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getSavedRides();
+  }
 
   async getSavedRides() {
-    const rides = await Storage.keys();
-    this.numberOfRides = rides.keys.length;
+    const keys: KeysResult = await this.storageService.keys();
+    const rides = keys.keys.filter((key) => key.startsWith('ride-'));
+    this.numberOfRides = rides.length;
+    this.usedSpace = this.numberOfRides;
   }
 
   async deleteAppData() {
@@ -39,7 +50,7 @@ export class AppsettingsPage implements OnInit {
           icon: 'trash-outline',
           text: 'Delete',
           handler: async () => {
-            await Storage.clear();
+            await this.storageService.clear();
             this.logger.info('Removed all data');
           }
         },

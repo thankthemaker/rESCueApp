@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {BleService} from '../services/ble.service';
 import {NGXLogger} from 'ngx-logger';
 import {Storage} from '@capacitor/storage';
+import {StorageService} from "../services/storage.service";
 
 @Component({
   selector: 'app-incompatible',
@@ -15,20 +16,21 @@ export class IncompatiblePage implements OnInit {
 
   constructor(
     private bleService: BleService,
+    private storageService: StorageService,
     private logger: NGXLogger) {
   }
 
   async ngOnInit() {
-    this.skipIncompatibleCheck = (await Storage.get({key: 'skipIncompatibleCheck'})).value === 'true';
+    this.skipIncompatibleCheck = await this.storageService.getBoolean('skipIncompatibleCheck');
 
     this.bleService.getServices().then(serviceIds => {
       this.services = serviceIds;
     });
   }
 
-  async toggleIncompatibleCheck(event) {
-    const skipIncompatibleCheck = event.detail.checked;
+  async toggleIncompatibleCheck(value) {
+    const skipIncompatibleCheck = value;
     this.logger.debug('skipIncompatibleCheck is now ' + skipIncompatibleCheck);
-    await Storage.set({key: 'skipIncompatibleCheck', value: skipIncompatibleCheck});
+    await this.storageService.set('skipIncompatibleCheck', skipIncompatibleCheck);
   }
 }

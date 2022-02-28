@@ -11,7 +11,7 @@ import {NGXLogger} from 'ngx-logger';
 import {generatePacket, VescMessageHandler, VescMessageParser} from '@thankthemaker/vesc-protocol';
 import {Buffer} from 'buffer';
 import {NotificationsService} from '../services/notification.service';
-import {Storage} from '@capacitor/storage';
+import {StorageService} from '../services/storage.service';
 
 @Component({
   selector: 'app-device',
@@ -45,6 +45,7 @@ export class DevicePage implements OnInit, OnDestroy {
     private toastCtrl: ToastController,
     private firmwareService: FirmwareService,
     private appSettings: AppSettings,
+    private storageService: StorageService,
     public bleService: BleService,
     public rescueData: RescueData,
     public notificationService: NotificationsService,
@@ -96,6 +97,11 @@ export class DevicePage implements OnInit, OnDestroy {
         this.connected = true;
         this.lastVescMessage = new Date().getMilliseconds();
       }
+      if(appSettings.metricSystemEnabled) {
+        this.rescueData.speed = this.rescueData.speed * AppSettings.KM_2_MILES;
+        this.rescueData.tachometer =  this.rescueData.tachometer * AppSettings.KM_2_MILES;
+        this.rescueData.tachometerAbs = this.rescueData.tachometerAbs * AppSettings.KM_2_MILES;
+      }
     });
 
     router.events
@@ -118,9 +124,9 @@ export class DevicePage implements OnInit, OnDestroy {
     this.lastNotifications.maxErpm = 0;
     this.lastNotifications.maxDuty = 0;
     this.lastNotifications.maxSpeed = 0;
-    this.skipIncompatibleCheck = (await Storage.get({key: 'skipIncompatibleCheck'})).value === 'true';
-    this.autoconnect = (await Storage.get({key: 'autoconnect'})).value === 'true';
-    this.showCardDetails = (await Storage.get({key: 'showCardDetails'})).value === 'true';
+    this.skipIncompatibleCheck = await this.storageService.getBoolean('skipIncompatibleCheck');
+    this.autoconnect = await this.storageService.getBoolean('autoconnect');
+    this.showCardDetails = await this.storageService.getBoolean('showCardDetails');
     if (this.showCardDetails) {
       this.showCardDetailsText = 'Hide details';
     } else {
@@ -381,8 +387,8 @@ export class DevicePage implements OnInit, OnDestroy {
   async toggleAutoconnect(event) {
     const autoconnect = event.detail.checked;
     this.logger.info('Autoconnect is now ' + autoconnect);
-    await Storage.set({key: 'autoconnect', value: autoconnect});
-    await Storage.set({key: 'deviceId', value: this.deviceId});
+    await this.storageService.set('autoconnect',autoconnect);
+    await this.storageService.set('deviceId', this.deviceId);
   }
 
   async toggleCard() {
@@ -392,7 +398,7 @@ export class DevicePage implements OnInit, OnDestroy {
     } else {
       this.showCardDetailsText = 'Show details';
     }
-    await Storage.set({key: 'showCardDetails', value: String(this.showCardDetails)});
+    await this.storageService.set('showCardDetails', this.showCardDetails);
   }
 
   checkValues() {

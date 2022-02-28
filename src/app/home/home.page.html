@@ -32,13 +32,13 @@
 <ion-footer [translucent]="true">
   <ion-toolbar color="dark">
       <ion-note slot="start">
-        <ion-text color="light">
-          &copy; 2021 ThankTheMaker
+        <ion-text color="light" style="font-size:70%;">
+          {{footer}}
         </ion-text>
       </ion-note>
       <ion-button size="small" fill="clear" slot="end" *ngIf="!showVersionInfo" align="right" (click)="toggleVersionInfo()">Versioninfo</ion-button>
       <ion-note slot="end" *ngIf="showVersionInfo">
-        <ion-text color="light">
+        <ion-text color="light" style="font-size:70%;">
           Version: {{version}}
         </ion-text>
       </ion-note>

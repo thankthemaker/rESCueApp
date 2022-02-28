@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { AppsettingsPageRoutingModule } from './appsettings-routing.module';
 
 import { AppsettingsPage } from './appsettings.page';
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AppsettingsPageRoutingModule
+    AppsettingsPageRoutingModule,
+    FontAwesomeModule
   ],
   declarations: [AppsettingsPage]
 })
