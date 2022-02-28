@@ -44,8 +44,8 @@ export class DevicePage implements OnInit, OnDestroy {
     private router: Router,
     private toastCtrl: ToastController,
     private firmwareService: FirmwareService,
-    private appSettings: AppSettings,
     private storageService: StorageService,
+    public appSettings: AppSettings,
     public bleService: BleService,
     public rescueData: RescueData,
     public notificationService: NotificationsService,
@@ -384,8 +384,8 @@ export class DevicePage implements OnInit, OnDestroy {
     }
   }
 
-  async toggleAutoconnect(event) {
-    const autoconnect = event.detail.checked;
+  async toggleAutoconnect(value) {
+    const autoconnect = value;
     this.logger.info('Autoconnect is now ' + autoconnect);
     await this.storageService.set('autoconnect',autoconnect);
     await this.storageService.set('deviceId', this.deviceId);
