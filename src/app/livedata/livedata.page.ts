@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {LoadingController, PopoverController} from '@ionic/angular';
-import {KeysResult, Storage} from '@capacitor/storage';
 import {BatteryGaugeComponent} from '../charts/battery-gauge/battery-gauge.component';
 import {DualGaugeComponent} from '../charts/dual-gauge/dual-gauge.component';
 import {RidingChartComponent} from '../charts/riding-chart/riding-chart.component';
@@ -10,6 +9,8 @@ import {RescueData} from '../models/RescueData';
 import {ListpickerComponent} from '../components/listpicker/listpicker.component';
 import {NGXLogger} from 'ngx-logger';
 import {MapComponent} from '../components/map/map.component';
+import {StorageService} from "../services/storage.service";
+import {KeysResult} from "@capacitor/storage";
 
 @Component({
   selector: 'app-livedata',
@@ -41,6 +42,7 @@ export class LivedataPage implements OnInit, OnDestroy {
   constructor(
     private popupController: PopoverController,
     private loadingController: LoadingController,
+    private storageService: StorageService,
     public rescueData: RescueData,
     private logger: NGXLogger) {
   }
@@ -55,7 +57,7 @@ export class LivedataPage implements OnInit, OnDestroy {
   }
 
   update() {
-    const bat = Math.trunc(((this.rescueData.battery * 100.00 - 4000) / (5040 - 4000) * 100.00));
+    const bat = this.rescueData.batteryLevel;
     this.logger.debug('battery: ' + bat);
 
     const now = new Date().toISOString();
@@ -75,12 +77,12 @@ export class LivedataPage implements OnInit, OnDestroy {
 
     this.ridingChart.chart.appendData(
       [
-        {data: [{y: this.rescueData.erpm, x: now}]},
-        {data: [{y: this.rescueData.dutyCycle, x: now}]},
+        {data: [{y: this.rescueData.erpm.toFixed(0), x: now}]},
+        {data: [{y: this.rescueData.dutyCycle.toFixed(0), x: now}]},
       ]
     );
 
-    this.dualGauge.dualGaugeOptions.series = [(this.rescueData.erpm * 100) / 10000, this.rescueData.dutyCycle, this.rescueData.battery];
+    this.dualGauge.dualGaugeOptions.series = [(this.rescueData.erpm * 100) / 10000, this.rescueData.dutyCycle, this.rescueData.batteryLevel];
 
     this.batteryGauge.batteryGaugeOptions.series = [bat];
     const oldImage = this.batteryGauge.chart.plotOptions.radialBar.hollow.image;
@@ -143,8 +145,8 @@ export class LivedataPage implements OnInit, OnDestroy {
   }
 
   async listData() {
-    const keys: KeysResult = await Storage.keys();
-    this.rides = keys.keys;
+    const keys: KeysResult = await this.storageService.keys();
+    this.rides = keys.keys.filter((key) => key.startsWith('ride-'));
 
     const popover = await this.popupController.create({
       component: ListpickerComponent,
@@ -174,8 +176,7 @@ export class LivedataPage implements OnInit, OnDestroy {
 
     this.stopLiveData();
     this.clearData();
-    const {value} = await Storage.get({key: name});
-    const ride = JSON.parse(value);
+    const ride = JSON.parse(await this.storageService.get(name));
     this.batteryChart.chart.series = ride.batteryData;
     this.batteryChart.chart.appendData(
       [
@@ -210,10 +211,7 @@ export class LivedataPage implements OnInit, OnDestroy {
       ridingData: this.ridingChart.chart.series,
       wayPoints: this.map.currentWaypoints,
     };
-    await Storage.set({
-      key: name,
-      value: JSON.stringify(ride),
-    });
+    await this.storageService.set(name, JSON.stringify(ride));
   }
 
   async clearData() {

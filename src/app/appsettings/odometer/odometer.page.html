@@ -1,0 +1,39 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="dark">
+    <ion-title>Odometer</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="main-menu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Enable Odometer</ion-label>
+      <ion-toggle slot="end" name="notificationsEnabled" [(ngModel)]="appSettings.useOdometer" disabled="true"
+                  (ngModelChange)="appSettings.toggleValue('useOdometer', $event)"></ion-toggle>
+    </ion-item>
+    <ion-item-group *ngIf="appSettings.useOdometer">
+      <ion-card>
+        <ion-card-content>
+          <ion-label *ngIf="appSettings.metricSystemEnabled">Abs. distance: 0 km</ion-label>
+          <ion-label *ngIf="!appSettings.metricSystemEnabled">Abs. distance: 0 mi</ion-label>
+          <ion-button color="warning">Reset</ion-button>
+        </ion-card-content>
+      </ion-card>
+    </ion-item-group>
+    <ion-card>
+      <ion-card-content>
+        <h1>This feature will be available in the next version.</h1>
+        <br/><br/>
+        This feature enables rESCueApp to store the absolute distance within this app.
+        If the Odometer of your rESCue-device is also enabled, the distance will be overriden with the value of your
+        rESCue-device.
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

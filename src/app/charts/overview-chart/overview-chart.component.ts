@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import * as Highcharts from 'highcharts';
 import HighchartsMore from 'highcharts/highcharts-more';
 import HighchartsSolidGauge from 'highcharts/modules/solid-gauge';
+import {AppSettings} from '../../models/AppSettings';
 
 HighchartsMore(Highcharts);
 HighchartsSolidGauge(Highcharts);
@@ -190,27 +191,35 @@ export class OverviewChartComponent implements OnInit {
     }
   };
 
-  constructor() {
+  constructor(private appSettings: AppSettings) {
+    const speedUnit = appSettings.metricSystemEnabled ? 'km/h' : 'mph';
+    const speeds = appSettings.metricSystemEnabled ? [0, 14, 24, 30] : [0, 8, 15, 20];
+
+    const batteryMin = appSettings.minVoltage;
+    const batteryLow = appSettings.lowVoltage;
+    const batteryMax = appSettings.maxVoltage;
+
+    console.log(`min ${batteryMin}, low ${batteryLow}, max ${batteryMax}`)
 
     this.speedGaugeOptions = Highcharts.merge(this.gaugeOptions, {
       yAxis: {
-        min: 0,
-        max: 30,
+        min: speeds[0],
+        max: speeds[3],
         title: {
           y: 20,
-          text: 'km/h'
+          text: speedUnit
         },
         plotBands: [{
-          from: 0,
-          to: 12,
+          from: speeds[0],
+          to: speeds[1],
           color: '#55BF3B' // green
         }, {
-          from: 12,
-          to: 24,
+          from: speeds[1],
+          to: speeds[2],
           color: '#DDDF0D' // yellow
         }, {
-          from: 24,
-          to: 30,
+          from: speeds[2],
+          to: speeds[3],
           color: '#DF5353' // red
         }]
       },
@@ -225,7 +234,7 @@ export class OverviewChartComponent implements OnInit {
             '<span style="font-size:10px;opacity:0.4">&nbsp;</span>' +
             '</div>'
         },      tooltip: {
-          valueSuffix: ' km/h'
+          valueSuffix: ' ' + speedUnit
         }
       }]
     });
@@ -272,11 +281,11 @@ export class OverviewChartComponent implements OnInit {
     this.erpmGaugeOptions = Highcharts.merge(this.solidGaugeOptions, {
       yAxis: {
         min: 0,
-        max: 50000,
+        max: 100000,
         plotBands: [
-          { from: 0, to: 30000, color: 'green', outerRadius: '38', innerRadius: '35'},
-          { from: 30000, to: 40000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
-          { from: 40000, to: 50000, color: 'red', outerRadius: '38', innerRadius: '35'},
+          { from: 0, to: 60000, color: 'green', outerRadius: '38', innerRadius: '35'},
+          { from: 60000, to: 80000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
+          { from: 80000, to: 100000, color: 'red', outerRadius: '38', innerRadius: '35'},
         ]
       },
       series: [{
@@ -290,18 +299,15 @@ export class OverviewChartComponent implements OnInit {
             '<span style="font-size:14px">{y}</span>' +
             '</div>'
         },
-        tooltip: {
-          valueSuffix: ' km/h'
-        }
       }]
     });
 
     this.batteryGaugeOptions = Highcharts.merge(this.solidGaugeOptions, {
       yAxis: {
         type: 'numeric',
-        min: 40,
-        max: 52,
-        tickPositions: [40, 52],
+        min: Math.round(batteryMin),
+        max: Math.round(batteryMax),
+        tickPositions: [Math.round(batteryMin), Math.round(batteryMax)],
         stops: [
           [0.1, '#DF5353'], // red
           //[0.24, '#DF5353'], // red
@@ -310,9 +316,9 @@ export class OverviewChartComponent implements OnInit {
           [0.9, '#55BF3B'] // green
         ],
         plotBands: [
-          { from: 40, to: 42, color: 'red', outerRadius: '38', innerRadius: '35'},
-          { from: 42, to: 44, color: 'yellow', outerRadius: '38', innerRadius: '35'},
-          { from: 44, to: 52, color: 'green', outerRadius: '38', innerRadius: '35'},
+          { from: Math.round(batteryMin), to: Math.round(batteryLow), color: 'red', outerRadius: '38', innerRadius: '35'},
+          { from: Math.round(batteryLow), to: Math.round(batteryLow + (batteryLow * 5/100)) , color: 'yellow', outerRadius: '38', innerRadius: '35'},
+          { from: Math.round(batteryLow + (batteryLow * 5/100)), to: Math.round(batteryMax), color: 'green', outerRadius: '38', innerRadius: '35'},
         ]
       },
       series: [{

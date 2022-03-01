@@ -46,7 +46,7 @@
       </ion-grid>
       <ion-item>
         <ion-label>Autoconnect</ion-label>
-        <ion-toggle slot="end" name="" [(ngModel)]="autoconnect" (ionChange)="toggleAutoconnect($event)"></ion-toggle>
+        <ion-toggle slot="end" name="" [(ngModel)]="autoconnect" (ngModelChange)="toggleAutoconnect($event)"></ion-toggle>
       </ion-item>
     </ion-card-content>
     <div class="ion-text-end">
@@ -73,13 +73,19 @@
         </div>
       </ion-col>
       <ion-col size="5">
-        <div>
+        <div *ngIf="appSettings.metricSystemEnabled">
           Trip: {{(rescueData.tachometer / 438 / 1000) | number: '1.1-1'}} km<br/>
+        </div>
+        <div *ngIf="!appSettings.metricSystemEnabled">
+          Trip: {{(rescueData.tachometer / 438 / 1000) | number: '1.1-1'}} mi<br/>
         </div>
       </ion-col>
       <ion-col size="5">
-        <div>
-          Abs.: 0 km<br/>
+        <div *ngIf="appSettings.metricSystemEnabled">
+          Abs.: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} km<br/>
+        </div>
+        <div *ngIf="!appSettings.metricSystemEnabled">
+          Abs.: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} mi<br/>
         </div>
       </ion-col>
     </ion-row>
@@ -91,12 +97,12 @@
       </ion-col>
       <ion-col size="5">
         <div>
-          FET: {{rescueData.fetTemp | number: '1.1-1'}} &deg;
+          FET: {{rescueData.fetTemp | number: '1.1-1'}} &deg;C
         </div>
       </ion-col>
       <ion-col size="5">
         <div>
-          Motor: {{rescueData.motTemp | number: '1.1-1'}} &deg;<br/>
+          Motor: {{rescueData.motTemp | number: '1.1-1'}} &deg;C<br/>
         </div>
       </ion-col>
     </ion-row>

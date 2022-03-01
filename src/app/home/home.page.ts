@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {BleService} from '../services/ble.service';
 import {environment} from '../../environments/environment';
 import {NGXLogger} from 'ngx-logger';
+import {StorageService} from "../services/storage.service";
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,7 @@ import {NGXLogger} from 'ngx-logger';
 export class HomePage implements OnInit {
 
   version: string;
+  footer: string;
   showVersionInfo = true;
   autoconnect = false;
   deactivateWizard = false;
@@ -19,17 +21,19 @@ export class HomePage implements OnInit {
   constructor(
     private router: Router,
     private bleService: BleService,
+    private storageService: StorageService,
     private logger: NGXLogger) {
-    this.deactivateWizard = Boolean(localStorage.getItem('deactivateWizard'));
     this.version = environment.appVersion;
+    this.footer = environment.footer;
     logger.info(`Application version is: version (from package.json)=${this.version}`);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.deactivateWizard = await this.storageService.getBoolean('deactivateWizard');
     if(!this.deactivateWizard) {
       this.router.navigate(['/wizard']);
     }
-    if(localStorage.getItem('autoconnect') === 'true') {
+    if(await this.storageService.getBoolean('autoconnect')) {
       this.autoconnect = true;
       this.logger.info('Autoconnect detected, trying to connect device');
       this.connect(true);
@@ -55,8 +59,8 @@ export class HomePage implements OnInit {
     this.showVersionInfo = !this.showVersionInfo;
   }
 
-  startWizard() {
-    localStorage.setItem('deactivateWizard', String(false));
-    this.router.navigate(['/wizard']);
+  async startWizard() {
+    await this.storageService.set('deactivateWizard', false);
+    await this.router.navigate(['/wizard']);
   }
 }

@@ -5,6 +5,7 @@ import {BleService} from '../services/ble.service';
 import {AppSettings} from '../models/AppSettings';
 import {Device, DeviceInfo} from '@capacitor/device';
 import {NotificationsService} from '../services/notification.service';
+import {StorageService} from '../services/storage.service';
 
 @Component({
   selector: 'app-wizard',
@@ -36,6 +37,8 @@ export class WizardPage implements OnInit {
   constructor(
     private router: Router,
     private bleService: BleService,
+    private storageService: StorageService,
+    private appSettings: AppSettings,
     public notificationService: NotificationsService) {
     this.connected = false;
     this.deviceName = '';
@@ -57,9 +60,9 @@ export class WizardPage implements OnInit {
     }
   }
 
-  skipWizard() {
-    localStorage.setItem('deactivateWizard', String(true));
-    this.router.navigate(['/home']);
+  async skipWizard() {
+    await this.storageService.set('deactivateWizard', true);
+    await this.router.navigate(['/home']);
   }
 
   async saveValue(key, value) {
@@ -80,8 +83,17 @@ export class WizardPage implements OnInit {
     await this.saveValue('lowBatteryVoltage', lowVoltage);
     await this.saveValue('maxBatteryVoltage', maxVoltage);
     await this.saveValue('save', 'true');
-    localStorage.setItem('deactivateWizard', String(true));
-    this.bleService.disconnect();
+    await this.storageService.set('notification.minVoltage', minVoltage);
+    await this.storageService.set('notification.lowVoltage', lowVoltage);
+    await this.storageService.set('notification.maxVoltage', maxVoltage);
+    await this.storageService.set('battery.cells', this.batteryCells);
+    await this.storageService.set('battery.groups', this.batteryGroups);
+    await this.storageService.set('battery.cellcapacity', this.cellCapacity);
+    await this.storageService.set('deactivateWizard', 'true');
+    this.appSettings.minVoltage = minVoltage;
+    this.appSettings.lowVoltage = lowVoltage;
+    this.appSettings.maxVoltage = maxVoltage;
+    await this.bleService.disconnect();
   }
 
   goBack() {

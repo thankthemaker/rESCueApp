@@ -5,6 +5,8 @@ import {Device, DeviceInfo} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
+import {Storage} from '@capacitor/storage';
+import {StorageService} from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,7 @@ export class BleService {
   constructor(
     private router: Router,
     private toastCtrl: ToastController,
+    private storageService: StorageService,
     private logger: NGXLogger) {
   }
 
@@ -27,7 +30,7 @@ export class BleService {
     this.logger.info('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
-      if(localStorage.getItem('useVirtualDevice') === 'true') {
+      if(await this.storageService.getBoolean('useVirtualDevice')) {
         this.info.isVirtual = true;
 
       }
@@ -47,8 +50,8 @@ export class BleService {
       const isEnabled = await BleClient.getEnabled();
       this.logger.debug('Is BLE enabled: ' + isEnabled);
 
-      if (autoconnect && localStorage.getItem('autoconnect') === 'true') {
-        const savedDeviceId = localStorage.getItem('deviceId');
+      if (autoconnect && await this.storageService.getBoolean('autoconnect')) {
+        const savedDeviceId = await this.storageService.get('deviceId');
         this.logger.info('Trying autoconnect for device: ' + savedDeviceId);
         const devices = await BleClient.getDevices([savedDeviceId]);
         this.logger.debug('Devices: ' + JSON.stringify(devices));

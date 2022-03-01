@@ -4,6 +4,8 @@ import {Device} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from "../models/AppSettings";
+import {Storage} from "@capacitor/storage";
+import {StorageService} from "./storage.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +17,7 @@ export class NotificationsService {
   constructor(
     private toastCtrl: ToastController,
     private localNotifications: LocalNotifications,
+    private storageService: StorageService,
     private appSettings: AppSettings,
     private logger: NGXLogger) {
     this.init();
@@ -26,7 +29,7 @@ export class NotificationsService {
   }
 
   async push(title: string, message: string) {
-    if (localStorage.getItem('notificationsEnabled') === 'true') {
+    if (await this.storageService.getBoolean('notificationsEnabled')) {
       if (this.platform === 'web') {
         const toast = await this.toastCtrl.create({
           header: title,
@@ -47,7 +50,7 @@ export class NotificationsService {
     }
   }
 
-  toggleNotifications() {
+  async toggleNotifications() {
     if (this.platform !== 'web') {
       this.localNotifications.hasPermission().then((hasPermissions) => {
         if (!hasPermissions) {
@@ -57,26 +60,27 @@ export class NotificationsService {
         }
       });
     }
-    const notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
-    this.updatePermissions(!notificationsEnabled);
-
+    const notificationsEnabled = await this.storageService.getBoolean('notificationsEnabled');
+    await this.updatePermissions(!notificationsEnabled);
   }
 
-  updatePermissions(permissionsGranted) {
+  async updatePermissions(permissionsGranted) {
     if (permissionsGranted) {
       this.appSettings.notificationsEnabled = true;
       this.appSettings.batteryNotificationEnabled = true;
       this.appSettings.currentNotificationEnabled = true;
       this.appSettings.erpmNotificationEnabled = true;
       this.appSettings.dutycycleNotificationEnabled = true;
-      localStorage.setItem('notificationsEnabled', 'true');
-      localStorage.setItem('batteryNotificationEnabled', 'true');
-      localStorage.setItem('currentNotificationEnabled', 'true');
-      localStorage.setItem('erpmNotificationEnabled', 'true');
-      localStorage.setItem('dutycycleNotificationEnabled', 'true');
+      this.appSettings.speedNotificationEnabled = true;
+      await this.storageService.set('notificationsEnabled', 'true');
+      await this.storageService.set('batteryNotificationEnabled', 'true');
+      await this.storageService.set('currentNotificationEnabled', 'true');
+      await this.storageService.set('erpmNotificationEnabled', 'true');
+      await this.storageService.set('dutycycleNotificationEnabled', 'true');
+      await this.storageService.set('speedNotificationEnabled', 'true');
     } else {
       this.appSettings.notificationsEnabled = false;
-      localStorage.setItem('notificationsEnabled', 'false');
+      await this.storageService.set('notificationsEnabled', 'false');
     }
   }
 }

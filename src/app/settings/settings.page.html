@@ -101,7 +101,7 @@
       <ion-label position="stacked">Enable Notifications</ion-label>
       <ion-toggle slot="end" name="notificationsEnabled" checked
                   [(ngModel)]="rescueConf.isNotificationEnabled"
-                  (ionChange)="toggleNotificationsEnabled($event)"></ion-toggle>
+                  (ngModelChange)="toggleNotificationsEnabled($event)"></ion-toggle>
     </ion-item>
 
     <ion-item-group *ngIf="rescueConf.isNotificationEnabled">

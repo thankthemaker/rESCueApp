@@ -5,6 +5,7 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {BleService} from './services/ble.service';
 import {AppSettings} from './models/AppSettings';
+import {Storage} from '@capacitor/storage';
 
 @Component({
   selector: 'app-root',
@@ -28,16 +29,10 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    Storage.configure({'group': 'rESCueApp'});
     this.systemDark = window.matchMedia('(prefers-color-scheme: dark)');
     this.systemDark.addListener(this.colorTest);
     this.version = environment.appVersion;
-    this.appSettings.darkThemeSupported = localStorage.getItem('darkThemeSupported') === 'true';
-    this.appSettings.useVirtualDevice = localStorage.getItem('useVirtualDevice') === 'true';
-    this.appSettings.notificationsEnabled = localStorage.getItem('notificationsEnabled') === 'true';
-    this.appSettings.batteryNotificationEnabled = localStorage.getItem('batteryNotificationEnabled') === 'true';
-    this.appSettings.currentNotificationEnabled = localStorage.getItem('currentNotificationEnabled') === 'true';
-    this.appSettings.erpmNotificationEnabled = localStorage.getItem('erpmNotificationEnabled') === 'true';
-    this.appSettings.dutycycleNotificationEnabled = localStorage.getItem('dutycycleNotificationEnabled') === 'true';
   }
 
   selectMenu(url) {
@@ -58,9 +53,9 @@ export class AppComponent implements OnInit {
     return this.bleService.connected;
   }
 
-  colorTest(systemInitiatedDark) {
-    const darkThemeSupported = localStorage.getItem('supportDarkTheme');
-    if (systemInitiatedDark.matches && darkThemeSupported === 'true') {
+  async colorTest(systemInitiatedDark) {
+    const darkThemeSupported = await Storage.get({key: 'supportDarkTheme'});
+    if (systemInitiatedDark.matches && darkThemeSupported.value === 'true') {
     } else {
     }
   }
