@@ -5,8 +5,7 @@ import {Device, DeviceInfo} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
-import {Storage} from '@capacitor/storage';
-import {StorageService} from "./storage.service";
+import {StorageService} from './storage.service';
 
 @Injectable({
   providedIn: 'root'

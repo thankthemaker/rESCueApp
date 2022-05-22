@@ -78,8 +78,8 @@ export class AppSettings {
   }
 
   private async loadConfig() {
-    this.darkThemeSupported = await this.storageService.getBoolean('darkThemeSupported') || true;
-    this.metricSystemEnabled = await this.storageService.getBoolean('metricSystemEnabled') || true;
+    this.darkThemeSupported = await this.storageService.getBoolean('darkThemeSupported');
+    this.metricSystemEnabled = await this.storageService.getBoolean('metricSystemEnabled');
     this.useVirtualDevice = await this.storageService.getBoolean('useVirtualDevice');
     this.useOdometer = await this.storageService.getBoolean('useOdometer');
     this.notificationsEnabled = await this.storageService.getBoolean('notificationsEnabled');

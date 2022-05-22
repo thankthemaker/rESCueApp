@@ -30,6 +30,7 @@
     <ion-select-option value="2">Cylone</ion-select-option>
     <ion-select-option value="3">Rainbow</ion-select-option>
     <ion-select-option value="4">Pulsating</ion-select-option>
+    <ion-select-option value="5">Battery-Indicator</ion-select-option>
   </ion-select>
 </ion-item>
 <ion-item-divider>
@@ -86,7 +87,8 @@
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
     </ion-range>
   </ion-label>
-  <ion-note slot="end">{{rescueConf.idleLightTimeout}} ms</ion-note>
+  <ion-note slot="end" *ngIf="rescueConf.idleLightTimeout > 0">{{rescueConf.idleLightTimeout}} ms</ion-note>
+  <ion-note slot="end" *ngIf="rescueConf.idleLightTimeout === 0">infinite</ion-note>
 </ion-item>
 <ion-item-divider>
   <ion-label>

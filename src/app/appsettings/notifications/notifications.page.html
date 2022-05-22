@@ -136,6 +136,18 @@
         </ion-grid>
       </ion-item>
     </ion-item-group>
+    <ion-item-group *ngIf="appSettings.notificationsEnabled">
+      <ion-item-divider>
+        <ion-label>
+          Custom Notifications
+        </ion-label>
+      </ion-item-divider>
+    </ion-item-group>
   </ion-list>
+  <ion-fab horizontal="begin" vertical="bottom" slot="fixed">
+    <ion-fab-button color="primary" size="small">
+      <ion-icon md="add-circle-outline" ios="add-circle-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>

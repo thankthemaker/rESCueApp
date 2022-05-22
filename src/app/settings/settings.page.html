@@ -66,18 +66,6 @@
 
     <ion-item-divider>
       <ion-label class="item-divider">
-        <ion-icon name="bonfire-outline"></ion-icon>
-        Blynk
-      </ion-label>
-    </ion-item-divider>
-    <ion-item>
-      <ion-label position="stacked">Auth Token</ion-label>
-      <ion-input class="ion-text-right" placeholder="Enter your Token" slot="end"
-                 [(ngModel)]="rescueConf.authToken"></ion-input>
-    </ion-item>
-
-    <ion-item-divider>
-      <ion-label class="item-divider">
         <ion-icon name="bus-outline"></ion-icon>
         CANBUS
       </ion-label>
@@ -126,6 +114,22 @@
                     [(ngModel)]="rescueConf.isErpmNotificationEnabled"></ion-toggle>
       </ion-item>
     </ion-item-group>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="bluetooth" slot="start"></ion-icon>
+        Bluetooth Settings
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">MTU size
+        <ion-range min="23" max="512" step="1" [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
+          <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
+          <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
+        </ion-range>
+      </ion-label>
+      <ion-note slot="end">{{rescueConf.mtuSize}}</ion-note>
+    </ion-item>
 
     <ion-item-divider>
       <ion-label class="item-divider">

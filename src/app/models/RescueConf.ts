@@ -26,6 +26,7 @@ export class RescueConf {
   public numberPixelBatMon = 5;
   public vescId = 25;
   public authToken = '';
+  public mtuSize = 512;
   public logLevel = 0;
   public realtimeDataInterval = 300;
   public balanceDataInterval = 300;
