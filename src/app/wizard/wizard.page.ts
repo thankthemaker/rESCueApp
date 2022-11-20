@@ -109,4 +109,8 @@ export class WizardPage implements OnInit {
       });
     }
   }
+
+  async lockSwipes(lock: boolean) {
+    await this.wizard.lockSwipes(lock);
+  }
 }
