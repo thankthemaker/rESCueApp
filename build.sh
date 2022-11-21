@@ -8,7 +8,7 @@ if [[ "x${os}x" == "xx" ]]; then
   exit -1
 fi
 
-ionic build --prod --aot --output-hashing=all && npx cap sync
+## ionic build --prod --aot --output-hashing=all && npx cap sync
 
 if [[ "$os" == "android" ]]; then
  cd android/

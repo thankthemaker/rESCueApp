@@ -26,23 +26,22 @@ import { environment } from '../environments/environment';
 
 @NgModule({
     declarations: [AppComponent, ListpickerComponent, BatteryTypeComponent, LedTypeComponent],
-    entryComponents: [],
     imports: [
-      BrowserModule,
-      IonicModule.forRoot(),
-      AppRoutingModule,
-      HttpClientModule,
-      FormsModule,
-      BrowserAnimationsModule,
-      NgxColorsModule,
-      LoggerModule.forRoot(environment.logger),
-      FontAwesomeModule
+        BrowserModule,
+        IonicModule.forRoot(),
+        AppRoutingModule,
+        HttpClientModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        NgxColorsModule,
+        LoggerModule.forRoot(environment.logger),
+        FontAwesomeModule
     ],
     providers: [
-      BleService,
-      NotificationsService,
-      LocalNotifications,
-      {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
+        BleService,
+        NotificationsService,
+        LocalNotifications,
+        { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]
 })

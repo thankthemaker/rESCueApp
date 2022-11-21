@@ -20,7 +20,9 @@ export class RescueConf {
   public lightMaxBrightness = 100;
   public lightColorPrimary = 16777215;
   public lightColorSecondary = 16711680;
-  public brakeLightEnabled = false;
+  public lightbarTurnOffErpm = 1000;
+  public lightbarMaxBrightness = 100;
+  public brakeLightEnabled = true;
   public brakeLightMinAmp = 4;
   public numberPixelLight = 16;
   public numberPixelBatMon = 5;
