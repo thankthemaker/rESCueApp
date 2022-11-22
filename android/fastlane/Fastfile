@@ -34,8 +34,8 @@ platform :android do
             "android.injected.signing.key.password" => "ux8nXZ1t2dg0jP",
             })
     upload_to_play_store(track: "internal",
-                         version_code: 11,
-                         version_name: "2.1.0",
+                         #version_code: 16,
+                         #version_name: "2.3.0",
                          release_status: "draft",
                          #apk: "path/to/apk.apk",
                          skip_upload_metadata: true,

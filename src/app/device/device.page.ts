@@ -12,6 +12,7 @@ import {generatePacket, VescMessageHandler, VescMessageParser} from '@thankthema
 import {Buffer} from 'buffer';
 import {NotificationsService} from '../services/notification.service';
 import {StorageService} from '../services/storage.service';
+import {RescueConf} from "../models/RescueConf";
 
 @Component({
   selector: 'app-device',
@@ -48,6 +49,7 @@ export class DevicePage implements OnInit, OnDestroy {
     public appSettings: AppSettings,
     public bleService: BleService,
     public rescueData: RescueData,
+    public rescueConf: RescueConf,
     public notificationService: NotificationsService,
     private logger: NGXLogger
   ) {
@@ -58,19 +60,19 @@ export class DevicePage implements OnInit, OnDestroy {
       if (message.type === 'COMM_GET_VALUES') {
         this.rescueData.speed = undefined;
         this.rescueData.erpm = message.payload.erpm;
-        this.rescueData.dutyCycle = message.payload.dutyCycle*100;
+        this.rescueData.dutyCycle = message.payload.dutyCycle * 100;
         this.rescueData.battery = message.payload.voltage;
         //ToDo: Calculation based on config values
         this.rescueData.batteryLevel = Math.trunc(((this.rescueData.battery * 100.00 - 4000) / (5040 - 4000) * 100.00));
         this.rescueData.tachometer = message.payload.tachometer.value;
         this.rescueData.tachometerAbs = message.payload.tachometer.abs;
-        if(message.payload.temp.motor > 0) {
+        if (message.payload.temp.motor > 0) {
           this.rescueData.motTemp = message.payload.temp.motor;
         } else {
           this.rescueData.motTemp = 0;
         }
         this.rescueData.fetTemp = message.payload.temp.mosfet;
-        this.rescueData.current = message.payload.current.motor ;
+        this.rescueData.current = message.payload.current.motor;
         this.rescueData.ampHours = message.payload.ampHours.consumed;
         this.rescueData.wattHours = message.payload.wattHours.charged;
         this.rescueData.faultCode = message.payload.faultCode;
@@ -79,27 +81,27 @@ export class DevicePage implements OnInit, OnDestroy {
       } else if (message.type === 'COMM_GET_VALUES_SETUP_SELECTIVE') {
         this.rescueData.speed = message.payload.speed * 3.5897435;
         this.rescueData.erpm = message.payload.erpm;
-        this.rescueData.dutyCycle = message.payload.dutyCycle*100;
+        this.rescueData.dutyCycle = message.payload.dutyCycle * 100;
         this.rescueData.battery = message.payload.voltage;
         this.rescueData.batteryLevel = message.payload.batteryLevel * 100;
         this.rescueData.tachometer = message.payload.tachometer.value * 0.4385955;
         this.rescueData.tachometerAbs = message.payload.tachometer.abs * 0.4385955;
-        if(message.payload.temp.motor > 0) {
+        if (message.payload.temp.motor > 0) {
           this.rescueData.motTemp = message.payload.temp.motor;
         } else {
           this.rescueData.motTemp = 0;
         }
         this.rescueData.fetTemp = message.payload.temp.mosfet;
-        this.rescueData.current = message.payload.current.motor ;
+        this.rescueData.current = message.payload.current.motor;
         this.rescueData.ampHours = message.payload.ampHours.consumed;
         this.rescueData.wattHours = message.payload.wattHours.charged;
         this.rescueData.faultCode = message.payload.faultCode;
         this.connected = true;
         this.lastVescMessage = new Date().getMilliseconds();
       }
-      if(appSettings.metricSystemEnabled) {
+      if (appSettings.metricSystemEnabled) {
         this.rescueData.speed = this.rescueData.speed * AppSettings.KM_2_MILES;
-        this.rescueData.tachometer =  this.rescueData.tachometer * AppSettings.KM_2_MILES;
+        this.rescueData.tachometer = this.rescueData.tachometer * AppSettings.KM_2_MILES;
         this.rescueData.tachometerAbs = this.rescueData.tachometerAbs * AppSettings.KM_2_MILES;
       }
     });
@@ -155,8 +157,8 @@ export class DevicePage implements OnInit, OnDestroy {
     if (typeof Worker !== 'undefined') {
       // Create a new
       this.logger.debug('created web-worker for VESC');
-      this.vescWorker = new Worker(new URL('../vesc-worker.worker', import.meta.url), { type: 'module' });
-      this.vescWorker.onmessage = ({ data }) => {
+      this.vescWorker = new Worker(new URL('../vesc-worker.worker', import.meta.url), {type: 'module'});
+      this.vescWorker.onmessage = ({data}) => {
         console.log(`page got message: ${data}`);
       };
     } else {
@@ -182,13 +184,24 @@ export class DevicePage implements OnInit, OnDestroy {
       );
       this.update();
       this.checkValues();
-      if(new Date().getMilliseconds() - this.lastVescMessage < 2000) {
+      if (new Date().getMilliseconds() - this.lastVescMessage < 2000) {
         this.connected = false;
       }
     }, 333);
   }
 
   subscribeVesc() {
+    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
+        const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
+        if (!String(values[0]).startsWith('vesc')) {
+          this.logger.debug('Received: ' + values);
+          this.rescueConf[values[0]] = values[1];
+          if (String(values[0]).endsWith('oopTime')) {
+            this.rescueData[values[0]] = values[1];
+          }
+        }
+      });
     this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
       AppSettings.VESC_CHARACTERISTICS_TX_UUID, (value: DataView) => {
         this.logger.info('VESC data (', value.byteLength, ')byte: ', new Uint8Array(value.buffer).toString());
@@ -352,7 +365,7 @@ export class DevicePage implements OnInit, OnDestroy {
   async update() {
     let speed = 0;
     const rpm = Math.abs(this.rescueData.erpm / 15);
-    if(this.rescueData.speed !== undefined) {
+    if (this.rescueData.speed !== undefined) {
       speed = this.rescueData.speed;
     } else {
       speed = rpm * 0.27 * Math.PI * 2 / 1000;
@@ -387,7 +400,7 @@ export class DevicePage implements OnInit, OnDestroy {
   async toggleAutoconnect(value) {
     const autoconnect = value;
     this.logger.info('Autoconnect is now ' + autoconnect);
-    await this.storageService.set('autoconnect',autoconnect);
+    await this.storageService.set('autoconnect', autoconnect);
     await this.storageService.set('deviceId', this.deviceId);
   }
 

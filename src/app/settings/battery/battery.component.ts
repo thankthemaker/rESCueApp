@@ -1,9 +1,8 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {BatteryTypeComponent} from '../battery-type/battery-type.component';
 import {PickerController, PopoverController, ToastController} from '@ionic/angular';
-import {PickerOptions} from "@ionic/core/dist/types/components/picker/picker-interface";
-import {NGXLogger} from "ngx-logger";
-import {NavigationExtras} from "@angular/router";
+import {PickerOptions} from '@ionic/core/dist/types/components/picker/picker-interface';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-battery',
@@ -12,9 +11,10 @@ import {NavigationExtras} from "@angular/router";
 })
 export class BatteryComponent implements OnInit {
 
-  @Input() rescueConf: any;
   batteryPresets: any;
   toast: any;
+  @Input() rescueConf: any;
+  @Output() changeEvent = new EventEmitter<{ key: string, value: string }>();
 
   constructor(
     private popoverController: PopoverController,
@@ -108,5 +108,15 @@ export class BatteryComponent implements OnInit {
       duration: 5000
     });
     await this.toast.present();
+  }
+
+  changeLightbarMaxBrightness(event) {
+    this.rescueConf.lightbarMaxBrightness = event.detail.value;
+    this.changeEvent.emit({key: 'lightbarMaxBrightness', value: event.detail.value});
+  }
+
+  changeLightbarTurnOffErpm(event) {
+    this.rescueConf.lightbarTurnOffErpm = event.detail.value;
+    this.changeEvent.emit({key: 'lightbarTurnOffErpm', value: event.detail.value});
   }
 }

@@ -7,6 +7,7 @@ import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
 import {TextinputComponent} from '../components/textinput/textinput.component';
 import {RescueConf} from '../models/RescueConf';
+import {RescueData} from "../models/RescueData";
 
 @Component({
   selector: 'app-enroll',
@@ -29,7 +30,8 @@ export class SettingsPage implements OnInit {
     private loadingController: LoadingController,
     private bleService: BleService,
     private logger: NGXLogger,
-    public rescueConf: RescueConf) {
+    public rescueConf: RescueConf,
+    public rescueData: RescueData) {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -41,14 +43,6 @@ export class SettingsPage implements OnInit {
 
   ngOnInit() {
     this.rescueConf.deviceName = this.bleService.device.name;
-    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,(value: DataView) => {
-      const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-      if(!String(values[0]).startsWith('vesc')) {
-        this.logger.debug('Received: ' + values );
-        this.rescueConf[values[0]] = values[1];
-      }
-    });
     this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
   }

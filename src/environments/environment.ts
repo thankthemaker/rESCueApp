@@ -10,8 +10,7 @@ export const environment = {
   mapsKey: '',
   footer: '©2021-2022 ThankTheMaker',
   logger: {
-    level: NgxLoggerLevel.TRACE
-    ,
+    level: NgxLoggerLevel.WARN,
   }
 };
 
