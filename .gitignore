@@ -38,3 +38,6 @@ npm-debug.log*
 /resources/ios
 
 environments/version.ts
+/android/
+/ios/App/
+/ios/DerivedData/
