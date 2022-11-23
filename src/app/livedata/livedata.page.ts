@@ -10,7 +10,7 @@ import {ListpickerComponent} from '../components/listpicker/listpicker.component
 import {NGXLogger} from 'ngx-logger';
 import {MapComponent} from '../components/map/map.component';
 import {StorageService} from "../services/storage.service";
-import {KeysResult} from "@capacitor/storage";
+import {KeysResult} from "@capacitor/preferences";
 
 @Component({
   selector: 'app-livedata',

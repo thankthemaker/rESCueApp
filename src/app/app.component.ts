@@ -5,7 +5,7 @@ import {MenuController} from '@ionic/angular';
 import {Router} from '@angular/router';
 import {BleService} from './services/ble.service';
 import {AppSettings} from './models/AppSettings';
-import {Storage} from '@capacitor/storage';
+import {Preferences} from '@capacitor/preferences';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    Storage.configure({'group': 'rESCueApp'});
+    Preferences.configure({'group': 'rESCueApp'});
     this.systemDark = window.matchMedia('(prefers-color-scheme: dark)');
     this.systemDark.addListener(this.colorTest);
     this.version = environment.appVersion;
@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   }
 
   async colorTest(systemInitiatedDark) {
-    const darkThemeSupported = await Storage.get({key: 'supportDarkTheme'});
+    const darkThemeSupported = await Preferences.get({key: 'supportDarkTheme'});
     if (systemInitiatedDark.matches && darkThemeSupported.value === 'true') {
     } else {
     }

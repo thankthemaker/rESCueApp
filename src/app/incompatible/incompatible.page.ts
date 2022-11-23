@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BleService} from '../services/ble.service';
 import {NGXLogger} from 'ngx-logger';
-import {Storage} from '@capacitor/storage';
 import {StorageService} from "../services/storage.service";
 
 @Component({
