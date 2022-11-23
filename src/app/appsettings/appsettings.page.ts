@@ -4,7 +4,7 @@ import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from '../models/AppSettings';
 import {environment} from '../../environments/environment';
 import {StorageService} from '../services/storage.service';
-import {KeysResult} from '@capacitor/storage';
+import {KeysResult} from '@capacitor/preferences';
 
 @Component({
   selector: 'app-appsettings',

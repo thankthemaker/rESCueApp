@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {NGXLogger} from 'ngx-logger';
-import {Storage} from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,22 @@ export class StorageService {
   }
 
   async keys() {
-    return Storage.keys();
+    return Preferences.keys();
   }
 
   async get(key: string) {
-    return (await Storage.get({ key })).value;
+    return (await Preferences.get({ key })).value;
   }
 
   async getBoolean(key: string) {
-    return Boolean((await Storage.get({ key })).value === 'true');
+    return Boolean((await Preferences.get({ key })).value === 'true');
   }
 
   async set(key: string, value) {
-    return Storage.set({ key, value: String(value) });
+    return Preferences.set({ key, value: String(value) });
   }
 
   async clear() {
-    return Storage.clear();
+    return Preferences.clear();
   }
 }
