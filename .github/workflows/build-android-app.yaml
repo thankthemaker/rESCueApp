@@ -1,4 +1,4 @@
-name: build-ios-app
+name: build-android-app
 on:
   push:
     branches:
@@ -10,13 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
       - run: npm ci
       - run: npx cap add android
+      - run: sudo fastlane install_plugins
       - run: fastlane android internal
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
