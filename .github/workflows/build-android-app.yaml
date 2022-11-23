@@ -17,6 +17,12 @@ jobs:
           node-version: '16.x'
       - run: npm ci
       - run: npx cap add android
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - name: Setup Fastlane
+        run: bundle install
       - run: sudo fastlane install_plugins
       - run: fastlane android internal
         env:
