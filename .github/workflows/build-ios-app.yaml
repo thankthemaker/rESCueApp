@@ -8,6 +8,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - run: npm install
+      - run: npx cap add ios
+      - run: npx cap add android
       - run: fastlane icons
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
