@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js
@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci
-      - run: npx cap add ios
-      - run: fastlane icons
+      - run: npx cap add android
+      - run: fastlane android internal
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
