@@ -1,23 +1,43 @@
 name: build-ios-app
 on:
-  push:
-    branches:
-      - 'master'
-      - 'feature/*'
   workflow_dispatch:
 
 jobs:
-  build:
+  build-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npx cap add ios
-      - run: npx cap add android
-      - run: fastlane icons
+
+      - name: Build Ionic App
+        run: |
+          npm ci
+          npx cap add ios
+
+#      - name: Set up ruby env
+#        uses: ruby/setup-ruby@v1
+#        with:
+#          ruby-version: 2.7.2
+#          bundler-cache: true
+
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
+          p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+
+      - name: Fastlane iOS App
+        run: |
+          fastlane icons
+          fastlane beta
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64: true
+          KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db

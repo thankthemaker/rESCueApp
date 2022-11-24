@@ -90,7 +90,7 @@
     "cordova-ios": "^6.2.0",
     "eslint": "^8.28.0",
     "eslint-plugin-import": "2.25.2",
-    "eslint-plugin-jsdoc": "30.7.6",
+    "eslint-plugin-jsdoc": "39.6.2",
     "eslint-plugin-prefer-arrow": "1.2.2",
     "fs-extra": "6.0.1",
     "git-describe": "4.0.4",
