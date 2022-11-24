@@ -36,7 +36,9 @@ jobs:
           p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
 
       - name: Fastlane iOS App
-        run: fastlane icons
+        run: |
+          fastlane icons
+          fastlane beta
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}

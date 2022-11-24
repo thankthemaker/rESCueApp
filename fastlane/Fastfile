@@ -164,7 +164,8 @@ platform :android do
     previous_build_number = google_play_track_version_codes(
       package_name: "org.thankthemaker.rescueapp",
       track: "internal",
-      json_key: "/Users/dgey/Desktop/Zertifikate/google-play-store-app-dev-pc-api-6446117498543538531-941-b116463fff2d.json"
+      json_key_data: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+#      json_key: "/Users/dgey/Desktop/Zertifikate/google-play-store-app-dev-pc-api-6446117498543538531-941-b116463fff2d.json"
     )[0]
 
     current_build_number = previous_build_number + 1
@@ -179,10 +180,10 @@ platform :android do
           build_type: "Release",
           print_command: false,
           properties: {
-            "android.injected.signing.store.file" => "/Users/dgey/Desktop/Zertifikate/PlayStoreAppDev",
-            "android.injected.signing.store.password" => "ux8nXZ1t2dg0jP",
-            "android.injected.signing.key.alias" => "development",
-            "android.injected.signing.key.password" => "ux8nXZ1t2dg0jP",
+            "android.injected.signing.store.file" => ENV["ANDROID_KEYSTORE_FILE"],
+            "android.injected.signing.store.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
+            "android.injected.signing.key.alias" => ENV["ANDROID_KEYSTORE_ALIAS"],
+            "android.injected.signing.key.password" => ENV["ANDROID_KEYSTORE_PASSWORD"],
             })
     upload_to_play_store(
                          package_name: "org.thankthemaker.rescueapp",
@@ -192,7 +193,8 @@ platform :android do
                          skip_upload_metadata: true,
                          skip_upload_images: true,
                          skip_upload_screenshots: true,
-                         json_key: "/Users/dgey/Desktop/Zertifikate/google-play-store-app-dev-pc-api-6446117498543538531-941-b116463fff2d.json"
+                         json_key_data: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+#                         json_key: "/Users/dgey/Desktop/Zertifikate/google-play-store-app-dev-pc-api-6446117498543538531-941-b116463fff2d.json"
                          )
   end
 
