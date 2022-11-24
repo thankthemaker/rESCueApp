@@ -32,12 +32,12 @@ jobs:
           p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
 
       - name: Fastlane iOS App
-        run: |
-          fastlane icons
-          fastlane beta
         env:
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
           APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64: true
           KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
+        run: |
+          fastlane icons
+          fastlane beta
