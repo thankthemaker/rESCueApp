@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - 'master'
-      - 'feature/*'
+#      - 'feature/*'
   workflow_dispatch:
 
 jobs:

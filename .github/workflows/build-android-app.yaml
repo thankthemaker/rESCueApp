@@ -28,5 +28,5 @@ jobs:
         run: |
           gem install bundler
           bundle install
-          sudo fastlane install_plugins
+          fastlane install_plugins
           fastlane android internal
