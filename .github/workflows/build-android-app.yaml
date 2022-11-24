@@ -18,6 +18,7 @@ jobs:
         run: |
           npm ci
           npx cap add android
+          ionic build --prod --aot --output-hashing=all && npx cap sync
 
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1
