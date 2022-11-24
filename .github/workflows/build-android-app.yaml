@@ -26,5 +26,7 @@ jobs:
           ruby-version: '2.7.2'
       - name: Fastlane Android App
         run: |
+          gem install bundler
+          bundle install
           sudo fastlane install_plugins
           fastlane android internal
