@@ -154,7 +154,7 @@ platform :android do
     previous_build_number = google_play_track_version_codes(
       package_name: "org.thankthemaker.rescueapp",
       track: "internal",
-      json_key_data: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+      json_key: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
     )[0]
 
     current_build_number = previous_build_number + 1
@@ -182,7 +182,7 @@ platform :android do
                          skip_upload_metadata: true,
                          skip_upload_images: true,
                          skip_upload_screenshots: true,
-                         json_key_data: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+                         json_key: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
                          )
   end
 
