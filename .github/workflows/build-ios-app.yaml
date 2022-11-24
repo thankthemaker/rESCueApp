@@ -12,15 +12,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+
       - name: Build Ionic App
         run: |
           npm ci
           npx cap add ios
+
+      - name: Set up ruby env
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7.2
+          bundler-cache: true
+
+      - name: Import Code-Signing Certificates
+        uses: Apple-Actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
+          p12-password: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+
       - name: Fastlane iOS App
         run: fastlane icons
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db

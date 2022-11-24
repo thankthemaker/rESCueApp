@@ -12,18 +12,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+
       - name: Build Ionic App
         run: |
           npm ci
           npx cap add android
+
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7.2'
+
       - name: Fastlane Android App
         run: |
           gem install bundler
