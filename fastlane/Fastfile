@@ -18,6 +18,7 @@ default_platform(:ios)
 platform :ios do
 
   desc "Load ASC API Key information to use in subsequent lanes"
+  # Use Credentials from ENV, see https://github.com/fastlane/fastlane/blob/master/fastlane/lib/fastlane/actions/app_store_connect_api_key.rb#L22
   lane :load_asc_api_key do
     app_store_connect_api_key(
       in_house: false # detecting this via ASC private key not currently supported

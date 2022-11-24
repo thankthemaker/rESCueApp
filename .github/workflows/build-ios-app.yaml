@@ -1,9 +1,8 @@
 name: build-ios-app
 on:
-  push:
-    branches:
-      - 'master'
-#      - 'feature/*'
+  create:
+    tags:
+      - *
   workflow_dispatch:
 
 jobs:
