@@ -7,16 +7,18 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-ios:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build Ionic App
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npx cap add ios
-      - run: fastlane icons
+        run: |
+          npm ci
+          npx cap add ios
+          fastlane icons
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}

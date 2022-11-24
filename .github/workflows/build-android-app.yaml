@@ -7,23 +7,22 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build Ionic App
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
-      - run: npm ci
-      - run: npx cap add android
-      - name: Setup Ruby
+        run: |
+          npm ci
+          npx cap add android
+      - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7.2'
-      - name: Setup Fastlane
-        run: bundle install
-      - run: sudo fastlane install_plugins
-      - run: fastlane android internal
-        env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          ruby-version: '2.7.x'
+        run: |
+          sudo fastlane install_plugins
+          fastlane android internal
