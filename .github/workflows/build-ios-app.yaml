@@ -16,6 +16,7 @@ jobs:
 
       - name: Build Ionic App
         run: |
+          npm install -g @ionic/cli
           npm ci
           npx cap add ios
           ionic build --prod --aot --output-hashing=all && npx cap sync
