@@ -1,8 +1,5 @@
 name: build-ios-app
 on:
-  create:
-    tags:
-      - *
   workflow_dispatch:
 
 jobs:
