@@ -12,10 +12,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build Ionic App
+      - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+      - name: Build Ionic App
         run: |
           npm ci
           npx cap add android
@@ -23,6 +24,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '2.7.x'
+      - name: Fastlane Android App
         run: |
           sudo fastlane install_plugins
           fastlane android internal

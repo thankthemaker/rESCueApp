@@ -12,13 +12,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build Ionic App
+      - name: Setup NodeJS
         uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+      - name: Build Ionic App
         run: |
           npm ci
           npx cap add ios
-          fastlane icons
+      - name: Fastlane iOS App
+        run: fastlane icons
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
