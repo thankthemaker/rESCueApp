@@ -71,7 +71,7 @@ platform :ios do
    app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-   profile_name = "App Provisioning Profile" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
+   profile_name = "David Gey"
 
    cert(
        api_key: api_key,
@@ -91,7 +91,7 @@ platform :ios do
   lane :build_release do |options|
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    profile_name = "App Provisioning Profile"
+    profile_name = "David Gey"
     output_name = "rESCueApp-iOS"
     export_method = "app-store"
     compile_bitcode = true
@@ -158,7 +158,7 @@ platform :android do
     previous_build_number = google_play_track_version_codes(
       package_name: "org.thankthemaker.rescueapp",
       track: "internal",
-      json_key: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+      json_key_data: ENV["GOOGLE_PLAY_STORE_API_KEY_JSON"]
     )[0]
 
     current_build_number = previous_build_number + 1
@@ -186,7 +186,7 @@ platform :android do
                          skip_upload_metadata: true,
                          skip_upload_images: true,
                          skip_upload_screenshots: true,
-                         json_key: ENV["GOOLE_PLAY_STORE_API_KEY_JSON"]
+                         json_key_data: ENV["GOOGLE_PLAY_STORE_API_KEY_JSON"]
                          )
   end
 
