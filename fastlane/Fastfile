@@ -178,7 +178,7 @@ platform :android do
       version_code: current_build_number
     )
     gradle(
-          project_dir: "android",
+          project_dir: "./android",
           task: "assemble",
           build_type: "Release",
           print_command: false,
