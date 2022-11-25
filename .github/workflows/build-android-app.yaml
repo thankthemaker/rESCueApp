@@ -34,8 +34,8 @@ jobs:
           ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
           GOOGLE_PLAY_STORE_API_KEY_JSON: ${{ secrets.GOOGLE_PLAY_STORE_API_KEY_JSON }}
         run: |
-          echo "$ANDROID_KEYSTORE_FILE" > android/app/PlayStoreAppDev.jks
-          ls -l android/app/PlayStoreAppDev.jks
+          echo "$ANDROID_KEYSTORE_FILE" > android/PlayStoreAppDev.jks
+          ls -l android/PlayStoreAppDev.jks
           gem install bundler
           bundle install
           fastlane install_plugins
