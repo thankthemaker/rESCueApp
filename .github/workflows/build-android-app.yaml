@@ -18,7 +18,7 @@ jobs:
         run: |
           npm install -g @ionic/cli
           npm ci
-          find node_modules -type f -name '*.gradle' -exec sed -i 's/compile/implementation/g' {} \;
+          find node_modules -type f -name '*.gradle' -exec sed -i 's/compile /implementation /g' {} \;
           npx cap add android
           ionic build --prod --aot --output-hashing=all && npx cap sync
 
