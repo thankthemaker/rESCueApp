@@ -34,8 +34,8 @@ jobs:
           ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
           GOOGLE_PLAY_STORE_API_KEY_JSON: ${{ secrets.GOOGLE_PLAY_STORE_API_KEY_JSON }}
         run: |
-          mkdir -p ./android/app/android/
-          echo "$ANDROID_KEYSTORE_FILE" > ./android/app/android/PlayStoreAppDev.jks
+          mkdir -p /android/
+          echo "$ANDROID_KEYSTORE_FILE" > /android/PlayStoreAppDev.jks
           ls -l ./android/app/android/PlayStoreAppDev.jks
           gem install bundler
           bundle install
