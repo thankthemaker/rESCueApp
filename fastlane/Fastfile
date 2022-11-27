@@ -35,25 +35,34 @@ platform :ios do
    app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-   increment_version_number_in_plist(
-     # specify specific version number (optional, omitting it increments patch version number)
-     version_number: '2.5',
-     xcodeproj: "ios/App/App.xcodeproj",
-     target: 'App'
-   )
+   package = load_json(json_path: "./package.json")
+
+#   increment_version_number_in_plist(
+#     # specify specific version number (optional, omitting it increments patch version number)
+#     version_number: ENV['APP_RELEASE_VERSION'],
+#     xcodeproj: "ios/App/App.xcodeproj",
+#     target: 'App'
+#   )
 
    current_version = get_version_number(
      xcodeproj: "ios/App/App.xcodeproj",
      target: "App"
    )
+
    latest_build_number = latest_testflight_build_number(
      api_key: api_key,
      version: current_version,
      app_identifier: app_identifier
    )
+
    increment_build_number(
      xcodeproj: "ios/App/App.xcodeproj",
      build_number: (latest_build_number + 1),
+   )
+
+   increment_version_number(
+     xcodeproj: "ios/App/App.xcodeproj",
+     version_number: package['version']
    )
   end
 
@@ -150,9 +159,9 @@ platform :ios do
     fetch_and_increment_build_number
     prepare_signing
     build_release
-    upload_to_testflight(
-      skip_waiting_for_build_processing: true
-    )
+#    upload_to_testflight(
+#      skip_waiting_for_build_processing: true
+#    )
   end
 end
 
@@ -164,6 +173,8 @@ platform :android do
 
   desc "Submit a new internal Build"
   lane :internal do
+
+    package = load_json(json_path: "./package.json")
 
     previous_build_number = google_play_track_version_codes(
       package_name: "org.thankthemaker.rescueapp",
@@ -177,6 +188,12 @@ platform :android do
       gradle_file_path: "android/app/build.gradle",
       version_code: current_build_number
     )
+
+    increment_version_name(
+      gradle_file_path: "./android/app/build.gradle",
+      version_name: package['version']
+    )
+
     gradle(
           project_dir: "./android",
           task: "assemble",
@@ -212,6 +229,6 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease")
-    upload_to_play_store
+#    upload_to_play_store
   end
 end

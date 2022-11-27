@@ -29,6 +29,7 @@ jobs:
 
       - name: Fastlane Android App
         env:
+          APP_RELEASE_VERSION: ${{ GITHUB_REF_NAME }}
           ANDROID_KEYSTORE_FILE: ${{ secrets.ANDROID_KEYSTORE_FILE }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEYSTORE_ALIAS: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
