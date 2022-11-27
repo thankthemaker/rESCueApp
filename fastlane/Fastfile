@@ -158,9 +158,9 @@ platform :ios do
     fetch_and_increment_build_number
     prepare_signing
     build_release
-#    upload_to_testflight(
-#      skip_waiting_for_build_processing: true
-#    )
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
   end
 end
 

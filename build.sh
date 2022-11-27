@@ -8,19 +8,21 @@ if [[ "x${os}x" == "xx" ]]; then
   exit -1
 fi
 
-ionic build --prod --aot --output-hashing=all && npx cap sync
+#ionic build --prod --aot --output-hashing=all && npx cap sync
+
+ln -snf ~/.fastlane_env fastlane/.env.default
 
 if [[ "$os" == "android" ]]; then
- cd android/
+ find node_modules -type f -name '*.gradle' -exec sed -i '' 's/compile /implementation /g' {} \;
+ mkdir -p /var/tmp/android/
+ cp /Users/dgey/Desktop/Zertifikate/PlayStoreAppDev /var/tmp/android/PlayStoreAppDev.jks
  fastlane android internal
- cd -
+ rm -rf /var/tmp/android
 fi
 
 if [[ "$os" == "ios" ]]; then
   export FASTLANE_ITUNES_TRANSPORTER_USE_SHELL_SCRIPT=1
   export FASTLANE_ITUNES_TRANSPORTER_PATH=/Applications/Transporter.app/Contents/itms
- cd ios/App/fastlane
  fastlane ios beta
- cd -
 fi
 
