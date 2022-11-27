@@ -175,6 +175,11 @@ platform :android do
 
     package = load_json(json_path: "./package.json")
 
+    increment_version_name(
+      gradle_file_path: "./android/app/build.gradle",
+      version_name: package['version']
+    )
+
     previous_build_number = google_play_track_version_codes(
       package_name: "org.thankthemaker.rescueapp",
       track: "internal",
@@ -186,11 +191,6 @@ platform :android do
     increment_version_code(
       gradle_file_path: "android/app/build.gradle",
       version_code: current_build_number
-    )
-
-    increment_version_name(
-      gradle_file_path: "./android/app/build.gradle",
-      version_name: package['version']
     )
 
     gradle(
@@ -214,20 +214,5 @@ platform :android do
                          skip_upload_screenshots: true,
                          json_key_data: ENV["GOOGLE_PLAY_STORE_API_KEY_JSON"]
                          )
-  end
-
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
-
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-#    upload_to_play_store
   end
 end
