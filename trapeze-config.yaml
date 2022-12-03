@@ -1,0 +1,34 @@
+platforms:
+  android:
+    manifest:
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.BLUETOOTH" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.READ_APP_BADGE" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.WAKE_LOCK" />
+
