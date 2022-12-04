@@ -33,7 +33,7 @@ import {NGXLogger} from "ngx-logger";
       return this.http.get(`${this.releaseUrl}/firmware-${version}.bin`, {
         responseType: 'arraybuffer'
       }).pipe(
-        timeout(5000)
+        timeout(10000)
       );
     }
 
@@ -41,7 +41,7 @@ import {NGXLogger} from "ngx-logger";
       return this.http.get(`${this.releaseUrl}/firmware-${version}.sha256`, {
         responseType: 'text'
       }).pipe(
-        timeout(5000)
+        timeout(10000)
       );
     }
 
