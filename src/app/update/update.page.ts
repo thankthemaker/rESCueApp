@@ -30,7 +30,7 @@ export class UpdatePage implements OnInit {
   remaining: number;
   amountToWrite: number;
   currentPosition: number;
-  loading: any;
+  loading: HTMLIonLoadingElement;
   downloadFinished = false;
   downloadFailed = false;
   updateInProgress = false;
@@ -68,30 +68,54 @@ export class UpdatePage implements OnInit {
   }
 
   async ngOnInit() {
-    this.loading = await this.loadingCtrl.create({
-      message: 'Downloading firmware, please wait...'
-    });
+    try {
+      this.loading = await this.loadingCtrl.create({
+        message: 'Downloading firmware, please wait...'
+      });
 
-    await this.loading.present();
+      await this.loading.present();
 
-    this.firmwareService.getChecksum(this.softwareVersion).subscribe(result => {
-      this.logger.debug(result + ', length: ' + result.length);
-      const regex = '^[0-9a-z]{64}$';
-      if (!result.slice(0, -1).match(regex)) {
-        this.logger.info('No sha256sum found');
-        this.downloadFailed = true;
-      } else {
-        this.downloadFailed = false;
-        this.checksum = result;
-      }
-    }, error => this.downloadFailed = true);
+      await new Promise<void>((res, rej) => {
+        this.firmwareService.getChecksum(this.softwareVersion).subscribe(result => {
+          this.logger.debug(result + ', length: ' + result.length);
+          const regex = '^[0-9a-z]{64}$';
+          if (!result.slice(0, -1).match(regex)) {
+            rej(new Error('No sha256sum found'));
+          } else {
+            this.downloadFailed = false;
+            this.checksum = result;
+            res();
+          }
+        }, error => {
+          rej(error);
+        });
+      });
 
-    this.firmwareService.getFirmwareFile(this.softwareVersion).subscribe(result => {
-      this.totalSize = result.byteLength;
-      this.downloadFinished = true;
-      this.updateData = result;
+      await new Promise<void>((res, rej) => {
+        this.firmwareService.getFirmwareFile(this.softwareVersion).subscribe(result => {
+          this.totalSize = result.byteLength;
+          this.downloadFinished = true;
+          this.updateData = result;
+          this.loading.dismiss();
+          res();
+        }, error => {
+          rej(error);
+        });
+      });
+    } catch(e) {
+      this.logger.info(`FAILED: ${e.message}`);
+      this.downloadFailed = true;
       this.loading.dismiss();
-    }, error => this.downloadFailed = true);
+      const toast = await this.toastCtrl.create({
+        header: 'Failed to retrieve firmware',
+        message: e.message || 'Unknown error',
+        position: 'bottom',
+        color: 'danger',
+        animated: true,
+        duration: 3000,
+      });
+      await toast.present();
+    }
   }
 
   async updateDevice() {

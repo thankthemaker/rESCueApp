@@ -5,12 +5,10 @@ This app is meant to support the enrollment of new rESCue devices and also repla
 
 ## Capacitor
 
-This project is based on Capacitor to build the Androis and iOS apps
+This project is based on Capacitor to build the Android and iOS apps
 
 ### Install dependencies
-```npm install @capacitor/android```
-
-```npm install @capacitor/ios```
+```npm install```
 
 ### Add platforms
 ```npx cap add android```
@@ -25,4 +23,13 @@ This will create a ios subfolder within the project root
 ```npm install capacitor-resources -g```
 
 ```capacitor-resources```
+
+### Run Project
+```npm run start```
+
+This will start the web app
+
+```npx run start:mobile```
+
+This will run the mobile app on either Android or iOS
 

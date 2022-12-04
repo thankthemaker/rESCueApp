@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:mobile": "cap run",
     "prebuild": "npm version patch",
     "build": "ng build",
     "test": "ng test",
