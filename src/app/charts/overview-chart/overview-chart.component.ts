@@ -199,7 +199,7 @@ export class OverviewChartComponent implements OnInit {
     const batteryLow = appSettings.lowVoltage;
     const batteryMax = appSettings.maxVoltage;
 
-    console.log(`min ${batteryMin}, low ${batteryLow}, max ${batteryMax}`)
+    console.log(`min ${batteryMin}, low ${batteryLow}, max ${batteryMax}`);
 
     this.speedGaugeOptions = Highcharts.merge(this.gaugeOptions, {
       yAxis: {

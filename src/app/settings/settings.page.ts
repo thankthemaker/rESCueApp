@@ -7,7 +7,7 @@ import {AppSettings} from '../models/AppSettings';
 import {NGXLogger} from 'ngx-logger';
 import {TextinputComponent} from '../components/textinput/textinput.component';
 import {RescueConf} from '../models/RescueConf';
-import {RescueData} from "../models/RescueData";
+import {RescueData} from '../models/RescueData';
 
 @Component({
   selector: 'app-enroll',

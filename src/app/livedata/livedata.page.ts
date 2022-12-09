@@ -9,8 +9,8 @@ import {RescueData} from '../models/RescueData';
 import {ListpickerComponent} from '../components/listpicker/listpicker.component';
 import {NGXLogger} from 'ngx-logger';
 import {MapComponent} from '../components/map/map.component';
-import {StorageService} from "../services/storage.service";
-import {KeysResult} from "@capacitor/preferences";
+import {StorageService} from '../services/storage.service';
+import {KeysResult} from '@capacitor/preferences';
 
 @Component({
   selector: 'app-livedata',
@@ -37,7 +37,7 @@ export class LivedataPage implements OnInit, OnDestroy {
   rides: string[];
   liveDataActive = false;
   google: any;
-  geoOptions : PositionOptions;
+  geoOptions: PositionOptions;
 
   constructor(
     private popupController: PopoverController,
@@ -82,7 +82,11 @@ export class LivedataPage implements OnInit, OnDestroy {
       ]
     );
 
-    this.dualGauge.dualGaugeOptions.series = [(this.rescueData.erpm * 100) / 10000, this.rescueData.dutyCycle, this.rescueData.batteryLevel];
+    this.dualGauge.dualGaugeOptions.series = [
+      (this.rescueData.erpm * 100) / 10000,
+      this.rescueData.dutyCycle,
+      this.rescueData.batteryLevel
+    ];
 
     this.batteryGauge.batteryGaugeOptions.series = [bat];
     const oldImage = this.batteryGauge.chart.plotOptions.radialBar.hollow.image;
@@ -123,9 +127,7 @@ export class LivedataPage implements OnInit, OnDestroy {
               offsetY: 76,
               fontSize: '22px',
               color: undefined,
-              formatter: (val) => {
-                return val + '%';
-              }
+              formatter: (val) => val + '%'
             }
           }
         }

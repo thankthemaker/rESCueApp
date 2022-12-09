@@ -7,7 +7,7 @@ import {
   ApexTooltip,
   ApexXAxis,
   ApexYAxis, ChartComponent
-} from "ng-apexcharts";
+} from 'ng-apexcharts';
 
 export type TemperatureChartOptions = {
   title: ApexTitleSubtitle;
@@ -73,16 +73,16 @@ export class TemperatureChartComponent implements OnInit {
         enabled: false
       },
       stroke: {
-        curve: "smooth"
+        curve: 'smooth'
       },
       xaxis: {
-        type: "datetime",
+        type: 'datetime',
         categories: []
       },
       yaxis: [
         {
           title: {
-            text: "Temperature",
+            text: 'Temperature',
             style: {
               color: '#808289',
             }
@@ -103,7 +103,7 @@ export class TemperatureChartComponent implements OnInit {
       ],
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm"
+          format: 'dd/MM/yy HH:mm'
         }
       }
     };

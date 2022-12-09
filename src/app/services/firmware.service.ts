@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { timeout, catchError } from 'rxjs/operators';
-import {NGXLogger} from "ngx-logger";
+import {NGXLogger} from 'ngx-logger';
 
 
 @Injectable({
@@ -16,6 +16,7 @@ import {NGXLogger} from "ngx-logger";
 
     /**
      * Constructor of the Service with Dependency Injection
+     *
      * @param http The standard Angular HttpClient to make requests
      */
     constructor(
@@ -23,13 +24,13 @@ import {NGXLogger} from "ngx-logger";
       private logger: NGXLogger) { }
 
     /**
-    * Get version file from remote
-    */
+     * Get version file from remote
+     */
     getVersioninfo(): Observable<any> {
       return this.http.get(`${this.versionFilelUrl}`);
     }
 
-    getFirmwareFile(version: string, ) : Observable<any> {
+    getFirmwareFile(version: string, ): Observable<any> {
       return this.http.get(`${this.releaseUrl}/firmware-${version}.bin`, {
         responseType: 'arraybuffer'
       }).pipe(

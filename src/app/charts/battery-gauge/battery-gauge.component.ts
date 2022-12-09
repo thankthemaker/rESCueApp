@@ -65,9 +65,7 @@ export class BatteryGaugeComponent implements OnInit {
               offsetY: 76,
               fontSize: '22px',
               color: undefined,
-              formatter: (val) => {
-                return val + '%';
-              }
+              formatter: (val) => val + '%'
             }
           }
         }
