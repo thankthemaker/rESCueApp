@@ -27,13 +27,8 @@
       </ion-card>
     </ion-item-group>
     <ion-item-group *ngIf="appSettings.notificationsEnabled">
-      <ion-item-divider>
-        <ion-label>
-          Notification types
-        </ion-label>
-      </ion-item-divider>
       <ion-item>
-        <ion-label position="stacked">Battery Warnings</ion-label>
+        <ion-label position="stacked">Battery warnings</ion-label>
         <ion-toggle slot="end" name="batteryNotificationEnabled" [(ngModel)]="appSettings.batteryNotificationEnabled"
                     (ngModelChange)="appSettings.toggleValue('batteryNotificationEnabled', $event)"></ion-toggle>
         <ion-grid>
@@ -64,7 +59,7 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Current Warnings</ion-label>
+        <ion-label position="stacked">Current warnings</ion-label>
         <ion-toggle slot="end" name="currentNotificationEnabled" [(ngModel)]="appSettings.currentNotificationEnabled"
                     (ngModelChange)="appSettings.toggleValue('currentNotificationEnabled', $event)"></ion-toggle>
         <ion-grid *ngIf="appSettings.currentNotificationEnabled">
@@ -103,7 +98,7 @@
         </ion-grid>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">DutyCycle Warnings</ion-label>
+        <ion-label position="stacked">Duty cycle warnings</ion-label>
         <ion-toggle slot="end" name="dutycycleNotificationEnabled" [(ngModel)]="appSettings.dutycycleNotificationEnabled"
                     (ngModelChange)="appSettings.toggleValue('dutycycleNotificationEnabled', $event)"></ion-toggle>
         <ion-grid *ngIf="appSettings.dutycycleNotificationEnabled">

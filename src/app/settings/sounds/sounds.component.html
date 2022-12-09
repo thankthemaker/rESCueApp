@@ -1,12 +1,12 @@
 <ion-item>
-  <ion-label position="stacked">Start Melody</ion-label>
+  <ion-label position="stacked">Startup</ion-label>
   <ion-select [(ngModel)]="rescueConf.startSoundIndex"
               (ionChange)="changeStartSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()"
               interface="action-sheet">
-    <ion-select-option value="0">No Sound</ion-select-option>
+    <ion-select-option value="0">No sound</ion-select-option>
     <ion-select-option value="100">Simpsons</ion-select-option>
-    <ion-select-option value="101">Topgun</ion-select-option>
+    <ion-select-option value="101">Top Gun</ion-select-option>
     <ion-select-option value="102">A-Team</ion-select-option>
     <ion-select-option value="103">Mission Impossible</ion-select-option>
     <ion-select-option value="104">Danger Mouse</ion-select-option>
@@ -19,27 +19,27 @@
     <ion-select-option value="111">Star Wars - End</ion-select-option>
     <ion-select-option value="112">Star Wars - Cantina</ion-select-option>
     <ion-select-option value="113">Scooter - How much</ion-select-option>
-    <ion-select-option value="114">Back To The Future</ion-select-option>
+    <ion-select-option value="114">Back to the Future</ion-select-option>
   </ion-select>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Battery Warning Sound</ion-label>
+  <ion-label position="stacked">Battery warning</ion-label>
   <ion-select [(ngModel)]="rescueConf.batteryWarningSoundIndex"
               (ionChange)="changeBatteryWarningSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
-  <ion-select-option value="0">No Sound</ion-select-option>
-    <ion-select-option value="400">Two Short Beeps</ion-select-option>
+  <ion-select-option value="0">No sound</ion-select-option>
+    <ion-select-option value="400">Two short beeps</ion-select-option>
     <ion-select-option value="402">Siren</ion-select-option>
-    <ion-select-option value="406">Negative Feedback Beep</ion-select-option>
+    <ion-select-option value="406">Negative feedback beep</ion-select-option>
   </ion-select>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Battery Alarm Sound</ion-label>
+  <ion-label position="stacked">Battery alarm</ion-label>
   <ion-select [(ngModel)]="rescueConf.batteryAlarmSoundIndex"
               (ionChange)="changeBatteryAlarmSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
-  <ion-select-option value="0">No Sound</ion-select-option>
+  <ion-select-option value="0">No sound</ion-select-option>
     <ion-select-option value="402">Siren</ion-select-option>
-    <ion-select-option value="300">Death March</ion-select-option>
+    <ion-select-option value="300">Death march</ion-select-option>
   </ion-select>
 </ion-item>

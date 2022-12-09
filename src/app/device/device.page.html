@@ -29,10 +29,10 @@
         </ion-row>
         <ion-row *ngIf="bleService.isRescueDevice">
           <ion-col>
-            <p>HW-Version: {{hardwareVersion}}</p>
+            <p>Hardware version: {{hardwareVersion}}</p>
           </ion-col>
           <ion-col>
-            <p>FW-Version: {{softwareVersion}}</p>
+            <p>Firmware version: {{softwareVersion}}</p>
           </ion-col>
         </ion-row>
         <ion-row *ngIf="bleService.isRescueDevice">
@@ -40,7 +40,7 @@
             <p>Looptime: {{rescueData.loopTime}}</p>
           </ion-col>
           <ion-col>
-            <p>Max. Looptime: {{rescueData.maxLoopTime}}</p>
+            <p>Max looptime: {{rescueData.maxLoopTime}}</p>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -82,10 +82,10 @@
       </ion-col>
       <ion-col size="5">
         <div *ngIf="appSettings.metricSystemEnabled">
-          Abs.: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} km<br/>
+          Lifetime: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} km<br/>
         </div>
         <div *ngIf="!appSettings.metricSystemEnabled">
-          Abs.: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} mi<br/>
+          Lifetime: {{(rescueData.tachometerAbs / 438 / 1000) | number: '1.1-1'}} mi<br/>
         </div>
       </ion-col>
     </ion-row>

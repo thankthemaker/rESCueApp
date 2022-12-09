@@ -1,5 +1,5 @@
 <ion-item>
-  <ion-label position="stacked">Number of pixel</ion-label>
+  <ion-label position="stacked">Number of pixels</ion-label>
   <ion-input class="ion-text-right" type="number" value="32" [(ngModel)]="rescueConf.numberPixelLight"></ion-input>
 </ion-item>
 <ion-item>
@@ -9,13 +9,8 @@
     <ion-label>Change Type</ion-label>
   </ion-chip>
 </ion-item>
-<ion-item-divider>
-  <ion-label>
-    Light pattern
-  </ion-label>
-</ion-item-divider>
 <ion-item>
-  <ion-label position="stacked">Start Light Pattern</ion-label>
+  <ion-label position="stacked">Startup light pattern</ion-label>
   <ion-select [(ngModel)]="rescueConf.startLightIndex" interface="action-sheet">
     <ion-select-option value="1">Chasing</ion-select-option>
     <ion-select-option value="2">Cylone</ion-select-option>
@@ -24,22 +19,30 @@
   </ion-select>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Idle Light Pattern</ion-label>
+  <ion-label position="stacked">Idle light pattern</ion-label>
   <ion-select [(ngModel)]="rescueConf.idleLightIndex" interface="action-sheet">
     <ion-select-option value="1">Chasing</ion-select-option>
     <ion-select-option value="2">Cylone</ion-select-option>
     <ion-select-option value="3">Rainbow</ion-select-option>
     <ion-select-option value="4">Pulsating</ion-select-option>
-    <ion-select-option value="5">Battery-Indicator</ion-select-option>
+    <ion-select-option value="5">Battery indicator</ion-select-option>
   </ion-select>
+</ion-item>
+<ion-item>
+  <ion-label position="stacked" class="ion-text-wrap">LED idle timeout [{{ (rescueConf.idleLightTimeout > 0 ? rescueConf.idleLightTimeout + 'ms' : 'infinite') }}]
+    <ion-range min="0" max="60000" step="500" [(ngModel)]="rescueConf.idleLightTimeout" pin snaps color="secondary">
+      <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
+      <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
+    </ion-range>
+  </ion-label>
 </ion-item>
 <ion-item-divider>
   <ion-label>
-    Light settings
+    Color and Brightness
   </ion-label>
 </ion-item-divider>
 <ion-item>
-  <ion-label class="ion-text-wrap">Front color</ion-label>
+  <ion-label position="stacked" class="ion-text-wrap">Front color</ion-label>
   {{lightColorPrimary}}
   <ion-note slot="end">
     <ngx-colors ngx-colors-trigger
@@ -51,7 +54,7 @@
   </ion-note>
 </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">Back color</ion-label>
+  <ion-label position="stacked" class="ion-text-wrap">Back color</ion-label>
   {{lightColorSecondary}}
   <ion-note slot="end">
     <ngx-colors ngx-colors-trigger
@@ -63,7 +66,7 @@
   </ion-note>
 </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">LED Maximum Brightness [{{rescueConf.lightMaxBrightness}}]
+  <ion-label position="stacked" class="ion-text-wrap">LED max brightness [{{rescueConf.lightMaxBrightness}}]
           <ion-range min="0" max="255" step="1" [(ngModel)]="rescueConf.lightMaxBrightness" pin snaps color="secondary">
             <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>
             <ion-icon slot="end" color="secondary" name="sunny"></ion-icon>
@@ -71,16 +74,8 @@
         </ion-label>
 </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">LED Fading Duration [{{rescueConf.lightFadingDuration}} ms]
+  <ion-label  position="stacked"class="ion-text-wrap">LED fading duration [{{rescueConf.lightFadingDuration}} ms]
     <ion-range min="0" max="500" step="1" [(ngModel)]="rescueConf.lightFadingDuration" pin snaps color="secondary">
-      <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
-      <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
-    </ion-range>
-  </ion-label>
-</ion-item>
-<ion-item>
-  <ion-label class="ion-text-wrap">LED Idle Timeout [{{ (rescueConf.idleLightTimeout > 0 ? rescueConf.idleLightTimeout + 'ms' : 'infinite') }}]
-    <ion-range min="0" max="60000" step="500" [(ngModel)]="rescueConf.idleLightTimeout" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
     </ion-range>
@@ -88,16 +83,55 @@
 </ion-item>
 <ion-item-divider>
   <ion-label>
-    Brake light
+    Brake Light
   </ion-label>
 </ion-item-divider>
 <ion-item>
-  <ion-label position="stacked">Enable Brake Light</ion-label>
+  <ion-label position="stacked">Enable brake light</ion-label>
   <ion-toggle slot="end" name="brakeLightsEnabled" [(ngModel)]="rescueConf.brakeLightEnabled"></ion-toggle>
 </ion-item>
 <ion-item *ngIf="rescueConf.brakeLightEnabled">
-  <ion-label class="ion-text-wrap">Brake Light Amp Min [{{rescueConf.brakeLightMinAmp}} A]
+  <ion-label position="stacked" class="ion-text-wrap">Min brake light amps [{{rescueConf.brakeLightMinAmp}} A]
     <ion-range min="1" max="10" step="1" [(ngModel)]="rescueConf.brakeLightMinAmp" pin snaps color="secondary">
+    </ion-range>
+  </ion-label>
+</ion-item>
+<ion-item-divider>
+  <ion-grid>
+    <ion-row>
+      <ion-label>
+        Light Bar
+      </ion-label>
+    </ion-row>
+    <ion-row>
+      <ion-text>
+        <sub>
+          The light bar displays the current battery monitor status (settings below)
+        </sub>
+      </ion-text>
+    </ion-row>
+  </ion-grid>
+</ion-item-divider>
+<ion-item>
+  <ion-label position="stacked">Number of pixels</ion-label>
+  <ion-input class="ion-text-right" type="number" value="5" min="0" slot="end"
+             [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
+</ion-item>
+<ion-item *ngIf="rescueConf.numberPixelBatMon !== 0">
+  <ion-label position="stacked" class="ion-text-wrap">Maximum LED brightness [{{rescueConf.lightbarMaxBrightness}}]
+    <ion-range min="0" max="255" step="1" [(ngModel)]="rescueConf.lightbarMaxBrightness" pin snaps color="secondary"
+               (ionKnobMoveEnd)="changeLightbarMaxBrightness($event)">
+      <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>
+      <ion-icon slot="end" color="secondary" name="sunny"></ion-icon>
+    </ion-range>
+  </ion-label>
+</ion-item>
+<ion-item *ngIf="rescueConf.numberPixelBatMon !== 0">
+  <ion-label position="stacked" class="ion-text-wrap">Turn off at ERPM [{{rescueConf.lightbarTurnOffErpm}}]
+      <ion-range min="0" max="5000" step="500" [(ngModel)]="rescueConf.lightbarTurnOffErpm" pin snaps color="secondary"
+                 (ionKnobMoveEnd)="changeLightbarTurnOffErpm($event)">
+      <ion-icon slot="start" size="small" color="secondary" name="speedometer-outline"></ion-icon>
+      <ion-icon slot="end" color="secondary" name="speedometer-outline"></ion-icon>
     </ion-range>
   </ion-label>
 </ion-item>

@@ -26,8 +26,8 @@
     </ion-card-header>
 
     <ion-card-content>
-      <p>Hardware-Version: {{hardwareVersion}}</p>
-      <p>Firmware-Version: {{softwareVersion}}</p>
+      <p>Hardware version: {{hardwareVersion}}</p>
+      <p>Firmware version: {{softwareVersion}}</p>
     </ion-card-content>
   </ion-card>
 
@@ -66,10 +66,21 @@
     </app-battery>
 
     <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="bus-outline"></ion-icon>
-        CANBUS
-      </ion-label>
+      <ion-grid>
+        <ion-row>
+          <ion-label class="item-divider">
+            <ion-icon name="bus-outline"></ion-icon>
+            CANBUS
+          </ion-label>
+        </ion-row>
+        <ion-row>
+          <ion-text>
+            <sub>
+              Please configure your VESC ID appropriately to match the ID in VESC® TOOL
+            </sub>
+          </ion-text>
+        </ion-row>
+      </ion-grid>
     </ion-item-divider>
     <app-canbus #canbusComponent
                 [rescueConf]="rescueConf">
@@ -82,35 +93,25 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-text>
-        <p>Send local push notifications if supported by your system.</p>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Enable Notifications</ion-label>
+      <ion-label position="stacked">Enable push notifications</ion-label>
       <ion-toggle slot="end" name="notificationsEnabled" checked
                   [(ngModel)]="rescueConf.isNotificationEnabled"
                   (ngModelChange)="toggleNotificationsEnabled($event)"></ion-toggle>
     </ion-item>
 
     <ion-item-group *ngIf="rescueConf.isNotificationEnabled">
-      <ion-item-divider>
-        <ion-label>
-          Notification types
-        </ion-label>
-      </ion-item-divider>
       <ion-item>
-        <ion-label position="stacked">Battery Warnings</ion-label>
+        <ion-label position="stacked">Battery warnings</ion-label>
         <ion-toggle slot="end" name="batteryNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isBatteryNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">Current Warnings</ion-label>
+        <ion-label position="stacked">Current warnings</ion-label>
         <ion-toggle slot="end" name="currentNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isCurrentNotificationEnabled"></ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">DutyCycle Warnings</ion-label>
+        <ion-label position="stacked">Duty cycle warnings</ion-label>
         <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked
                     [(ngModel)]="rescueConf.isErpmNotificationEnabled"></ion-toggle>
       </ion-item>
@@ -119,11 +120,11 @@
     <ion-item-divider>
       <ion-label class="item-divider">
         <ion-icon name="bluetooth" slot="start"></ion-icon>
-        Bluetooth Settings
+        Bluetooth
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label class="ion-text-wrap">MTU size [{{rescueConf.mtuSize}}]
+      <ion-label position="stacked" class="ion-text-wrap">MTU size [{{rescueConf.mtuSize}}]
         <ion-range min="23" max="512" step="1" [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
           <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
           <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
@@ -138,7 +139,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label position="stacked">LogLevel</ion-label>
+      <ion-label position="stacked">Log level</ion-label>
       <ion-select value="{{rescueConf.logLevel}}"
                   (ionChange)="changeLoglevel($event)"
                   interface="action-sheet">
