@@ -8,10 +8,10 @@ import {PopoverController} from '@ionic/angular';
 })
 export class ListpickerComponent implements OnInit {
 
-  constructor(private popover: PopoverController) { }
-
-  @Input() title: string = '';
+  @Input() title = '';
   @Input() items: any;
+
+  constructor(private popover: PopoverController) { }
 
   ngOnInit() {}
 

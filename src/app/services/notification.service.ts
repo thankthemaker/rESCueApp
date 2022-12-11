@@ -3,8 +3,8 @@ import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {Device} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
-import {AppSettings} from "../models/AppSettings";
-  import {StorageService} from "./storage.service";
+import {AppSettings} from '../models/AppSettings';
+  import {StorageService} from './storage.service';
 
 @Injectable({
   providedIn: 'root'

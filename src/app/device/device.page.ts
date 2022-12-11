@@ -12,7 +12,7 @@ import {generatePacket, VescMessageHandler, VescMessageParser} from '@thankthema
 import {Buffer} from 'buffer';
 import {NotificationsService} from '../services/notification.service';
 import {StorageService} from '../services/storage.service';
-import {RescueConf} from "../models/RescueConf";
+import {RescueConf} from '../models/RescueConf';
 
 @Component({
   selector: 'app-device',
@@ -107,9 +107,7 @@ export class DevicePage implements OnInit, OnDestroy {
     });
 
     router.events
-      .pipe(filter((event: NavigationStart) => {
-        return (event instanceof NavigationStart);
-      }))
+      .pipe(filter((event: NavigationStart) => (event instanceof NavigationStart)))
       .subscribe((event: NavigationStart) => {
         if (event.restoredState !== undefined) {
           this.logger.debug('restoredState');

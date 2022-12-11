@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
 import {PopoverController} from '@ionic/angular';
-import {NGXLogger} from "ngx-logger";
 import { RescueConf } from 'src/app/models/RescueConf';
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-lights',
@@ -11,11 +11,15 @@ import { RescueConf } from 'src/app/models/RescueConf';
 })
 export class LightsComponent implements OnInit {
 
+  @Input() rescueConf: any;
+  @Output() ledTypeUpdate = new EventEmitter();
+
   colorPickerControlsStr: any = 'no-alpha';
   colorPickerFormat = 'hex';
   lightColorPrimary = '';
   lightColorSecondary = '';
   @Input() rescueConf: RescueConf;
+
 
   constructor(
     private popoverController: PopoverController,
@@ -26,7 +30,6 @@ export class LightsComponent implements OnInit {
     this.lightColorSecondary = '#' + Number(this.rescueConf.lightColorSecondary).toString(16);
   }
 
-  @Output() ledTypeUpdate = new EventEmitter();
 
   async changeLedType(event) {
     const popover = await this.popoverController.create({

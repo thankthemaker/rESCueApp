@@ -30,9 +30,7 @@ const legendNormal: ApexLegend = {
   labels: {
     useSeriesColors: true
   },
-  formatter: (seriesName, opts) => {
-    return seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex];
-  },
+  formatter: (seriesName, opts) => seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex],
   itemMargin: {
     horizontal: 3
   },
@@ -54,9 +52,7 @@ const legendSmall: ApexLegend = {
   labels: {
     useSeriesColors: true
   },
-  formatter: (seriesName, opts) => {
-    return seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex];
-  },
+  formatter: (seriesName, opts) => seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex],
   itemMargin: {
     horizontal: 3
   },
@@ -77,9 +73,7 @@ const legendMini: ApexLegend = {
   labels: {
     useSeriesColors: true
   },
-  formatter: (seriesName, opts) => {
-    return seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex];
-  },
+  formatter: (seriesName, opts) => seriesName + ':  ' + opts.w.globals.series[opts.seriesIndex],
   itemMargin: {
     horizontal: 3,
     vertical: 0

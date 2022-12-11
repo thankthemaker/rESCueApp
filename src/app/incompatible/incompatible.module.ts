@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { IncompatiblePageRoutingModule } from './incompatible-routing.module';
 
 import { IncompatiblePage } from './incompatible.page';
-import {AccordionComponent} from "../components/accordion/accordion.component";
+import {AccordionComponent} from '../components/accordion/accordion.component';
 
 @NgModule({
   imports: [

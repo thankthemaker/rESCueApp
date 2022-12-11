@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    Preferences.configure({'group': 'rESCueApp'});
+    Preferences.configure({group: 'rESCueApp'});
     this.systemDark = window.matchMedia('(prefers-color-scheme: dark)');
     this.systemDark.addListener(this.colorTest);
     this.version = environment.appVersion;

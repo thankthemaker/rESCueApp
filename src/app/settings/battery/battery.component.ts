@@ -11,10 +11,11 @@ import {NGXLogger} from 'ngx-logger';
 })
 export class BatteryComponent implements OnInit {
 
+  @Input() rescueConf: any;
+  @Output() changeEvent = new EventEmitter<{ key: string; value: string }>();
+
   batteryPresets: any;
   toast: any;
-  @Input() rescueConf: any;
-  @Output() changeEvent = new EventEmitter<{ key: string, value: string }>();
 
   constructor(
     private popoverController: PopoverController,
