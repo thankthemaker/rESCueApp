@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'appsettings/notifications',
     loadChildren: () => import('./appsettings/notifications/notifications.module').then( m => m.NotificationsPageModule)
   },
+  {
+    path: 'install',
+    loadChildren: () => import('./install/install.module').then( m => m.InstallPageModule)
+  },
 ];
 
 @NgModule({
