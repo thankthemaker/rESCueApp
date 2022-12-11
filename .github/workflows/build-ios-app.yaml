@@ -24,12 +24,6 @@ jobs:
           ionic build --prod --aot --output-hashing=all
           npx cap sync
 
-      #      - name: Set up ruby env
-#        uses: ruby/setup-ruby@v1
-#        with:
-#          ruby-version: 2.7.2
-#          bundler-cache: true
-
       - name: Import Code-Signing Certificates
         uses: Apple-Actions/import-codesign-certs@v1
         with:
@@ -44,18 +38,4 @@ jobs:
           APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64 }}
           KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
         run: |
-#          fastlane ios icons
           fastlane ios beta
-
-#      - name: Get NPM-Package-Version
-#        id: package-version
-#        uses: martinbeentjes/npm-get-version-action@main
-
-#      - name: Draft Release Version
-#        uses: softprops/action-gh-release@v1
-#        if: startsWith(github.ref, 'refs/tags/')
-#        with:
-#          name: ${{ steps.package-version.outputs.current-version}}
-#          tag_name: ${{ steps.package-version.outputs.current-version}}
-#          draft: true
-#          generate_release_notes: true
