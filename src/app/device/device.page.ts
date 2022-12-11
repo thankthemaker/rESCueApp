@@ -316,6 +316,9 @@ export class DevicePage implements OnInit, OnDestroy {
         message: 'Your device is already running the latest version ' + softwareVersion,
         color: 'primary',
         position: 'middle',
+        htmlAttributes: [
+          { myattribute: 'updateToast' }
+        ],
         buttons: [
           {
             //side: 'start',
