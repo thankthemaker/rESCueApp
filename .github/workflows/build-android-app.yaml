@@ -20,8 +20,10 @@ jobs:
           npm ci
           find node_modules -type f -name '*.gradle' -exec sed -i 's/compile /implementation /g' {} \;
           npx cap add android
-          npx trapeze run trapeze-config.yaml --android-project android -y
-          ionic build --prod --aot --output-hashing=all && npx cap sync
+          npx trapeze run trapeze-config.yaml -y
+          npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000' --logoSplashTargetWidth 256
+          ionic build --prod --aot --output-hashing=all
+          npx cap sync
 
       - name: Setup Ruby and Fastlane
         uses: ruby/setup-ruby@v1

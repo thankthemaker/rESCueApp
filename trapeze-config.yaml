@@ -1,6 +1,24 @@
 platforms:
   android:
+    gradle:
+      - file: app/build.gradle
+        target:
+          dependencies:
+        insert:
+          # insert dependencies for espresso-web tests to build.gradle
+          - androidTestImplementation: "\"tools.fastlane:screengrab:2.1.1\""
+          - androidTestImplementation: "\"androidx.test.espresso:espresso-web:$androidxEspressoCoreVersion\""
+          - androidTestImplementation: "\"androidx.test:runner:1.5.1\""
+          - androidTestImplementation: "\"androidx.test:rules:1.5.0\""
+    copy:
+      # copy UI tests for screengrab to grab screenshots for different devices
+      - src: ../resources/android/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
+        dest: app/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
+      # copy additional manifest for debugging, screengrab needs additional permissions
+      - src: ../resources/android/src/debug/AndroidManifest.xml
+        dest: app/src/debug/AndroidManifest.xml
     manifest:
+      # add the needed permissions to the manifest
       - file: AndroidManifest.xml
         target: manifest
         inject: <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -31,4 +49,29 @@ platforms:
       - file: AndroidManifest.xml
         target: manifest
         inject: <uses-permission android:name="android.permission.WAKE_LOCK" />
+      - file: AndroidManifest.xml
+        target: manifest
+        inject: <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARMs" />
+  ios:
+    targets:
+      App:
+        copy:
+          # copy extended AppDelegate as registration for Push-Notifications is needed
+          - src: ../../resources/ios/App/App/AppDelegate.swift
+            dest: App/AppDelegate.swift
+          # copy UI tests for screenshot to grab screenshots for different devices
+          - src: ../../resources/ios/App/AppUITests/AppUITests.swift
+            dest: AppUITests/AppUITests.swift
+        plist:
+          - replace: true
+            entries:
+              # add additional properties to Info.plist
+              - ITSAppUsesNonExemptEncryption: false
+              - NSLocationWhenInUseUsageDescription: This App uses your location to allow tracking your route on a map.
+              - NSLocationAlwaysUsageDescription: This App uses your location to allow tracking your route on a map.
+              - NSLocationAlwaysAndWhenInUseUsageDescription: This App uses your location to allow tracking your route on a map.
+              - NSBluetoothPeripheralUsageDescription: This App uses Bluetooth to connect to your rESCue device via BLE.
+              - NSBluetoothAlwaysUsageDescription: This App uses Bluetooth / BLE even when the App is in background to keep connected to your rESCue device.
+              - UIBackgroundModes:
+                  - bluetooth-central
 

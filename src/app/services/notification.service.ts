@@ -1,21 +1,21 @@
 import {Injectable} from '@angular/core';
-import {LocalNotifications} from '@ionic-native/local-notifications/ngx';
 import {Device} from '@capacitor/device';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from '../models/AppSettings';
-  import {StorageService} from './storage.service';
+import {StorageService} from './storage.service';
+import {ActionPerformed, LocalNotifications, LocalNotificationSchema} from "@capacitor/local-notifications";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsService {
 
+  id: number = 1;
   platform = 'unknown';
 
   constructor(
     private toastCtrl: ToastController,
-    private localNotifications: LocalNotifications,
     private storageService: StorageService,
     private appSettings: AppSettings,
     private logger: NGXLogger) {
@@ -25,11 +25,18 @@ export class NotificationsService {
   async init() {
     const info = await Device.getInfo();
     this.platform = info.platform;
+    LocalNotifications.addListener('localNotificationReceived', (notification: LocalNotificationSchema) => {
+      this.logger.log(`Received: ${notification.id}`, `Custom Data: ${JSON.stringify(notification.extra)}`);
+    });
+
+    LocalNotifications.addListener('localNotificationActionPerformed', (notification: ActionPerformed) => {
+      this.logger.log(`Performed: ${notification.actionId}`, `Input value:${notification.inputValue}`);
+    });
   }
 
   async push(title: string, message: string) {
     if (await this.storageService.getBoolean('notificationsEnabled')) {
-      if (this.platform === 'web') {
+      if (this.platform !== 'ios') {
         const toast = await this.toastCtrl.create({
           header: title,
           message,
@@ -39,11 +46,14 @@ export class NotificationsService {
           duration: 3000,
         });
         await toast.present();
-      } else {
-        this.localNotifications.schedule({
-          title,
-          text: message,
-          foreground: true
+      }
+      if (this.platform !== 'web') {
+        LocalNotifications.schedule({
+          notifications: [{
+            id: this.id++,
+            title,
+            body: message
+          }]
         });
       }
     }
@@ -51,9 +61,9 @@ export class NotificationsService {
 
   async toggleNotifications() {
     if (this.platform !== 'web') {
-      this.localNotifications.hasPermission().then((hasPermissions) => {
+      LocalNotifications.checkPermissions().then((hasPermissions) => {
         if (!hasPermissions) {
-          this.localNotifications.requestPermission().then((permissionsGranted) => {
+          LocalNotifications.requestPermissions().then((permissionsGranted) => {
             this.logger.info('permissions for push notifications granted');
           });
         }
