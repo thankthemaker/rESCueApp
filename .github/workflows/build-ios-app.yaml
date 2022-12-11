@@ -19,7 +19,10 @@ jobs:
           npm install -g @ionic/cli
           npm ci
           npx cap add ios
-          ionic build --prod --aot --output-hashing=all && npx cap sync
+          npx trapeze run trapeze-config.yaml -y
+          npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000' --logoSplashTargetWidth 256
+          ionic build --prod --aot --output-hashing=all
+          npx cap sync
 
       #      - name: Set up ruby env
 #        uses: ruby/setup-ruby@v1
@@ -41,5 +44,18 @@ jobs:
           APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64 }}
           KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
         run: |
-          fastlane icons
-          fastlane beta
+#          fastlane ios icons
+          fastlane ios beta
+
+#      - name: Get NPM-Package-Version
+#        id: package-version
+#        uses: martinbeentjes/npm-get-version-action@main
+
+#      - name: Draft Release Version
+#        uses: softprops/action-gh-release@v1
+#        if: startsWith(github.ref, 'refs/tags/')
+#        with:
+#          name: ${{ steps.package-version.outputs.current-version}}
+#          tag_name: ${{ steps.package-version.outputs.current-version}}
+#          draft: true
+#          generate_release_notes: true

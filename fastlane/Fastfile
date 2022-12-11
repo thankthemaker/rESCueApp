@@ -65,20 +65,20 @@ platform :ios do
    )
   end
 
-  desc "Generate iconset"
-  lane :icons do
-    appicon(
-      appicon_image_file: 'fastlane/metadata/app_icon.png',
-      appicon_devices: %i[ipad iphone ios_marketing],
-      appicon_path: "ios/App/App/Assets.xcassets",
-   )
-  end
+#  desc "Generate iconset"
+#  lane :icons do
+#    appicon(
+#      appicon_image_file: 'fastlane/metadata/app_icon.png',
+#      appicon_devices: %i[ipad iphone ios_marketing],
+#      appicon_path: "ios/App/App/Assets.xcassets",
+#   )
+#  end
 
   desc "Generate new localized screenshots"
   lane :screenshots do
-    capture_screenshots(workspace: "App.xcworkspace", scheme: "App")
-    frame_screenshots()
-    upload_to_app_store(skip_binary_upload: true, skip_metadata: true)
+    capture_screenshots(workspace: "ios/App/App.xcworkspace", scheme: "App", dark_mode: false, clean: true)
+    frameit(white: false, path: './fastlane/screenshots')
+    ##upload_to_app_store(skip_binary_upload: true, skip_metadata: true)
   end
 
   desc "Check certs and profiles"
@@ -145,16 +145,15 @@ platform :ios do
     update_info_plist( # Advanced processing: find URL scheme for particular key and replace value
       xcodeproj: "ios/App/App.xcodeproj",
       plist_path: "App/Info.plist",
-      block: proc do |plist|
-        plist["ITSAppUsesNonExemptEncryption "]               = false
-        plist["NSLocationWhenInUseUsageDescription"]          = "This App uses your location to allow tracking your route on a map."
-        plist["NSLocationAlwaysUsageDescription"]             = "This App uses your location to allow tracking your route on a map."
-        plist["NSLocationAlwaysAndWhenInUseUsageDescription"] = "This App uses your location to allow tracking your route on a map."
-        plist["NSBluetoothPeripheralUsageDescription"]        = "This App uses Bluetooth to connect to your rESCue device via BLE."
-        plist["NSBluetoothAlwaysUsageDescription"]            = "This App uses Bluetooth / BLE even when the App is in background to keep connected to your rESCue device."
-      end
+#      block: proc do |plist|
+#        plist["ITSAppUsesNonExemptEncryption "]               = false
+#        plist["NSLocationWhenInUseUsageDescription"]          = "This App uses your location to allow tracking your route on a map."
+#        plist["NSLocationAlwaysUsageDescription"]             = "This App uses your location to allow tracking your route on a map."
+#        plist["NSLocationAlwaysAndWhenInUseUsageDescription"] = "This App uses your location to allow tracking your route on a map."
+#        plist["NSBluetoothPeripheralUsageDescription"]        = "This App uses Bluetooth to connect to your rESCue device via BLE."
+#        plist["NSBluetoothAlwaysUsageDescription"]            = "This App uses Bluetooth / BLE even when the App is in background to keep connected to your rESCue device."
+#      end
     )
-    icons
     fetch_and_increment_build_number
     prepare_signing
     build_release
@@ -168,6 +167,48 @@ platform :android do
   desc "Runs all the tests"
   lane :test do
     gradle(task: "test")
+  end
+
+#  desc "Generate iconset"
+#  lane :icons do
+#    android_appicon(
+#      appicon_image_file: 'fastlane/metadata/app_icon.png',
+#      appicon_icon_types: [:launcher],
+#      appicon_path: 'android/app/res/mipmap'
+#    )
+#    android_appicon(
+#      appicon_image_file: 'fastlane/metadata/app_icon.png',
+#      appicon_icon_types: [:notification],
+#      appicon_path: 'android/app/res/drawable',
+#      appicon_filename: 'ic_notification',
+#      generate_rounded: true
+#    )
+#    android_appicon(
+#      appicon_image_file: 'fastlane/metadata/app_icon.png',
+#      appicon_icon_types: [:splash_port, :splash_land],
+#      appicon_path: 'android/app/res/drawable',
+#      appicon_filename: 'splash'
+#    )
+#  end
+
+  desc "Build debug and test APK for screenshots"
+  lane :build_and_screengrab do
+    build_android_app(
+      project_dir: "./android",
+      task: 'assemble',
+      build_type: 'Debug'
+    )
+    build_android_app(
+      project_dir: "./android",
+      task: 'assemble',
+      build_type: 'AndroidTest'
+    )
+    screengrab(
+      app_package_name: "org.thankthemaker.rescueapp",
+      app_apk_path: "android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+      tests_apk_path: "android/app/build/outputs/apk/debug/app-debug.apk",
+      specific_device: "emulator-5554"
+    )
   end
 
   desc "Submit a new internal Build"
