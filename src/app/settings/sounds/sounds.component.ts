@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {NGXLogger} from "ngx-logger";
+import {NGXLogger} from 'ngx-logger';
 
 @Component({
   selector: 'app-sounds',
@@ -8,9 +8,9 @@ import {NGXLogger} from "ngx-logger";
 })
 export class SoundsComponent implements OnInit {
 
-  locked = true;
   @Input() rescueConf: any;
-  @Output() changeEvent = new EventEmitter<{ key: string, value: string }>();
+  @Output() changeEvent = new EventEmitter<{ key: string; value: string }>();
+  locked = true;
 
   constructor(
     private logger: NGXLogger) {}

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {BleService} from '../services/ble.service';
 import {NGXLogger} from 'ngx-logger';
-import {StorageService} from "../services/storage.service";
+import {StorageService} from '../services/storage.service';
 
 @Component({
   selector: 'app-incompatible',

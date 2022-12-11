@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {BleService} from '../services/ble.service';
 import {environment} from '../../environments/environment';
 import {NGXLogger} from 'ngx-logger';
-import {StorageService} from "../services/storage.service";
+import {StorageService} from '../services/storage.service';
 
 @Component({
   selector: 'app-home',

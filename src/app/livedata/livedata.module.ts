@@ -9,7 +9,7 @@ import { LivedataPageRoutingModule } from './livedata-routing.module';
 import { LivedataPage } from './livedata.page';
 import {NgApexchartsModule} from 'ng-apexcharts';
 import {ChartsModule} from '../charts/charts.module';
-import {MapComponent} from "../components/map/map.component";
+import {MapComponent} from '../components/map/map.component';
 
 @NgModule({
   imports: [

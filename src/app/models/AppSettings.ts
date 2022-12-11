@@ -3,7 +3,7 @@ import {NGXLogger} from 'ngx-logger';
 import {StorageService} from '../services/storage.service';
 import {ToastController} from '@ionic/angular';
 
-const requiresReload = ['darkThemeSupported', 'metricSystemEnabled']
+const requiresReload = ['darkThemeSupported', 'metricSystemEnabled'];
 
 @Injectable({
   providedIn: 'root'

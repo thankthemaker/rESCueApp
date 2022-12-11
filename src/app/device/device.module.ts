@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { DevicePageRoutingModule } from './device-routing.module';
 import { DevicePage } from './device.page';
 import {ChartsModule} from '../charts/charts.module';
-import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
     imports: [
