@@ -41,7 +41,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item routerLink="/appsettings/notifications">
-      <ion-label>Local Push-Notifications</ion-label>
+      <ion-label>Local push notifications</ion-label>
       <ion-badge slot="end" color="success" *ngIf="appSettings.notificationsEnabled">enabled</ion-badge>
       <ion-badge slot="end" color="light" *ngIf="!appSettings.notificationsEnabled">disabled</ion-badge>
     </ion-item>
@@ -53,7 +53,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item routerLink="/appsettings/odometer">
-      <ion-label>Use Odometer</ion-label>
+      <ion-label>Use odometer</ion-label>
       <ion-badge slot="end" color="success" *ngIf="appSettings.useOdometer">enabled</ion-badge>
       <ion-badge slot="end" color="light" *ngIf="!appSettings.useOdometer">disabled</ion-badge>
     </ion-item>
@@ -65,7 +65,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label>App-Version</ion-label>
+      <ion-label>App version</ion-label>
       <ion-label>{{version}}</ion-label>
     </ion-item>
     <ion-item>

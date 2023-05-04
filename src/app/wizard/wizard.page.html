@@ -2,12 +2,12 @@
   <ion-slides #wizard pager="true" (ionSlideDidChange)="slideChanged()">
     <ion-slide>
       <div class="slide">
-        <h2>Welcome to rESCue !</h2>
+        <h2>Welcome to rESCue!</h2>
         <img src="assets/slide-1.png"/>
-        <p>This <b>wizard</b> will guide you to the initial setup of your new rESCue device.</p>
+        <p>This wizard will guide you to the initial setup of your new rESCue device.</p>
         <p>Please <b>turn on your rESCue device</b> and hit the <i>scan</i> button below. Connect to the Bluetooth Low
           Energy
-          device named <b>rESCue</b></p>
+          device named <b>rESCue</b>.</p>
       </div>
       <ion-button size="large" (click)="scan()" color="primary" id="scanButton">Scan
         <ion-icon slot="end" name="bluetooth"></ion-icon>
@@ -28,8 +28,8 @@
       <div class="slide" *ngIf="!connected">
         <h2>Whoops, not connected!</h2>
         <img src="../../assets/slide-2-nok.png"/>
-        <p>Seems like we couldn't connect to any rESCue device.</p>
-        <p>Please make sure your rESCue device is <b>turned on</b> and you enabled Bluetooth on this computer.</p>
+        <p>It seems like we couldn't connect to any rESCue device.</p>
+        <p>Please make sure your rESCue device is <b>turned on</b> and Bluetooth is enabled.</p>
         <ion-button (click)="goBack()" fill="clear">
           <ion-icon slot="start" name="arrow-back"></ion-icon>
           Back
@@ -40,14 +40,14 @@
     <ion-slide>
       <h2>Configure CANBUS</h2>
       <img src="assets/slide-3.png"/>
-      <p>First let's configure the <b>CANBUS</b>. To allow rESCue to communicate with your <b>®VESC</b> it must know the
-        VESC-ID of your controller. Please find out what's the VESC-ID of your ®VESC by connecting to it via
-        ®VESC TOOL and looking up under <i>App-Settings -> General</i>.</p>
+      <p>First let's configure the <b>CANBUS</b>. To allow rESCue to communicate with your VESC® it must know the
+        VESC-ID of your controller. Please find out what's the VESC ID of your VESC® by connecting to it via
+        VESC® TOOL and looking up under <i>App-Settings -> General</i>.</p>
       <ion-card>
         <ion-card-content>
-          Please configure your VESC-ID appropriately to match the ID in ®VESC.
+          Please configure your VESC ID appropriately to match the ID in VESC®
           <ion-item>
-            <ion-label>VESC-ID</ion-label>
+            <ion-label>VESC ID</ion-label>
             <ion-input type="number" [(ngModel)]="vescId"></ion-input>
           </ion-item>
         </ion-card-content>
@@ -58,13 +58,13 @@
     <ion-slide>
       <h2>Configure Lights</h2>
       <img src="assets/slide-4.png"/>
-      <p>rESCue uses <b>addressable LEDs</b> (aka Neopixel) for front- and backlight. Please connect them to the
-        JST-header
+      <p>rESCue uses <b>addressable LEDs</b> (aka Neopixel) for the front and back lights. Please connect them to the
+        JST header
         labeled <i>LIGHTS1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
       <ion-card>
         <ion-card-content>
           <ion-item>
-            <ion-label>Number of pixel</ion-label>
+            <ion-label>Number of pixels</ion-label>
             <ion-input type="number" [(ngModel)]="numberOfPixelLights"></ion-input>
           </ion-item>
         </ion-card-content>
@@ -74,22 +74,22 @@
     <ion-slide>
       <h2>Configure Battery</h2>
       <img src="assets/slide-6.png"/>
-      <p>Please configure your battery. How many cells in series and parallel do you have?</p>
+      <p>How many cells in series and parallel do you have?</p>
       <ion-list>
         <ion-item>
-          <ion-label position="stacked">Cell Count {{batteryCells}}s</ion-label>
+          <ion-label position="stacked">Cell count {{batteryCells}}s</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
                      min="10" max="20" step="1" pin [(ngModel)]="batteryCells"
                      snaps color="secondary"></ion-range>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked">Group Count {{batteryGroups}}p</ion-label>
+          <ion-label position="stacked">Group count {{batteryGroups}}p</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
                      min="1" max="4" step="1" pin [(ngModel)]="batteryGroups"
                      snaps color="secondary"></ion-range>
         </ion-item>
         <ion-item>
-          <ion-label position="stacked">Cell Capacity {{cellCapacity}}mAh</ion-label>
+          <ion-label position="stacked">Cell capacity {{cellCapacity}}mAh</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
                      min="1500" max="6000" step="100" pin  [(ngModel)]="cellCapacity"
                      snaps color="secondary"></ion-range>
@@ -100,20 +100,19 @@
     <ion-slide>
       <h2>Configure Lightbar</h2>
       <img src="assets/slide-7.png"/>
-      <p>rESCue can use <b>addressable LEDs</b> (aka Neopixel) as a <b>Lightbar</b>. Please connect them to the
+      <p>rESCue can use <b>addressable LEDs</b> (aka Neopixel) as a <b>lightbar</b>. Please connect them to the
         JST-header labeled <i>LIGHTBAR1</i> and tell us how many LEDs (pixel) are connected to your rESCue device.</p>
-      <p>If you don't have a <b>Lightbar</b>, just check not to use it.</p>
+      <p>If you don't have a <b>lightbar</b>, just disable it.</p>
       <ion-card>
         <ion-card-content>
           <ion-item>
-            <ion-label>Number of pixel</ion-label>
-            <ion-input type="number" [(ngModel)]="numberOfPixelLightbar"></ion-input>
+            <ion-label>Enable lightbar</ion-label>
+            <ion-toggle [(ngModel)]="!noLightbar" (ionChange)="toggleLightbar()"></ion-toggle>
           </ion-item>
           <ion-item>
-            <ion-checkbox [(ngModel)]="noLightbar"></ion-checkbox>
-            <ion-label>Don't use Lightbar</ion-label>
+            <ion-label>Number of pixels</ion-label>
+            <ion-input type="number" min="1" [(ngModel)]="numberOfPixelLightbar"></ion-input>
           </ion-item>
-
         </ion-card-content>
       </ion-card>
     </ion-slide>
@@ -139,7 +138,7 @@
     </ion-slide>
 
     <ion-slide>
-      <h2>Congratulation </h2>
+      <h2>Congratulations!</h2>
       <img src="assets/slide-5.gif"/>
       <p>You <b>successfully</b> configured your rESCue device. The device will reboot now, please connect again.</p>
       <ion-button size="large" (click)="endWizard()" fill="clear">Continue

@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
 import {PopoverController} from '@ionic/angular';
+import { RescueConf } from 'src/app/models/RescueConf';
 import {NGXLogger} from 'ngx-logger';
 
 @Component({
@@ -17,6 +18,8 @@ export class LightsComponent implements OnInit {
   colorPickerFormat = 'hex';
   lightColorPrimary = '';
   lightColorSecondary = '';
+  @Input() rescueConf: RescueConf;
+
 
   constructor(
     private popoverController: PopoverController,

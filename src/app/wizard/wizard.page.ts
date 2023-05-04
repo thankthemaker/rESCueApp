@@ -29,7 +29,6 @@ export class WizardPage implements OnInit {
   batteryCells = 12;
   batteryGroups = 2;
   cellCapacity = 3000;
-  noLightbar = false;
   vescId = 25;
   numberOfPixelLights = 32;
   numberOfPixelLightbar = 5;
@@ -43,6 +42,10 @@ export class WizardPage implements OnInit {
     this.connected = false;
     this.deviceName = '';
     this.deviceId = '';
+  }
+
+  get noLightbar() {
+    return this.numberOfPixelLightbar === 0;
   }
 
   async ngOnInit() {
@@ -98,6 +101,14 @@ export class WizardPage implements OnInit {
 
   goBack() {
     this.wizard.slideTo(0, 500);
+  }
+
+  toggleLightbar() {
+    if (!this.numberOfPixelLightbar) {
+      this.numberOfPixelLightbar = 5;
+    } else {
+      this.numberOfPixelLightbar = 0;
+    }
   }
 
   slideChanged() {
