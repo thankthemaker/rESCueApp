@@ -65,7 +65,7 @@ export class BleService {
 
       if (this.device === undefined) {
         this.device = await BleClient.requestDevice({
-          services: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID],
+          services: [AppSettings.VESC_SERVICE_UUID, AppSettings.RESCUE_SERVICE_UUID, AppSettings.OTA_SERVICE_UUID],
           optionalServices: [AppSettings.RESCUE_SERVICE_UUID],
         });
       }
@@ -141,6 +141,7 @@ export class BleService {
     for (let i = 0, strLen = str.length; i < strLen; i++) {
       bufView[i] = str.charCodeAt(i);
     }
+    console.log("writing to char " + characteristicId + ", data " + buf)
     await BleClient.write(
       this.device.deviceId,
       serviceId,

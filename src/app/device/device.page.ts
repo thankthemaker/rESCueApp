@@ -24,6 +24,7 @@ export class DevicePage implements OnInit, OnDestroy {
   @ViewChild('overviewChart')
   overviewChart: OverviewChartComponent;
 
+  lightsOn = true;
   connected = false;
   lastVescMessage = 0;
   skipIncompatibleCheck = false;
@@ -155,10 +156,12 @@ export class DevicePage implements OnInit, OnDestroy {
     if (typeof Worker !== 'undefined') {
       // Create a new
       this.logger.debug('created web-worker for VESC');
+/*
       this.vescWorker = new Worker(new URL('../vesc-worker.worker', import.meta.url), {type: 'module'});
       this.vescWorker.onmessage = ({data}) => {
         console.log(`page got message: ${data}`);
       };
+*/
     } else {
       this.logger.error('web-worker not supported');
     }
@@ -172,6 +175,7 @@ export class DevicePage implements OnInit, OnDestroy {
   }
 
   startTimer() {
+/*
     this.timerId = setInterval(() => {
       // const packet = generatePacket(Buffer.from([0x04])).buffer; // COMM_GET_VALUES
       const packet = generatePacket(Buffer.from([0x33, 0x0, 0x1, 0xFF, 0xFF])).buffer; // COMM_GET_VALUES_SETUP_SELECTIVE
@@ -186,21 +190,28 @@ export class DevicePage implements OnInit, OnDestroy {
         this.connected = false;
       }
     }, 333);
+  */
   }
 
   subscribeVesc() {
+
     this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
         const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
         if (!String(values[0]).startsWith('vesc')) {
           this.logger.debug('Received: ' + values);
           this.rescueConf[values[0]] = values[1];
-          if (String(values[0]).endsWith('oopTime')) {
-            this.rescueData[values[0]] = values[1];
-          }
         }
       });
-    this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
+       this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
+        AppSettings.CHARACTERISTIC_UUID_LOOP, (value: DataView) => {
+          const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
+          if (String(values[0]).endsWith('oopTime')) {
+            this.logger.debug('Received: ' + values);
+            this.rescueData[values[0]] = values[1];
+          }
+        });
+       this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
       AppSettings.VESC_CHARACTERISTICS_TX_UUID, (value: DataView) => {
         this.logger.info('VESC data (', value.byteLength, ')byte: ', new Uint8Array(value.buffer).toString());
         this.vescMessageHandler.queueMessage(Buffer.from(value.buffer));
@@ -357,6 +368,12 @@ export class DevicePage implements OnInit, OnDestroy {
       }
     };
     this.router.navigate(['/settings'], navigationExtras);
+  }
+
+  toggleLights() {
+    this.lightsOn = !this.lightsOn;
+    this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'lightsSwitch=' + this.lightsOn);
   }
 
   livedata() {

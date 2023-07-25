@@ -50,6 +50,10 @@
       </ion-item>
     </ion-card-content>
     <div class="ion-text-end">
+      <ion-chip *ngIf="bleService.isRescueDevice" outline (click)="toggleLights()" id="toggleLightsChip">
+        <ion-icon name="bulb" [class.bulb-on]="lightsOn" [class.bulb-off]="!lightsOn"></ion-icon>
+        <ion-label>Lights</ion-label>
+      </ion-chip>
       <ion-chip *ngIf="bleService.isRescueDevice" outline color="secondary" (click)="settings()" id="settingsChip">
         <ion-icon name="construct"></ion-icon>
         <ion-label>Settings</ion-label>

@@ -43,7 +43,7 @@ export class HomePage implements OnInit {
   async connect(autoconnect: boolean) {
     const success = await this.bleService.connect(autoconnect);
     if (success) {
-      await this.router.navigate(['/device']);
+      await this.router.navigate(['/update']);
     }
   }
 

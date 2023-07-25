@@ -14,12 +14,18 @@ export class AppSettings {
   public static RESCUE_CHARACTERISTIC_UUID_CONF = '99eb1513-a9e9-4024-b0a4-3dc4b4fabfb0';
   public static RESCUE_CHARACTERISTIC_UUID_HW_VERSION = '99eb1515-a9e9-4024-b0a4-3dc4b4fabfb0';
   public static CHARACTERISTIC_UUID_FW = '99eb1514-a9e9-4024-b0a4-3dc4b4fabfb0';
+  public static CHARACTERISTIC_UUID_LOOP = '99eb1516-a9e9-4024-b0a4-3dc4b4fabfb0';
 
   public static BLYNK_SERVICE_UUID = '713d0000-503e-4c75-ba94-3148f18d941e';
 
-  public static VESC_SERVICE_UUID = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
+  public static VESC_SERVICE_UUID            = '6e400001-b5a3-f393-e0a9-e50e24dcca9e';
   public static VESC_CHARACTERISTICS_RX_UUID = '6e400002-b5a3-f393-e0a9-e50e24dcca9e';
   public static VESC_CHARACTERISTICS_TX_UUID = '6e400003-b5a3-f393-e0a9-e50e24dcca9e';
+
+  public static OTA_SERVICE_UUID           = 'fe590001-54ae-4a28-9f74-dfccb248601d';
+  public static OTA_CHARACTERISTIC_RX_UUID = 'fe590002-54ae-4a28-9f74-dfccb248601d';
+  public static OTA_CHARACTERISTIC_TX_UUID = 'fe590003-54ae-4a28-9f74-dfccb248601d';
+
 
   public darkThemeSupported = true;
   public metricSystemEnabled = true;
