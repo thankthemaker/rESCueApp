@@ -93,7 +93,7 @@ export class WizardPage implements OnInit {
     this.appSettings.minVoltage = minVoltage;
     this.appSettings.lowVoltage = lowVoltage;
     this.appSettings.maxVoltage = maxVoltage;
-    await this.bleService.disconnect();
+    await this.bleService.disconnect(true);
   }
 
   goBack() {

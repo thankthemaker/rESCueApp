@@ -46,7 +46,7 @@ export class BleService {
       await BleClient.initialize();
 
       //check if BLE is enabled on device, otherwise ask the user to turn on
-      const isEnabled = await BleClient.getEnabled();
+      const isEnabled = await BleClient.isEnabled();
       this.logger.debug('Is BLE enabled: ' + isEnabled);
 
       if (autoconnect && await this.storageService.getBoolean('autoconnect')) {
@@ -65,7 +65,7 @@ export class BleService {
 
       if (this.device === undefined) {
         this.device = await BleClient.requestDevice({
-          services: [AppSettings.RESCUE_SERVICE_UUID, AppSettings.VESC_SERVICE_UUID],
+          services: [AppSettings.VESC_SERVICE_UUID, AppSettings.RESCUE_SERVICE_UUID, AppSettings.OTA_SERVICE_UUID],
           optionalServices: [AppSettings.RESCUE_SERVICE_UUID],
         });
       }
@@ -80,13 +80,31 @@ export class BleService {
     }
   }
 
-  async disconnect() {
+  async reconnect() {
+    if (this.info.isVirtual) {
+      this.connected = true;
+      return true;
+    }
+    try {
+      await BleClient.connect(this.device.deviceId); 
+      this.logger.info('reconnected to device ' + this.device.name + '(' + this.device.deviceId + ')');
+      this.connected = true;
+      return true;
+    } catch (error) {
+      this.presentErrorToast(error);
+      return false;
+    }
+  }
+
+  async disconnect(redirect: boolean) {
     if (!this.info.isVirtual) {
       await BleClient.disconnect(this.device.deviceId);
       this.logger.info('Disconnected from device ');
     }
     this.connected = false;
-    this.router.navigate(['']);
+    if(redirect) {
+      this.router.navigate(['']);
+    }
   }
 
   async checkServiceAvailable(serviceId): Promise<boolean> {
@@ -141,6 +159,7 @@ export class BleService {
     for (let i = 0, strLen = str.length; i < strLen; i++) {
       bufView[i] = str.charCodeAt(i);
     }
+    console.log("writing to char " + characteristicId + ", data " + buf)
     await BleClient.write(
       this.device.deviceId,
       serviceId,

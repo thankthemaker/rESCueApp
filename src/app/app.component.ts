@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   disconnect() {
-    this.bleService.disconnect();
+    this.bleService.disconnect(true);
     this.menuController.close();
   }
 
