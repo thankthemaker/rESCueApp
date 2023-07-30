@@ -235,7 +235,7 @@ export class DevicePage implements OnInit, OnDestroy {
         AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, str);
 
     }
-    await this.bleService.disconnect();
+    await this.bleService.disconnect(true);
   }
 
   async readVersion() {

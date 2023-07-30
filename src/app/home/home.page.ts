@@ -48,7 +48,7 @@ export class HomePage implements OnInit {
   }
 
   disconnect() {
-    this.bleService.disconnect();
+    this.bleService.disconnect(true);
   }
 
   isConnected() {

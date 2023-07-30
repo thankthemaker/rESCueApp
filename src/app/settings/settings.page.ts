@@ -61,8 +61,7 @@ export class SettingsPage implements OnInit {
     }
     await this.saveProperty({key: 'save', value: 'true'});
     await loading.dismiss();
-    await this.bleService.disconnect();
-    await this.router.navigate(['']);
+    await this.bleService.disconnect(true);
   }
 
   async saveProperty(property) {
