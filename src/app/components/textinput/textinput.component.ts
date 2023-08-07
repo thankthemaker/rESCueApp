@@ -9,7 +9,7 @@ import {PopoverController} from '@ionic/angular';
 export class TextinputComponent implements OnInit {
 
   @Input()
-  deviceName: string;
+  inputString: string;
 
   constructor(private popover: PopoverController) {
   }
@@ -18,7 +18,7 @@ export class TextinputComponent implements OnInit {
   }
 
   close() {
-    console.log('deviceName:', this.deviceName);
-    this.popover.dismiss(this.deviceName);
+    console.log('inputString:', this.inputString);
+    this.popover.dismiss(this.inputString);
   }
 }

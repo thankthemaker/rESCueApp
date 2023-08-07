@@ -16,6 +16,7 @@ export class BleService {
   connected = false;
   device: BleDevice;
   info: DeviceInfo;
+  notifications = [];
 
   constructor(
     private router: Router,
@@ -97,7 +98,7 @@ export class BleService {
   }
 
   async disconnect(redirect: boolean) {
-    if (!this.info.isVirtual) {
+    if (!this.info.isVirtual && this.connected) {
       await BleClient.disconnect(this.device.deviceId);
       this.logger.info('Disconnected from device ');
     }
@@ -123,10 +124,11 @@ export class BleService {
   }
 
   async startNotifications(serviceId, characteristicId, callback) {
-    if (this.info.isVirtual) {
+    if (this.info.isVirtual || !this.connected) {
       return;
     }
-    BleClient.startNotifications(
+    this.notifications.push(characteristicId);
+    await BleClient.startNotifications(
       this.device.deviceId,
       serviceId,
       characteristicId,
@@ -134,8 +136,20 @@ export class BleService {
     );
   }
 
+  async stopNotifications(serviceId, characteristicId,) {
+    if (this.info.isVirtual || !this.connected || this.notifications.indexOf(characteristicId) < 0) {
+      return;
+    }
+    await BleClient.stopNotifications(
+      this.device.deviceId,
+      serviceId,
+      characteristicId
+    );
+   this.notifications.slice(this.notifications.indexOf(characteristicId), 1);
+  }
+
   async writeDataView(serviceId, characteristicId, data: DataView) {
-    if (this.info.isVirtual) {
+    if (this.info.isVirtual || !this.connected) {
       await new Promise(resolve => setTimeout(resolve, 50));
       return;
     }
@@ -149,6 +163,9 @@ export class BleService {
   }
 
   async write(serviceId, characteristicId, str: string) {
+    if(!this.connected) {
+      return;
+    }
     if (this.info.isVirtual) {
       await new Promise(resolve => setTimeout(resolve, 50));
       return;
@@ -169,6 +186,9 @@ export class BleService {
   }
 
   async readVersion() {
+    if(!this.connected) {
+      return;
+    }
     if (this.info.isVirtual) {
       return numbersToDataView([3, 1, 1, 3, 0]);
     }

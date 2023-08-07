@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {Router} from '@angular/router';
 import {BleService} from '../services/ble.service';
 import {environment} from '../../environments/environment';
@@ -10,7 +10,7 @@ import {StorageService} from '../services/storage.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage implements OnInit {
+export class HomePage {
 
   version: string;
   footer: string;
@@ -28,7 +28,7 @@ export class HomePage implements OnInit {
     logger.info(`Application version is: version (from package.json)=${this.version}`);
   }
 
-  async ngOnInit() {
+  async ionViewDidEnter() {
     this.deactivateWizard = await this.storageService.getBoolean('deactivateWizard');
     if(!this.deactivateWizard) {
       this.router.navigate(['/wizard']);

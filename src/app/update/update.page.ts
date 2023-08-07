@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController, ToastController, PopoverController } from '@ionic/angular';
 import _filter from 'lodash-es/filter';
@@ -7,7 +7,6 @@ import { BleService } from '../services/ble.service';
 import { AppSettings } from '../models/AppSettings';
 import { ListpickerComponent } from '../components/listpicker/listpicker.component';
 import { NGXLogger } from 'ngx-logger';
-import {NgZone} from '@angular/core';
 
 const part = 19000;
 const mtu = 250;
@@ -17,7 +16,7 @@ const mtu = 250;
   templateUrl: './update.page.html',
   styleUrls: ['./update.page.scss'],
 })
-export class UpdatePage implements OnInit {
+export class UpdatePage {
 
   progressbarType = 'indeterminate';
   progress: string;
@@ -64,7 +63,7 @@ export class UpdatePage implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ionViewDidEnter() {
 
     this.softwareVersion = "v3.0.0-beta"
 
@@ -141,7 +140,7 @@ export class UpdatePage implements OnInit {
 
     await this.bleService.disconnect(false);
 
-    await this.bleService.reconnect();
+    await this.bleService.connect(false);
     
     const timer = setInterval(() => {
       this.logger.info("Starting update now")
@@ -299,7 +298,7 @@ export class UpdatePage implements OnInit {
     const { data } = await popover.onDidDismiss();
     this.softwareVersion = data;
     this.logger.info('Selected version: ' + this.softwareVersion);
-    this.ngOnInit();
+    this.ionViewDidEnter();
   }
 
   async startOtaNotifications() {

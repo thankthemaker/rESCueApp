@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {LoadingController, PopoverController} from '@ionic/angular';
 import {BatteryGaugeComponent} from '../charts/battery-gauge/battery-gauge.component';
 import {DualGaugeComponent} from '../charts/dual-gauge/dual-gauge.component';
@@ -17,7 +17,7 @@ import {KeysResult} from '@capacitor/preferences';
   templateUrl: './livedata.page.html',
   styleUrls: ['./livedata.page.scss'],
 })
-export class LivedataPage implements OnInit, OnDestroy {
+export class LivedataPage {
 
   @ViewChild(MapComponent)
   map: MapComponent;
@@ -47,12 +47,12 @@ export class LivedataPage implements OnInit, OnDestroy {
     private logger: NGXLogger) {
   }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.rideId = new Date().toISOString();
     this.startLiveData();
   }
 
-  ngOnDestroy() {
+  ionViewDidLeave() {
     this.stopLiveData();
   }
 
