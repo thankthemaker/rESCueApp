@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {AppSettings} from '../../models/AppSettings';
 import {NotificationsService} from "../../services/notification.service";
 
@@ -7,15 +7,12 @@ import {NotificationsService} from "../../services/notification.service";
   templateUrl: './notifications.page.html',
   styleUrls: ['./notifications.page.scss'],
 })
-export class NotificationsPage implements OnInit {
+export class NotificationsPage {
 
   constructor(
     public appSettings: AppSettings,
     private notificationService: NotificationsService
     ) {}
-
-  ngOnInit() {
-  }
 
   sendNotification() {
     this.notificationService.push("I'm sorry", "Not yet implemented!");

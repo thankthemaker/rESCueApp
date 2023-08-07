@@ -5,6 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class RescueData {
 
+  uuid = "";
+  firmware = "";
   speed = 0;
   tachometer = 0;
   tachometerAbs = 0;
@@ -18,7 +20,8 @@ export class RescueData {
   motTemp = 0;
   fetTemp = 0;
   faultCode = 0;
-  loopTime = 0;
+  loopCount = 0;
+  avgLoopTime = 0;
   maxLoopTime = 0;
 
   constructor() {}

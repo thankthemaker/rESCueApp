@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ToastController} from '@ionic/angular';
 import {NGXLogger} from 'ngx-logger';
 import {AppSettings} from '../models/AppSettings';
@@ -11,7 +11,7 @@ import {KeysResult} from '@capacitor/preferences';
   templateUrl: './appsettings.page.html',
   styleUrls: ['./appsettings.page.scss'],
 })
-export class AppsettingsPage implements OnInit {
+export class AppsettingsPage {
 
   version: string;
   footer: string;
@@ -27,7 +27,7 @@ export class AppsettingsPage implements OnInit {
     this.footer = environment.footer;
   }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.getSavedRides();
   }
 

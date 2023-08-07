@@ -37,10 +37,16 @@
         </ion-row>
         <ion-row *ngIf="bleService.isRescueDevice">
           <ion-col>
-            <p>Looptime: {{rescueData.loopTime}}</p>
+            <p>Loop</p>
           </ion-col>
           <ion-col>
-            <p>Max. Looptime: {{rescueData.maxLoopTime}}</p>
+            <p>cnt {{rescueData.loopCount}}</p>
+          </ion-col>
+          <ion-col>
+            <p>avg {{rescueData.avgLoopTime}}</p>
+          </ion-col>
+          <ion-col>
+            <p>max {{rescueData.maxLoopTime}}</p>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -63,7 +69,11 @@
         <ion-icon name="download-outline"></ion-icon>
         <ion-label>Update</ion-label>
       </ion-chip>
-      <ion-button size="small" buttonType="light" (click)="toggleCard()">{{showCardDetailsText}}</ion-button>
+      <ion-item>
+        <ion-badge slot="start" color="success" *ngIf="bleService.isRescueDevice && connected">VESC connected</ion-badge>
+        <ion-badge slot="start" color="warning" *ngIf="bleService.isRescueDevice && !connected">VESC disconnected</ion-badge>
+        <ion-button size="small" buttonType="light" (click)="toggleCard()">{{showCardDetailsText}}</ion-button>
+        </ion-item>
     </div>
   </ion-card>
 
@@ -136,7 +146,17 @@
         Ah charged: 0
       </ion-col>
     </ion-row>
-  </ion-grid>
+    <ion-row>
+      <ion-col size="2">
+      <div align="center">
+        <fa-icon icon="plug"></fa-icon>
+      </div>
+    </ion-col>
+    <ion-col size="10">
+      VESC: {{rescueData.firmware}}
+    </ion-col>
+  </ion-row>
+</ion-grid>
 </ion-content>
 <!--
 <ion-footer *ngIf="bleService.info.isVirtual">
