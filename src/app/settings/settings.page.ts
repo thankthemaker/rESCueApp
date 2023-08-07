@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import { LoadingController, PopoverController} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
@@ -14,7 +14,7 @@ import {RescueData} from '../models/RescueData';
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage {
 
   @ViewChild(LightsComponent)
   lightsComponent: LightsComponent;
@@ -41,11 +41,15 @@ export class SettingsPage implements OnInit {
     });
    }
 
-  ngOnInit() {
+  async ionViewDidEnter() {
     this.rescueConf.deviceName = this.bleService.device.name;
-    this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
+    await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
   }
+
+  async ionViewDidLeave() {
+  }
+
 
   async save() {
     const loading = await this.loadingController.create({
@@ -86,7 +90,7 @@ export class SettingsPage implements OnInit {
       component: TextinputComponent,
       event,
       componentProps: {
-        deviceName: this.rescueConf.deviceName
+        inputString: this.rescueConf.deviceName
       },
       keyboardClose: true,
       translucent: true

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {BleService} from '../services/ble.service';
 import {NGXLogger} from 'ngx-logger';
 import {StorageService} from '../services/storage.service';
@@ -8,7 +8,7 @@ import {StorageService} from '../services/storage.service';
   templateUrl: './incompatible.page.html',
   styleUrls: ['./incompatible.page.scss'],
 })
-export class IncompatiblePage implements OnInit {
+export class IncompatiblePage {
 
   services: string[] = [];
   skipIncompatibleCheck = false;
@@ -19,7 +19,7 @@ export class IncompatiblePage implements OnInit {
     private logger: NGXLogger) {
   }
 
-  async ngOnInit() {
+  async ionViewDidEnter() {
     this.skipIncompatibleCheck = await this.storageService.getBoolean('skipIncompatibleCheck');
 
     this.bleService.getServices().then(serviceIds => {

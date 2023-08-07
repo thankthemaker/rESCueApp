@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {AppSettings} from '../../models/AppSettings';
 
 @Component({
@@ -6,12 +6,8 @@ import {AppSettings} from '../../models/AppSettings';
   templateUrl: './odometer.page.html',
   styleUrls: ['./odometer.page.scss'],
 })
-export class OdometerPage implements OnInit {
+export class OdometerPage  {
 
   constructor(
     public appSettings: AppSettings) {}
-
-  ngOnInit() {
-  }
-
 }

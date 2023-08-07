@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, ViewChild} from '@angular/core';
 import {NavigationExtras, NavigationStart, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {FirmwareService} from '../services/firmware.service';
@@ -19,7 +19,7 @@ import {RescueConf} from '../models/RescueConf';
   templateUrl: './device.page.html',
   styleUrls: ['./device.page.scss'],
 })
-export class DevicePage implements OnInit, OnDestroy {
+export class DevicePage {
 
   @ViewChild('overviewChart')
   overviewChart: OverviewChartComponent;
@@ -52,12 +52,14 @@ export class DevicePage implements OnInit, OnDestroy {
     public rescueData: RescueData,
     public rescueConf: RescueConf,
     public notificationService: NotificationsService,
-    private logger: NGXLogger
-  ) {
-    this.vescMessageParser = new VescMessageParser();
+    private logger: NGXLogger,
+    private _zone: NgZone) {
+      this.vescMessageParser = new VescMessageParser();
     this.vescMessageHandler = new VescMessageHandler(this.vescMessageParser);
     this.vescMessageParser.subscribe((message) => {
-      this.logger.info(`message: ${JSON.stringify(message)}`);
+      this.logger.debug(`message: ${JSON.stringify(message)}`);
+      this.connected = true;
+      this.lastVescMessage = Date.now();
       if (message.type === 'COMM_GET_VALUES') {
         this.rescueData.speed = undefined;
         this.rescueData.erpm = message.payload.erpm;
@@ -77,8 +79,6 @@ export class DevicePage implements OnInit, OnDestroy {
         this.rescueData.ampHours = message.payload.ampHours.consumed;
         this.rescueData.wattHours = message.payload.wattHours.charged;
         this.rescueData.faultCode = message.payload.faultCode;
-        this.connected = true;
-        this.lastVescMessage = new Date().getMilliseconds();
       } else if (message.type === 'COMM_GET_VALUES_SETUP_SELECTIVE') {
         this.rescueData.speed = message.payload.speed * 3.5897435;
         this.rescueData.erpm = message.payload.erpm;
@@ -97,9 +97,11 @@ export class DevicePage implements OnInit, OnDestroy {
         this.rescueData.ampHours = message.payload.ampHours.consumed;
         this.rescueData.wattHours = message.payload.wattHours.charged;
         this.rescueData.faultCode = message.payload.faultCode;
-        this.connected = true;
-        this.lastVescMessage = new Date().getMilliseconds();
-      }
+      } else if ((message.type === 'COMM_FW_VERSION')) {
+        this.rescueData.firmware = "" + message.payload.version.major + "." + 
+          message.payload.version.minor + " " + message.payload.hardware;
+          this.rescueData.uuid = "" + message.payload.uuid;
+        }
       if (appSettings.metricSystemEnabled) {
         this.rescueData.speed = this.rescueData.speed * AppSettings.KM_2_MILES;
         this.rescueData.tachometer = this.rescueData.tachometer * AppSettings.KM_2_MILES;
@@ -112,13 +114,12 @@ export class DevicePage implements OnInit, OnDestroy {
       .subscribe((event: NavigationStart) => {
         if (event.restoredState !== undefined) {
           this.logger.debug('restoredState');
-          this.subscribeVesc();
+          //this.subscribeNotifications();
         }
       });
   }
 
-  async ngOnInit() {
-    this.logger.debug('entered device page');
+  async ionViewDidEnter() {
     this.lastNotifications.minVoltage = 0;
     this.lastNotifications.maxVoltage = 0;
     this.lastNotifications.maxCurrent = 0;
@@ -170,12 +171,28 @@ export class DevicePage implements OnInit, OnDestroy {
       this.getFirmwareVersions();
     });
 
-    this.subscribeVesc();
+    this.subscribeNotifications();
     this.startTimer();
+    this.readVescFirmwareInfo();
+  }
+
+  async ionViewDidLeave() {
+    if (this.timerId) {
+      await clearInterval(this.timerId);
+    }
+    this.unSubscribeNotifications();
+  }
+
+  async readVescFirmwareInfo() {
+    const packet = generatePacket(Buffer.from([0x00])).buffer; // COMM_FW_VERSION
+    await this.bleService.writeDataView(
+      AppSettings.VESC_SERVICE_UUID,
+      AppSettings.VESC_CHARACTERISTICS_RX_UUID,
+      new DataView(packet)
+    );
   }
 
   startTimer() {
-/*
     this.timerId = setInterval(() => {
       // const packet = generatePacket(Buffer.from([0x04])).buffer; // COMM_GET_VALUES
       const packet = generatePacket(Buffer.from([0x33, 0x0, 0x1, 0xFF, 0xFF])).buffer; // COMM_GET_VALUES_SETUP_SELECTIVE
@@ -186,43 +203,50 @@ export class DevicePage implements OnInit, OnDestroy {
       );
       this.update();
       this.checkValues();
-      if (new Date().getMilliseconds() - this.lastVescMessage < 2000) {
+      if (Date.now() - this.lastVescMessage > 2000) {
         this.connected = false;
       }
     }, 333);
-  */
   }
 
-  subscribeVesc() {
-
+  subscribeNotifications() {
     this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
         const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
         if (!String(values[0]).startsWith('vesc')) {
-          this.logger.debug('Received: ' + values);
+          this.logger.debug('Received CONF: ' + values);
           this.rescueConf[values[0]] = values[1];
         }
       });
-       this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
-        AppSettings.CHARACTERISTIC_UUID_LOOP, (value: DataView) => {
-          const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-          if (String(values[0]).endsWith('oopTime')) {
-            this.logger.debug('Received: ' + values);
-            this.rescueData[values[0]] = values[1];
-          }
-        });
-       this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
+    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
+       AppSettings.CHARACTERISTIC_UUID_LOOP, (value: DataView) => {
+        const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
+        if (String(values[0]).endsWith('loopTime')) {
+          this.logger.debug('Received LOOP: ' + values);
+          this._zone.run(() =>  {
+            const loopFigures = values[1].split(";");
+            this.rescueData.loopCount = loopFigures[0]
+            this.rescueData.avgLoopTime = loopFigures[1]
+            this.rescueData.maxLoopTime = loopFigures[2]
+          });
+        }
+      });
+    this.bleService.startNotifications(AppSettings.VESC_SERVICE_UUID,
       AppSettings.VESC_CHARACTERISTICS_TX_UUID, (value: DataView) => {
-        this.logger.info('VESC data (', value.byteLength, ')byte: ', new Uint8Array(value.buffer).toString());
+        this.logger.debug('VESC data (', value.byteLength, ')byte: ', new Uint8Array(value.buffer).toString());
         this.vescMessageHandler.queueMessage(Buffer.from(value.buffer));
       });
   }
 
-  ngOnDestroy() {
-    if (this.timerId) {
-      clearInterval(this.timerId);
-    }
+  unSubscribeNotifications() {
+    this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF);
+    this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.CHARACTERISTIC_UUID_LOOP);
+    this.bleService.stopNotifications(AppSettings.VESC_SERVICE_UUID,
+      AppSettings.VESC_CHARACTERISTICS_TX_UUID);
   }
+
 
   async disconnect(rebootToRescue: boolean) {
     if (rebootToRescue) {

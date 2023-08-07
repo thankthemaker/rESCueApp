@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
@@ -6,13 +6,13 @@ import {DomSanitizer} from "@angular/platform-browser";
   templateUrl: './install.page.html',
   styleUrls: ['./install.page.scss'],
 })
-export class InstallPage implements OnInit {
+export class InstallPage {
 
   espWebInstaller: any;
 
   constructor(private sanitizer: DomSanitizer) { }
 
-  ngOnInit() {
+  ionViewDidEnter() {
     this.espWebInstaller = this.sanitizer.bypassSecurityTrustResourceUrl(
       'https://rescue.thank-the-maker.org/webinstaller/index.html'
     );

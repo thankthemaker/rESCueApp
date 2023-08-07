@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {IonSlides} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
@@ -12,7 +12,7 @@ import {StorageService} from '../services/storage.service';
   templateUrl: './wizard.page.html',
   styleUrls: ['./wizard.page.scss'],
 })
-export class WizardPage implements OnInit {
+export class WizardPage {
 
   @ViewChild('wizard', {static: false}) wizard: IonSlides;
 
@@ -45,7 +45,7 @@ export class WizardPage implements OnInit {
     this.deviceId = '';
   }
 
-  async ngOnInit() {
+  async ionViewDidEnter() {
     this.info = await Device.getInfo();
     this.platform = this.info.platform;
   }
