@@ -89,6 +89,19 @@
         <ion-icon slot="start" name="trash-outline"></ion-icon>
       </ion-button>
     </ion-item>
+
+    <ion-item-divider>
+      <ion-label class="item-divider">
+        <ion-icon name="document" slot="start"></ion-icon>
+        Device Firmware
+      </ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label>Allow beta updates</ion-label>
+      <ion-toggle slot="end" name="betaFirmwareUpdatesEnabled" [(ngModel)]="appSettings.betaFirmwareUpdatesEnabled"
+                  (ngModelChange)="appSettings.toggleValue('betaFirmwareUpdatesEnabled', $event)"></ion-toggle>
+    </ion-item>
+
   </ion-list>
 </ion-content>
 <ion-footer [translucent]="true">

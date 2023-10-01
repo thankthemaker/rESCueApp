@@ -15,47 +15,64 @@
   <div id="container">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Updating your rESCue device!</ion-card-title>
-        <ion-card-subtitle>Hardware version: {{hardwareVersion}}, Name: {{deviceName}}</ion-card-subtitle>
+        <ion-card-title>Update your rESCue device!</ion-card-title>
+        <ion-card-subtitle>Name: {{deviceName}}, Hardware version: {{hardwareVersion}}, {{deviceString}}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
+        <ion-button fill="clear" onclick="window.open('https://github.com/thankthemaker/rESCue/blob/master/versions.md', '_system', 'location=yes')">
+          Read about firmware versions
+        </ion-button><br/>
         <ion-chip outline color="secondary" (click)="loadVersions()" id="loadVersionsChip">
           <ion-icon name="pricetags-outline"></ion-icon>
           <ion-label>Change version</ion-label>
         </ion-chip>
-        <div *ngIf="!downloadFinished">
-          <p>
-            Downloading firmware version: {{softwareVersion}}, please wait...
-          </p>
-          <br/>
-        </div>
-        <div *ngIf="downloadFinished && !downloadFailed">
-          <p>
-            Downloaded firmware version: {{softwareVersion}}, size {{totalSize}} bytes
-            <ion-icon name="checkmark-circle" color="success"></ion-icon>
-          </p>
-          <br/>
-          <p>
+        <ion-chip outline color="secondary" (click)="loadTypes()" id="loadTypesChip">
+          <ion-icon name="albums-outline"></ion-icon>
+          <ion-label>Change type</ion-label>
+        </ion-chip>
+        <ion-list>
+          <ion-item>
+            <ion-label>Firmware-Channel:</ion-label>
+            <ion-badge *ngIf="!appSettings.betaFirmwareUpdatesEnabled" color="success" slot="end">stable</ion-badge>
+            <ion-badge *ngIf="appSettings.betaFirmwareUpdatesEnabled" color="warning" slot="end">beta</ion-badge>
+          </ion-item>
+        </ion-list>
+        <ion-list *ngIf="!downloadFinished">
+          <ion-item>
+                Downloading firmware:<br/>
+                {{firmwareString}}, please wait...
+              </ion-item>
+        </ion-list>
+        <ion-list *ngIf="downloadFinished && !downloadFailed">
+          <ion-item>
+           <ion-label>Downloaded firmware:<br/>
+            {{firmwareString}}, size {{totalSize}} bytes</ion-label>
+            <ion-icon slot="end" name="checkmark-circle" color="success"></ion-icon>
+          </ion-item>
+        <ion-item>
             Checking firmware integrity:<br/>
             checksum {{checksum | slice:0:30}}
-            <ion-icon name="shield-checkmark" color="success"></ion-icon>
-          </p>
-        </div>
-        <div *ngIf="downloadFailed">
-          <br/>
-          <p>
-            <span style="color:darkred"><b>This firmware couldn't be retrieved from our server.</b></span>
-          </p><br/>
+            <ion-icon slot="end" name="shield-checkmark" color="success"></ion-icon>
+        </ion-item>
+      </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="downloadFailed">
+      <ion-card-content>
+        <div>
+          <span style="color:darkred"><b>This firmware couldn't be retrieved from our server.</b></span>
+        </div><br/>
           <p>
             Maybe you're running a beta version.
           </p><br/>
           <p>
-            If you want to update your device to a stable version, please select another version by clicking the
-            "change version" button above.
+            If you want to update your device to a stable version, please disable beta updates in settings and select 
+            another version by clicking the "change version" button above.
           </p>
-        </div>
-      </ion-card-content>
+        </ion-card-content>
     </ion-card>
+
 
     <ion-card *ngIf="updateInProgress">
       <ion-card-content>

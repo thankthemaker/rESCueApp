@@ -28,19 +28,10 @@ export class OverviewChartComponent implements OnInit {
   public batteryGaugeOptions: Highcharts.Options;
 
   speedUpdateFlag = false;
-  speedData = [0];
-
   dutyUpdateFlag = false;
-  dutyData = [0];
-
   currentUpdateFlag = false;
-  currentData = [0];
-
   batteryUpdateFlag = false;
-  batteryData = [0];
-
   erpmUpdateFlag = false;
-  erpmData = [0];
 
   gaugeOptions: Highcharts.Options = {
     chart: {
@@ -226,7 +217,7 @@ export class OverviewChartComponent implements OnInit {
       series: [{
         type: 'gauge',
         name: 'Speed',
-        data: this.speedData,
+        data: [0],
         dataLabels: {
           format:
             '<div class="gauge-data-label" style="text-align:center">' +
@@ -264,7 +255,7 @@ export class OverviewChartComponent implements OnInit {
       series: [{
         type: 'gauge',
         name: 'DutyCycle',
-        data: this.dutyData,
+        data: [0],
         dataLabels: {
           format:
             '<div style="text-align:center">' +
@@ -291,7 +282,7 @@ export class OverviewChartComponent implements OnInit {
       series: [{
         type: 'solidgauge',
         name: 'ERPM',
-        data: this.erpmData,
+        data: [0],
         dataLabels: {
           format:
             '<div style="text-align:center">' +
@@ -324,7 +315,7 @@ export class OverviewChartComponent implements OnInit {
       series: [{
         type: 'solidgauge',
         name: 'Battery',
-        data: this.batteryData,
+        data: [0],
         dataLabels: {
           format:
             '<div style="text-align:center">' +
@@ -351,7 +342,7 @@ export class OverviewChartComponent implements OnInit {
       series: [{
         type: 'solidgauge',
         name: 'Current',
-        data: this.currentData,
+        data: [0],
         dataLabels: {
           format:
             '<div style="text-align:center">' +
@@ -366,8 +357,7 @@ export class OverviewChartComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   scale(val, inMin, inMax, outMin, outMax) {
     return (val - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
@@ -376,16 +366,39 @@ export class OverviewChartComponent implements OnInit {
   getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
-  updateValue() {
-    this.speedData[0] = this.getRandomInt(50);
-    this.dutyData[0] = this.getRandomInt(100);
-    this.batteryData[0] = this.getRandomInt(50);
-    this.currentData[0] = this.getRandomInt(100);
-    this.erpmData[0] = this.getRandomInt(10000);
-    this.speedUpdateFlag = true;
-    this.dutyUpdateFlag = true;
-    this.batteryUpdateFlag = true;
-    this.currentUpdateFlag = true;
-    this.erpmUpdateFlag = true;
+
+  updateSpeed(speedData) {
+    if(this.speedGaugeOptions.series[0]['data'][0] !== speedData) {
+      this.speedGaugeOptions.series[0]['data'] = [ speedData ]
+      this.speedUpdateFlag = true;
+    }
+  }
+
+  updateDuty(dutyData) {
+    if(this.dutyGaugeOptions.series[0]['data'][0] !== dutyData) {
+      this.dutyGaugeOptions.series[0]['data'] = [ dutyData ]
+      this.dutyUpdateFlag = true;
+    }
+  }
+
+  updateBattery(batteryData) {
+    if(this.batteryGaugeOptions.series[0]['data'][0] !== batteryData) {
+      this.batteryGaugeOptions.series[0]['data'] = [ batteryData ]
+      this.batteryUpdateFlag = true;
+    }
+  }
+
+  updateCurrent(currentData) {
+    if(this.currentGaugeOptions.series[0]['data'][0] !== currentData) {
+      this.currentGaugeOptions.series[0]['data'] = [ currentData ]
+      this.currentUpdateFlag = true;
+    }
+  }
+
+  updateErpm(erpmData) {
+    if(this.erpmGaugeOptions.series[0]['data'][0] !== erpmData) {
+      this.erpmGaugeOptions.series[0]['data'] = [ erpmData ]
+      this.erpmUpdateFlag = true;
+    }
   }
 }
