@@ -52,7 +52,7 @@ export class UpdatePage {
     private loadingCtrl: LoadingController,
     private firmwareService: FirmwareService,
     private bleService: BleService,
-    private appSettings: AppSettings,
+    public appSettings: AppSettings, // needed in html template
     private logger: NGXLogger,
     private _zone: NgZone) {
     this.progress = 'starting update, please wait...';
