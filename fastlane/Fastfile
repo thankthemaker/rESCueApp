@@ -86,7 +86,7 @@ platform :ios do
    app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-   profile_name = "App Provisioning Profile" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
+   profile_name = "rESCueApp Provisioning Profile" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
 
    cert(
        api_key: api_key,
@@ -106,7 +106,7 @@ platform :ios do
   lane :build_release do |options|
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    profile_name = "App Provisioning Profile"
+    profile_name = "rESCueApp Provisioning Profile"
     output_name = "rESCueApp-iOS"
     export_method = "app-store"
     compile_bitcode = true
