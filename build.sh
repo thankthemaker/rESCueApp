@@ -3,12 +3,12 @@
 os=$1
 type=$2
 
-#npm install
+npm ci
 npx cap add android
 #npx cap add ios
 
 npx trapeze run trapeze-config.yaml -y
-#npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000' --logoSplashTargetWidth 256
+npx capacitor-assets generate --iconBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColor '#000000' --splashBackgroundColorDark '#000000' --logoSplashTargetWidth 256
 
 ionic build --prod --aot --output-hashing=all && npx cap sync
 

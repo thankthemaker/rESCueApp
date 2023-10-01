@@ -42,6 +42,7 @@
     "@ionic/cordova-builders": "^10.0.0",
     "@ionic/pwa-elements": "^3.2.2",
     "@thankthemaker/vesc-protocol": "^0.9.8",
+    "@trapezedev/configure": "^7.0.10",
     "@w11k/git-info": "^1.1.2",
     "angular-build-info": "^2.0.1",
     "angular-cli-ghpages": "^1.0.6",
