@@ -29,6 +29,7 @@ export class AppSettings {
 
   public darkThemeSupported = true;
   public metricSystemEnabled = true;
+  public betaFirmwareUpdatesEnabled = false;
   public useVirtualDevice = false;
   public useOdometer = false;
   public notificationsEnabled = false;
@@ -86,6 +87,7 @@ export class AppSettings {
   private async loadConfig() {
     this.darkThemeSupported = await this.storageService.getBoolean('darkThemeSupported');
     this.metricSystemEnabled = await this.storageService.getBoolean('metricSystemEnabled');
+    this.betaFirmwareUpdatesEnabled = await this.storageService.getBoolean('betaFirmwareUpdatesEnabled');
     this.useVirtualDevice = await this.storageService.getBoolean('useVirtualDevice');
     this.useOdometer = await this.storageService.getBoolean('useOdometer');
     this.notificationsEnabled = await this.storageService.getBoolean('notificationsEnabled');

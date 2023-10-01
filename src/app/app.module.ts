@@ -13,7 +13,6 @@ import {ListpickerComponent} from './components/listpicker/listpicker.component'
 import {BatteryTypeComponent} from './settings/battery-type/battery-type.component';
 import {LedTypeComponent} from './settings/led-type/led-type.component';
 import {FormsModule} from '@angular/forms';
-import { NgxColorsModule } from 'ngx-colors';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoggerModule } from 'ngx-logger';
 import {NotificationsService} from './services/notification.service';
@@ -22,6 +21,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { environment } from '../environments/environment';
+import { NgxColorsModule } from 'ngx-colors';
 
 @NgModule({
     declarations: [AppComponent, ListpickerComponent, BatteryTypeComponent, LedTypeComponent],

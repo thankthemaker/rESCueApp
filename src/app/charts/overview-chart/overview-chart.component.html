@@ -31,7 +31,7 @@
           *ngIf="isHighcharts"
           [Highcharts]="batteryGaugeChart"
           [options]="batteryGaugeOptions"
-          [(update)]="batteryUpdateFlag"
+          [(update)]="batteryUpdateFlag" 
         ></highcharts-chart>
       </div>
     </ion-col>
@@ -58,6 +58,5 @@
       </div>
     </ion-col>
   </ion-row>
-<!--  <button (click)="updateValue()">click</button>-->
 </ion-grid>
 

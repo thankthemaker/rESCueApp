@@ -79,19 +79,19 @@
         <ion-item>
           <ion-label position="stacked">Cell Count {{batteryCells}}s</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
-                     min="10" max="20" step="1" pin [(ngModel)]="batteryCells"
+                     min="10" max="30" step="1" pin [(ngModel)]="batteryCells"
                      snaps color="secondary"></ion-range>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">Group Count {{batteryGroups}}p</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
-                     min="1" max="4" step="1" pin [(ngModel)]="batteryGroups"
+                     min="1" max="8" step="1" pin [(ngModel)]="batteryGroups"
                      snaps color="secondary"></ion-range>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">Cell Capacity {{cellCapacity}}mAh</ion-label>
           <ion-range (ionBlur)="lockSwipes(false)" (ionFocus)="lockSwipes(true)"
-                     min="1500" max="6000" step="100" pin  [(ngModel)]="cellCapacity"
+                     min="1500" max="8000" step="100" pin  [(ngModel)]="cellCapacity"
                      snaps color="secondary"></ion-range>
         </ion-item>
       </ion-list>

@@ -12,8 +12,9 @@ import {StorageService} from './storage.service';
 })
 export class BleService {
 
-  isRescueDevice = true;
-  connected = false;
+  isRescueDevice: boolean = true;
+  connected: boolean = false;
+  reConnectEnabled: boolean = true;
   device: BleDevice;
   info: DeviceInfo;
   notifications = [];
@@ -27,6 +28,7 @@ export class BleService {
 
   async connect(autoconnect: boolean) {
     this.device = undefined;
+    this.reConnectEnabled = true; // enable automatic reconnect
     this.logger.info('Connect with autoconnect: ' + autoconnect);
     try {
       this.info = await Device.getInfo();
@@ -70,7 +72,7 @@ export class BleService {
           optionalServices: [AppSettings.RESCUE_SERVICE_UUID],
         });
       }
-      await BleClient.connect(this.device.deviceId);
+      await BleClient.connect(this.device.deviceId, (deviceId) => this.onDisconnect(deviceId));
 
       this.logger.info('connected to device ' + this.device.name + '(' + this.device.deviceId + ')');
       this.connected = true;
@@ -87,7 +89,7 @@ export class BleService {
       return true;
     }
     try {
-      await BleClient.connect(this.device.deviceId); 
+      await BleClient.connect(this.device.deviceId, (deviceId) => this.onDisconnect(deviceId)); 
       this.logger.info('reconnected to device ' + this.device.name + '(' + this.device.deviceId + ')');
       this.connected = true;
       return true;
@@ -97,12 +99,20 @@ export class BleService {
     }
   }
 
+  async onDisconnect(deviceId: String) {
+    this.logger.info(`disconnected device ${deviceId}]`);
+    this.connected = false;
+    if(this.reConnectEnabled) {
+      this.reconnect();
+    }
+  }
+  
+
   async disconnect(redirect: boolean) {
+    this.reConnectEnabled = false;
     if (!this.info.isVirtual && this.connected) {
       await BleClient.disconnect(this.device.deviceId);
-      this.logger.info('Disconnected from device ');
     }
-    this.connected = false;
     if(redirect) {
       this.router.navigate(['']);
     }
@@ -154,12 +164,16 @@ export class BleService {
       return;
     }
 
-    await BleClient.write(
-      this.device.deviceId,
-      serviceId,
-      characteristicId,
-      data
-    );
+    try {
+      await BleClient.writeWithoutResponse(
+        this.device.deviceId,
+        serviceId,
+        characteristicId,
+        data
+      );
+    } catch(error) {
+      this.logger.error('Cannot write to characteristics: ' + error)
+    }
   }
 
   async write(serviceId, characteristicId, str: string) {
@@ -177,12 +191,16 @@ export class BleService {
       bufView[i] = str.charCodeAt(i);
     }
     console.log("writing to char " + characteristicId + ", data " + buf)
-    await BleClient.write(
-      this.device.deviceId,
-      serviceId,
-      characteristicId,
-      new DataView(buf)
-    );
+    try {
+      await BleClient.writeWithoutResponse(
+        this.device.deviceId,
+        serviceId,
+        characteristicId,
+        new DataView(buf)
+      );
+    } catch(error) {
+      this.logger.error('Cannot write to characteristics: ' + error)
+    }
   }
 
   async readVersion() {
@@ -190,7 +208,7 @@ export class BleService {
       return;
     }
     if (this.info.isVirtual) {
-      return numbersToDataView([3, 1, 1, 3, 0]);
+      return numbersToDataView([4, 0, 2, 4, 0]);
     }
 
     return await BleClient.read(

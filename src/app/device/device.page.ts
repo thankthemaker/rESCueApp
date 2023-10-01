@@ -84,7 +84,7 @@ export class DevicePage {
         this.rescueData.erpm = message.payload.erpm;
         this.rescueData.dutyCycle = message.payload.dutyCycle * 100;
         this.rescueData.battery = message.payload.voltage;
-        this.rescueData.batteryLevel = message.payload.batteryLevel * 100;
+        this.rescueData.batteryLevel = message.payload.batteryLevel;
         this.rescueData.tachometer = message.payload.tachometer.value * 0.4385955;
         this.rescueData.tachometerAbs = message.payload.tachometer.abs * 0.4385955;
         if (message.payload.temp.motor > 0) {
@@ -271,13 +271,18 @@ export class DevicePage {
   }
 
   getFirmwareVersions() {
-    this.firmwareService.getVersioninfo().subscribe(result => {
-      this.logger.info('Firmware: ' + JSON.stringify(result));
-      this.checkForUpdate(result);
+    this.firmwareService.getDeviceinfo().subscribe(deviceResult => {
+      this.logger.info('Devices: ' + JSON.stringify(deviceResult));
+      let deviceString = deviceResult.devices[this.hardwareVersion];
+      this.logger.info('Devicestring: ' + JSON.stringify(deviceString));
+      this.firmwareService.getVersioninfo().subscribe(firmwareResult => {
+        this.logger.info('Firmware: ' + JSON.stringify(firmwareResult));
+        this.checkForUpdate(firmwareResult, deviceString);
+      });
     });
   }
 
-  checkForUpdate(data) {
+  checkForUpdate(data: any, deviceString: string) {
     let softwareVersionCount = 0;
     let latestCompatibleSoftware: string = data.firmware[softwareVersionCount].software;
     versionFindLoop:
@@ -293,7 +298,7 @@ export class DevicePage {
             latestCompatibleSoftware = data.firmware[softwareVersionCount].software;
             if (latestCompatibleSoftware.replace('/[v\.]/g', '') > this.softwareVersion.replace('/[v\.]/g', '')) {
               this.logger.info('latest compatible version: ' + latestCompatibleSoftware);
-              this.promptForUpdate(true, latestCompatibleSoftware, this.hardwareVersion);
+              this.promptForUpdate(true, latestCompatibleSoftware, this.hardwareVersion, deviceString);
               return;
             }
             break versionFindLoop;
@@ -302,13 +307,13 @@ export class DevicePage {
         softwareVersionCount++;
       }
     if (!this.isFirstUpdateCheck) {
-      this.promptForUpdate(false, this.softwareVersion, this.hardwareVersion);
+      this.promptForUpdate(false, this.softwareVersion, this.hardwareVersion, deviceString);
     } else {
       this.isFirstUpdateCheck = false;
     }
   }
 
-  async promptForUpdate(isUpdateAvailable: boolean, softwareVersion: string, hardwareVersion: string) {
+  async promptForUpdate(isUpdateAvailable: boolean, softwareVersion: string, hardwareVersion: string, deviceString: string) {
     let toast;
     if (isUpdateAvailable) {
       toast = await this.toastCtrl.create({
@@ -328,6 +333,7 @@ export class DevicePage {
                 state: {
                   deviceId: this.bleService.device.deviceId,
                   deviceName: this.bleService.device.name,
+                  deviceString: deviceString,
                   softwareVersion,
                   hardwareVersion,
                   currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1), 10)
@@ -365,6 +371,7 @@ export class DevicePage {
                 state: {
                   deviceId: this.bleService.device.deviceId,
                   deviceName: this.bleService.device.name,
+                  deviceString: deviceString,
                   softwareVersion,
                   hardwareVersion,
                   currentVersion: Number.parseInt(this.softwareVersion.split('.').join('').substr(1), 10)
@@ -413,30 +420,11 @@ export class DevicePage {
       speed = rpm * 0.27 * Math.PI * 2 / 1000;
     }
 
-    if (this.overviewChart.speedData[0] !== speed) {
-      this.overviewChart.speedData[0] = speed;
-      this.overviewChart.speedUpdateFlag = true;
-    }
-
-    if (this.overviewChart.dutyData[0] !== this.rescueData.dutyCycle) {
-      this.overviewChart.dutyData[0] = Math.abs(this.rescueData.dutyCycle);
-      this.overviewChart.dutyUpdateFlag = true;
-    }
-
-    if (this.overviewChart.batteryData[0] !== this.rescueData.battery) {
-      this.overviewChart.batteryData[0] = this.rescueData.battery;
-      this.overviewChart.batteryUpdateFlag = true;
-    }
-
-    if (this.overviewChart.erpmData[0] !== this.rescueData.erpm) {
-      this.overviewChart.erpmData[0] = Math.abs(this.rescueData.erpm);
-      this.overviewChart.erpmUpdateFlag = true;
-    }
-
-    if (this.overviewChart.currentData[0] !== this.rescueData.current) {
-      this.overviewChart.currentData[0] = Math.abs(this.rescueData.current);
-      this.overviewChart.currentUpdateFlag = true;
-    }
+      this.overviewChart.updateSpeed(this.rescueData.speed);
+      this.overviewChart.updateDuty(this.rescueData.dutyCycle);
+      this.overviewChart.updateBattery(this.rescueData.battery);
+      this.overviewChart.updateErpm(this.rescueData.erpm);
+      this.overviewChart.updateCurrent(this.rescueData.current);
   }
 
   async toggleAutoconnect(value) {

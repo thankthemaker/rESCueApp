@@ -22,9 +22,12 @@ export class UpdatePage {
   progress: string;
   progressNum=0.0;
   softwareVersion: string;
+  softwareType: string;
   hardwareVersion: string;
   deviceId: string;
   deviceName: string;
+  deviceString: string;
+  firmwareString = '';
   updateData: any;
   dataToSend: any;
   checksum: string;
@@ -49,6 +52,7 @@ export class UpdatePage {
     private loadingCtrl: LoadingController,
     private firmwareService: FirmwareService,
     private bleService: BleService,
+    private appSettings: AppSettings,
     private logger: NGXLogger,
     private _zone: NgZone) {
     this.progress = 'starting update, please wait...';
@@ -57,16 +61,15 @@ export class UpdatePage {
       if (this.router.getCurrentNavigation().extras.state) {
         this.deviceId = this.router.getCurrentNavigation().extras.state.deviceId;
         this.deviceName = this.router.getCurrentNavigation().extras.state.deviceName;
+        this.deviceString = this.router.getCurrentNavigation().extras.state.deviceString;
         this.softwareVersion = this.router.getCurrentNavigation().extras.state.softwareVersion;
         this.hardwareVersion = this.router.getCurrentNavigation().extras.state.hardwareVersion;
+        this.firmwareString = this.softwareVersion;
       }
     });
   }
 
   async ionViewDidEnter() {
-
-    this.softwareVersion = "v3.0.0-beta"
-
     try {
       this.loading = await this.loadingCtrl.create({
         message: 'Downloading firmware, please wait...'
@@ -75,7 +78,8 @@ export class UpdatePage {
       await this.loading.present();
 
       await new Promise<void>((res, rej) => {
-        this.firmwareService.getChecksum(this.softwareVersion).subscribe(result => {
+        const filename = "" + this.softwareVersion;
+        this.firmwareService.getChecksum(this.deviceString, filename).subscribe(result => {
           this.logger.debug(result + ', length: ' + result.length);
           const regex = '^[0-9a-z]{64}$';
           if (!result.slice(0, -1).match(regex)) {
@@ -91,7 +95,7 @@ export class UpdatePage {
       });
 
       await new Promise<void>((res, rej) => {
-        this.firmwareService.getFirmwareFile(this.softwareVersion).subscribe(result => {
+        this.firmwareService.getFirmwareFile(this.deviceString, this.softwareVersion).subscribe(result => {
           this.totalSize = result.byteLength;
           this.downloadFinished = true;
           this.updateData = result;
@@ -279,16 +283,21 @@ export class UpdatePage {
         .map(software => software.software)
         .splice(0, 6);
       this.logger.debug('Versions: ' + versions);
-      this.showVersions(versions);
+      this.showPopup('Select firmware version', versions, true);
     });
   }
 
-  async showVersions(versions) {
+  async loadTypes() {
+    const types = ['cob', 'uart', 'cob_uart']
+    this.showPopup('Select firmware type', types, false);
+  }
+
+  async showPopup(title, versions, isVersionSelect) {
     const popover = await this.popoverController.create({
       component: ListpickerComponent,
       //cssClass: 'my-custom-class',
       componentProps: {
-        title: 'Select rESCue version',
+        title: title,
         items: versions
       },
       translucent: true
@@ -296,8 +305,13 @@ export class UpdatePage {
     popover.present();
 
     const { data } = await popover.onDidDismiss();
-    this.softwareVersion = data;
-    this.logger.info('Selected version: ' + this.softwareVersion);
+    if(isVersionSelect) {
+      this.softwareVersion = data;
+      this.firmwareString = data;
+    } else {
+      this.firmwareString = (data === undefined ? "" : data + '-') + this.softwareVersion;
+    }
+    this.logger.info('Selected version: ' + this.firmwareString);
     this.ionViewDidEnter();
   }
 
