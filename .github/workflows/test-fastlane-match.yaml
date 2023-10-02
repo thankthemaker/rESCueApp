@@ -17,6 +17,7 @@ jobs:
       - name: Check Fastlane Match
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
         run: |
           fastlane match
