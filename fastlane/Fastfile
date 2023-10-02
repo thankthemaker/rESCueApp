@@ -86,7 +86,7 @@ platform :ios do
    app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-   profile_name = "rESCueApp Provisioning Profile" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
+   profile_name = "match AppStore org.thankthemaker.rescueapp" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
 
    cert(
        api_key: api_key,
@@ -106,7 +106,7 @@ platform :ios do
   lane :build_release do |options|
     app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
 
-    profile_name = "rESCueApp Provisioning Profile"
+    profile_name = "match AppStore org.thankthemaker.rescueapp"
     output_name = "rESCueApp-iOS"
     export_method = "app-store"
     compile_bitcode = true
@@ -141,6 +141,7 @@ platform :ios do
 
   desc "Build a new beta release"
   lane :beta do
+    match(type: "appstore", readonly: is_ci)
     load_asc_api_key
     update_info_plist( # Advanced processing: find URL scheme for particular key and replace value
       xcodeproj: "ios/App/App.xcodeproj",
@@ -155,7 +156,7 @@ platform :ios do
 #      end
     )
     fetch_and_increment_build_number
-    prepare_signing
+###    prepare_signing
     build_release
     upload_to_testflight(
       skip_waiting_for_build_processing: true
