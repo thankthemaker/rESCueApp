@@ -19,5 +19,5 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
           KEYCHAIN_PATH: ~/Library/Keychains/signing_temp.keychain-db
         run: |
-          bundle exec fastlane match
+          fastlane match
           
