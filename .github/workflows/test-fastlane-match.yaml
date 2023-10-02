@@ -1,1 +1,10 @@
+name: Validate Fastlane Match
+on:
+  workflow_dispatch:
 
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Check Fastlane Match
+        run: bundle exec fastlane match
