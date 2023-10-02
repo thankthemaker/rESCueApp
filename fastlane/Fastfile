@@ -141,6 +141,7 @@ platform :ios do
 
   desc "Build a new beta release"
   lane :beta do
+    setup_ci
     match(type: "appstore", readonly: is_ci)
     load_asc_api_key
     update_info_plist( # Advanced processing: find URL scheme for particular key and replace value
