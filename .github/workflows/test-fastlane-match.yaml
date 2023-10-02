@@ -9,6 +9,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+
       - name: Check Fastlane Match
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
