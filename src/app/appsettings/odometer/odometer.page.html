@@ -13,8 +13,7 @@
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>Enable Odometer</ion-label>
-      <ion-toggle slot="end" name="notificationsEnabled" [(ngModel)]="appSettings.useOdometer" disabled="true"
+      <ion-toggle label="Enable Odometer" slot="end" name="notificationsEnabled" [(ngModel)]="appSettings.useOdometer" disabled="true"
                   (ngModelChange)="appSettings.toggleValue('useOdometer', $event)"></ion-toggle>
     </ion-item>
     <ion-item-group *ngIf="appSettings.useOdometer">

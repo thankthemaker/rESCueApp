@@ -50,12 +50,14 @@
           </ion-col>
         </ion-row>
       </ion-grid>
-      <ion-item>
-        <ion-label>Autoconnect</ion-label>
-        <ion-toggle slot="end" name="" [(ngModel)]="autoconnect" (ngModelChange)="toggleAutoconnect($event)"></ion-toggle>
-      </ion-item>
     </ion-card-content>
     <div class="ion-text-end">
+      <ion-chip  outline (click)="toggleAutoconnect()" id="toggleAutoconnectChip">
+        <ion-icon *ngIf="autoconnect" src="assets/icon/plug-circle-check.svg"></ion-icon>
+        <ion-icon *ngIf="!autoconnect" src="assets/icon/plug-circle-xmark.svg"></ion-icon>
+        <ion-label>Autoconnect</ion-label>
+      </ion-chip>
+
       <ion-chip *ngIf="bleService.isRescueDevice" outline (click)="toggleLights()" id="toggleLightsChip">
         <ion-icon name="bulb" [class.bulb-on]="lightsOn" [class.bulb-off]="!lightsOn"></ion-icon>
         <ion-label>Lights</ion-label>

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { WizardPageRoutingModule } from './wizard-routing.module';
 import { WizardPage } from './wizard.page';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
     imports: [
@@ -12,6 +13,7 @@ import { WizardPage } from './wizard.page';
         IonicModule,
         WizardPageRoutingModule
     ],
-  declarations: [WizardPage]
+  declarations: [WizardPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class WizardPageModule {}

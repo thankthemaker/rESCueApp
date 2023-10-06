@@ -427,10 +427,10 @@ export class DevicePage {
       this.overviewChart.updateCurrent(this.rescueData.current);
   }
 
-  async toggleAutoconnect(value) {
-    const autoconnect = value;
-    this.logger.info('Autoconnect is now ' + autoconnect);
-    await this.storageService.set('autoconnect', autoconnect);
+  async toggleAutoconnect() {
+    this.autoconnect = !this.autoconnect;
+    this.logger.info('Autoconnect is now ' + this.autoconnect);
+    await this.storageService.set('autoconnect', this.autoconnect);
     await this.storageService.set('deviceId', this.deviceId);
   }
 

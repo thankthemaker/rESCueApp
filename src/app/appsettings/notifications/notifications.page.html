@@ -13,9 +13,10 @@
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>Allow Push-Notifications</ion-label>
-      <ion-toggle slot="end" name="notificationsEnabled" [(ngModel)]="appSettings.notificationsEnabled"
-                  (ngModelChange)="appSettings.toggleValue('notificationsEnabled', $event)"></ion-toggle>
+      <ion-toggle name="notificationsEnabled" justify="space-between" [(ngModel)]="appSettings.notificationsEnabled" 
+                  (ngModelChange)="appSettings.toggleValue('notificationsEnabled', $event)">
+        Allow Push-Notifications
+      </ion-toggle>
     </ion-item>
     <ion-item-group *ngIf="!appSettings.notificationsEnabled">
       <ion-card>
@@ -33,29 +34,29 @@
         </ion-label>
       </ion-item-divider>
       <ion-item>
-        <ion-label position="stacked">Battery Warnings</ion-label>
-        <ion-toggle slot="end" name="batteryNotificationEnabled" [(ngModel)]="appSettings.batteryNotificationEnabled"
-                    (ngModelChange)="appSettings.toggleValue('batteryNotificationEnabled', $event)"></ion-toggle>
+        <ion-toggle name="batteryNotificationEnabled" justify="space-between" [(ngModel)]="appSettings.batteryNotificationEnabled"
+                    (ngModelChange)="appSettings.toggleValue('batteryNotificationEnabled', $event)">
+          Battery Warnings
+        </ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="appSettings.batteryNotificationEnabled">
         <ion-grid>
-          <ion-row *ngIf="appSettings.batteryNotificationEnabled">
+          <ion-row >
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Min</ion-label>
-                <ion-input name="minVoltage" placeholder="40.0" [(ngModel)]="appSettings.minVoltage"
+                <ion-input label="Min" name="minVoltage" placeholder="40.0" [(ngModel)]="appSettings.minVoltage"
                            (ngModelChange)="appSettings.updateValue('notification.minVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Low</ion-label>
-                <ion-input name="lowVoltage" placeholder="42.0" [(ngModel)]="appSettings.lowVoltage"
+                <ion-input label="Low" name="lowVoltage" placeholder="42.0" [(ngModel)]="appSettings.lowVoltage"
                            (ngModelChange)="appSettings.updateValue('notification.lowVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Max</ion-label>
-                <ion-input name="maxVoltage" placeholder="50.4" [(ngModel)]="appSettings.maxVoltage"
+                <ion-input label="Max" name="maxVoltage" placeholder="50.4" [(ngModel)]="appSettings.maxVoltage"
                            (ngModelChange)="appSettings.updateValue('notification.maxVoltage',$event)"></ion-input>
               </ion-item>
             </ion-col>
@@ -64,22 +65,23 @@
       </ion-item>
 
       <ion-item>
-        <ion-label position="stacked">Current Warnings</ion-label>
-        <ion-toggle slot="end" name="currentNotificationEnabled" [(ngModel)]="appSettings.currentNotificationEnabled"
-                    (ngModelChange)="appSettings.toggleValue('currentNotificationEnabled', $event)"></ion-toggle>
-        <ion-grid *ngIf="appSettings.currentNotificationEnabled">
+        <ion-toggle name="currentNotificationEnabled" justify="space-between"[(ngModel)]="appSettings.currentNotificationEnabled"
+                    (ngModelChange)="appSettings.toggleValue('currentNotificationEnabled', $event)">
+          Current Warnings
+        </ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="appSettings.currentNotificationEnabled">
+        <ion-grid>
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Max Amp</ion-label>
-                <ion-input name="maxCurrent" placeholder="40" [(ngModel)]="appSettings.maxCurrent"
+                <ion-input label="Max Amp" name="maxCurrent" placeholder="40" [(ngModel)]="appSettings.maxCurrent"
                            (ngModelChange)="appSettings.updateValue('notification.maxCurrent',$event)"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Time (ms)</ion-label>
-                <ion-input name="timeCurrent" placeholder="5000" [(ngModel)]="appSettings.interval"
+                <ion-input label="Time (ms)" name="timeCurrent" placeholder="5000" [(ngModel)]="appSettings.interval"
                            (ngModelChange)="appSettings.updateValue('notification.interval',$event)"></ion-input>
               </ion-item>
             </ion-col>
@@ -87,15 +89,17 @@
         </ion-grid>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">ERPM Warnings</ion-label>
-        <ion-toggle slot="end" name="erpmNotificationEnabled" [(ngModel)]="appSettings.erpmNotificationEnabled"
-                    (ngModelChange)="appSettings.toggleValue('erpmNotificationEnabled', $event)"></ion-toggle>
-        <ion-grid *ngIf="appSettings.erpmNotificationEnabled">
+        <ion-toggle name="erpmNotificationEnabled" justify="space-between"[(ngModel)]="appSettings.erpmNotificationEnabled"
+                    (ngModelChange)="appSettings.toggleValue('erpmNotificationEnabled', $event)">
+          ERPM Warnings
+        </ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="appSettings.erpmNotificationEnabled">
+        <ion-grid>
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Max RPM</ion-label>
-                <ion-input name="maxErpm" placeholder="45000" [(ngModel)]="appSettings.maxErpm"
+                <ion-input label="Max RPM" name="maxErpm" placeholder="45000" [(ngModel)]="appSettings.maxErpm"
                            (ngModelChange)="appSettings.updateValue('notification.maxErpm',$event)"></ion-input>
               </ion-item>
             </ion-col>
@@ -103,15 +107,17 @@
         </ion-grid>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">DutyCycle Warnings</ion-label>
-        <ion-toggle slot="end" name="dutycycleNotificationEnabled" [(ngModel)]="appSettings.dutycycleNotificationEnabled"
-                    (ngModelChange)="appSettings.toggleValue('dutycycleNotificationEnabled', $event)"></ion-toggle>
-        <ion-grid *ngIf="appSettings.dutycycleNotificationEnabled">
+        <ion-toggle name="dutycycleNotificationEnabled" justify="space-between" [(ngModel)]="appSettings.dutycycleNotificationEnabled"
+                    (ngModelChange)="appSettings.toggleValue('dutycycleNotificationEnabled', $event)">
+          DutyCycle Warnings
+        </ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="appSettings.dutycycleNotificationEnabled">
+        <ion-grid>
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked">Max Duty</ion-label>
-                <ion-input name="maxDuty" placeholder="80" [(ngModel)]="appSettings.maxDuty"
+                <ion-input label="Max Duty" name="maxDuty" placeholder="80" [(ngModel)]="appSettings.maxDuty"
                            (ngModelChange)="appSettings.updateValue('notification.maxDuty',$event)"></ion-input>
               </ion-item>
             </ion-col>
@@ -119,16 +125,21 @@
         </ion-grid>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">Speed  Warnings</ion-label>
-        <ion-toggle slot="end" name="speedNotificationEnabled" [(ngModel)]="appSettings.speedNotificationEnabled"
-                    (ngModelChange)="appSettings.toggleValue('speedNotificationEnabled', $event)"></ion-toggle>
-        <ion-grid *ngIf="appSettings.speedNotificationEnabled">
+        <ion-toggle name="speedNotificationEnabled" justify="space-between" [(ngModel)]="appSettings.speedNotificationEnabled"
+                    (ngModelChange)="appSettings.toggleValue('speedNotificationEnabled', $event)">
+          Speed  Warnings
+        </ion-toggle>
+      </ion-item>
+      <ion-item *ngIf="appSettings.speedNotificationEnabled">
+        <ion-grid>
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-label position="stacked" *ngIf="appSettings.metricSystemEnabled">Max Speed (km/h)</ion-label>
-                <ion-label position="stacked" *ngIf="!appSettings.metricSystemEnabled">Max Speed (mph)</ion-label>
-                <ion-input name="maxSpeed" placeholder="28" [(ngModel)]="appSettings.maxSpeed"
+                <ion-input *ngIf="appSettings.metricSystemEnabled" label="Max Speed (km/h)" name="maxSpeed"
+                           placeholder="28" [(ngModel)]="appSettings.maxSpeed"
+                           (ngModelChange)="appSettings.updateValue('notification.maxSpeed',$event)"></ion-input>
+                <ion-input *ngIf="!appSettings.metricSystemEnabled" label="Max Speed (mph)" name="maxSpeed" 
+                          placeholder="28" [(ngModel)]="appSettings.maxSpeed"
                            (ngModelChange)="appSettings.updateValue('notification.maxSpeed',$event)"></ion-input>
               </ion-item>
             </ion-col>

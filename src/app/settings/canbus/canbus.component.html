@@ -4,8 +4,7 @@
   </ion-text>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">VESC-ID</ion-label>
-  <ion-input class="ion-text-right" type="number" value="25" [(ngModel)]="rescueConf.vescId" slot="end"></ion-input>
+  <ion-input label="VESC-ID" class="ion-text-right" type="number" min="1" [(ngModel)]="rescueConf.vescId"></ion-input>
 </ion-item>
 <ion-item-divider>
   <ion-label>
@@ -13,20 +12,16 @@
   </ion-label>
 </ion-item-divider>
 <ion-item>
-  <ion-label position="stacked" class="ion-text-wrap">Realtime-Data Interval [{{rescueConf.realtimeDataInterval}} ms]
-    <ion-range min="200" max="1000" step="50" value="{{rescueConf.realtimeDataInterval}}"
+    <ion-range label="Realtime-Data Interval [{{rescueConf.realtimeDataInterval}} ms]" min="200" max="1000" step="50" value="{{rescueConf.realtimeDataInterval}}"
                (ionChange)="changeRealtimeDataInterval($event)" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
     </ion-range>
-  </ion-label>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked" class="ion-text-wrap">Balance-Data Interval [{{rescueConf.balanceDataInterval}} ms]
-    <ion-range min="200" max="1000" step="50" value="{{rescueConf.balanceDataInterval}}"
+    <ion-range label="Balance-Data Interval [{{rescueConf.balanceDataInterval}} ms]" min="200" max="1000" step="50" value="{{rescueConf.balanceDataInterval}}"
                (ionChange)="changeBalanceDataInterval($event)" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
     </ion-range>
-  </ion-label>
 </ion-item>
