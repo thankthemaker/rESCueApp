@@ -7,6 +7,7 @@ import { BleService } from '../services/ble.service';
 import { AppSettings } from '../models/AppSettings';
 import { ListpickerComponent } from '../components/listpicker/listpicker.component';
 import { NGXLogger } from 'ngx-logger';
+import * as CryptoJS from 'crypto-js';
 
 const part = 19000;
 const mtu = 250;
@@ -43,6 +44,7 @@ export class UpdatePage {
   lastAcknowledged = 0;
   lastSendTime: number;
   resentCounter = 0;
+  firmwareFile: File;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,17 +68,47 @@ export class UpdatePage {
         this.hardwareVersion = this.router.getCurrentNavigation().extras.state.hardwareVersion;
         this.firmwareString = this.softwareVersion;
       }
-    });
+  });
+}
+
+onFirmwareFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files.length > 0) {
+    this.firmwareFile = input.files[0];
+    this.ionViewDidEnter();
   }
+}
 
   async ionViewDidEnter() {
     try {
       this.loading = await this.loadingCtrl.create({
         message: 'Downloading firmware, please wait...'
       });
-
+  
       await this.loading.present();
-
+  
+      // Check if the software version selected is a local file.
+      if (this.softwareVersion === "Local File") {
+        if (!this.firmwareFile) {
+          throw new Error('No local file selected.');
+        }
+        
+        const arrayBuffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as ArrayBuffer);
+          reader.onerror = () => reject(new Error('Failed to read local file.'));
+          reader.readAsArrayBuffer(this.firmwareFile);
+        });
+  
+        this.totalSize = arrayBuffer.byteLength;
+        this.updateData = arrayBuffer;
+        const wordArray = CryptoJS.lib.WordArray.create(arrayBuffer);
+        this.checksum = CryptoJS.SHA256(wordArray).toString();
+        this.downloadFinished = true;
+        this.downloadFailed = false;
+        this.loading.dismiss();
+      } else {
+        // Existing logic to fetch firmware and calculate checksum from the service.
       await new Promise<void>((res, rej) => {
         const filename = "" + this.softwareVersion;
         this.firmwareService.getChecksum(this.deviceString, filename).subscribe(result => {
@@ -104,7 +136,8 @@ export class UpdatePage {
         }, error => {
           rej(error);
         });
-      });
+      });     
+    } 
     } catch (e) {
       this.logger.info(`FAILED: ${e.message}`);
       this.downloadFailed = true;
@@ -282,6 +315,8 @@ export class UpdatePage {
       const versions = _filter(result.firmware, { hardware: [this.hardwareVersion] })
         .map(software => software.software)
         .splice(0, 6);
+      // Add local file option
+      versions.push("Local File");
       this.logger.debug('Versions: ' + versions);
       this.showPopup('Select firmware version', versions, true);
     });
@@ -303,10 +338,19 @@ export class UpdatePage {
       translucent: true
     });
     popover.present();
-
+  
     const { data } = await popover.onDidDismiss();
-    if(isVersionSelect) {
-      this.softwareVersion = data;
+    if (isVersionSelect) this.softwareVersion = data;  // <-- Set it here
+
+    // Special handling for "Local File"
+    if (isVersionSelect && data === "Local File") {
+      this.firmwareString = 'Local File';
+      const fileInput = document.getElementById("fileInputID") as HTMLInputElement;
+      fileInput.click();
+      return;
+    }
+    
+    if (isVersionSelect) {
       this.firmwareString = data;
     } else {
       this.firmwareString = (data === undefined ? "" : data + '-') + this.softwareVersion;

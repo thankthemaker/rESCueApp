@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" color="light">
-
+  <input id="fileInputID" type="file" style="display:none" (change)="onFirmwareFileSelected($event)">
   <div id="container">
     <ion-card>
       <ion-card-header>
@@ -30,7 +30,7 @@
           <ion-icon name="albums-outline"></ion-icon>
           <ion-label>Change type</ion-label>
         </ion-chip>
-        <ion-list>
+        <ion-list *ngIf="softwareVersion !== 'Local File'">
           <ion-item>
             <ion-label>Firmware-Channel:</ion-label>
             <ion-badge *ngIf="!appSettings.betaFirmwareUpdatesEnabled" color="success" slot="end">stable</ion-badge>

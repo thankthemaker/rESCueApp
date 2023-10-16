@@ -52,6 +52,7 @@
     "cordova-plugin-badge": "^0.8.9",
     "cordova-plugin-device": "^2.1.0",
     "cordova-sqlite-storage": "^6.1.0",
+    "crypto-js": "^4.1.1",
     "highcharts": "^11.1.0",
     "highcharts-angular": "^3.1.2",
     "i": "^0.3.7",
