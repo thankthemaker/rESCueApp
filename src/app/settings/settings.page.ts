@@ -82,6 +82,13 @@ export class SettingsPage {
     this.logger.debug('ledType and ledFrequency updated');
   }
 
+  async updateLightBarLedType() {
+    await this.saveProperty({key: 'lightBarLedType', value: this.rescueConf.lightBarLedType});
+    await this.saveProperty({key: 'lightBarLedFrequency', value: this.rescueConf.lightBarLedFrequency});
+    await this.saveProperty({key: 'save', value: 'true'});
+    this.logger.debug('ledType and ledFrequency updated');
+  }
+
   toggleNotificationsEnabled(event){
   }
 
