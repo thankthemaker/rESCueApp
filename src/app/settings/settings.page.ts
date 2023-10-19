@@ -45,9 +45,11 @@ export class SettingsPage {
     this.rescueConf.deviceName = this.bleService.device.name;
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
+    await this.subscribeNotifications();
   }
 
   async ionViewDidLeave() {
+    this.unSubscribeNotifications();
   }
 
 
@@ -74,6 +76,23 @@ export class SettingsPage {
     return this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str);
   }
+
+  subscribeNotifications() {
+    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
+        this.logger.info('hello');
+        const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
+        if (!String(values[0]).startsWith('vesc')) {
+          this.logger.info('Received CONF: ' + values);
+          this.rescueConf[values[0]] = values[1];
+        }
+      });    
+    }
+
+    unSubscribeNotifications() {
+      this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
+        AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF);
+    }
 
   async updateLedType() {
     await this.saveProperty({key: 'ledType', value: this.rescueConf.ledType});
