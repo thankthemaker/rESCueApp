@@ -1,4 +1,4 @@
-<ion-item>
+ <ion-item>
   <ion-label position="stacked">Type: {{rescueConf.batteryType}}</ion-label>
   <ion-chip outline color="secondary" (click)="changeBatteryType($event)">
     <ion-icon name="battery-charging-outline"></ion-icon>
@@ -6,8 +6,7 @@
   </ion-chip>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Number of pixel</ion-label>
-  <ion-input class="ion-text-right" type="number" value="5" slot="end"
+  <ion-input label="Number of pixel" class="ion-text-right" type="number" min="1" max="30"
              [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
 </ion-item>
 <ion-item>
@@ -30,22 +29,18 @@
   <ion-toggle [(ngModel)]="rescueConf.mallGrab"></ion-toggle>
   </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">LED Maximum Brightness [{{rescueConf.lightbarMaxBrightness}}]
-    <ion-range min="0" max="255" step="1" [(ngModel)]="rescueConf.lightbarMaxBrightness" pin snaps color="secondary"
+    <ion-range label="LED Maximum Brightness [{{rescueConf.lightbarMaxBrightness}}]" min="0" max="255" step="1" [(ngModel)]="rescueConf.lightbarMaxBrightness" pin snaps color="secondary"
                (ionKnobMoveEnd)="changeLightbarMaxBrightness($event)">
       <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>
       <ion-icon slot="end" color="secondary" name="sunny"></ion-icon>
     </ion-range>
-  </ion-label>
 </ion-item>
 <ion-item>
-  <ion-label class="ion-text-wrap">Turn off at ERPM [{{rescueConf.lightbarTurnOffErpm}}]
-      <ion-range min="0" max="5000" step="500" [(ngModel)]="rescueConf.lightbarTurnOffErpm" pin snaps color="secondary"
+      <ion-range label="Turn off at ERPM [{{rescueConf.lightbarTurnOffErpm}}]" min="0" max="5000" step="500" [(ngModel)]="rescueConf.lightbarTurnOffErpm" pin snaps color="secondary"
                  (ionKnobMoveEnd)="changeLightbarTurnOffErpm($event)">
       <ion-icon slot="start" size="small" color="secondary" name="speedometer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="speedometer-outline"></ion-icon>
     </ion-range>
-  </ion-label>
 </ion-item>
 <ion-item-divider>
   <ion-label>
@@ -53,31 +48,30 @@
   </ion-label>
 </ion-item-divider>
 <ion-item>
-  <ion-label position="stacked">Battery drift</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+  <ion-input label="Battery drift" class="ion-text-right" type="number" inputmode="decimal"
              [(ngModel)]="rescueConf.batteryDrift"
              (ionChange)="checkValues()"
-             step="0.1" slot="end"></ion-input>
+             min="-5" max="5" step="0.1">
+  </ion-input>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Min. Voltage (V)</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+  <ion-input label="Min. Voltage (V)" class="ion-text-right" type="number" inputmode="decimal"
              min="{{batteryPresets.minVoltage - 1}}" max="{{batteryPresets.maxVoltage}}"
              [(ngModel)]="rescueConf.minBatteryVoltage"
              (ionChange)="checkValues()"
-             step="0.1" slot="end"></ion-input>
+             step="0.1">
+  </ion-input>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Low Bat. Warning (V)</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+  <ion-input label="Low Bat. Warning (V)" class="ion-text-right" type="number" inputmode="decimal"
              min="{{batteryPresets.minVoltage}}" max="{{batteryPresets.maxVoltage}}"
              [(ngModel)]="rescueConf.lowBatteryVoltage"
              (ionChange)="checkValues()"
-             step="0.1" slot="end"></ion-input>
+             step="0.1">
+  </ion-input>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Max. Voltage (V)</ion-label>
-  <ion-input class="ion-text-right" type="number" inputmode="decimal"
+  <ion-input label="Max. Voltage (V)" class="ion-text-right" type="number" inputmode="decimal"
              min="{{batteryPresets.minVoltage}}" max="{{batteryPresets.maxVoltage + 1}}"
              [(ngModel)]="rescueConf.maxBatteryVoltage"
              (ionChange)="checkValues()"

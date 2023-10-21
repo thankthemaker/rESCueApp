@@ -37,13 +37,6 @@ platform :ios do
 
    package = load_json(json_path: "./package.json")
 
-#   increment_version_number_in_plist(
-#     # specify specific version number (optional, omitting it increments patch version number)
-#     version_number: ENV['APP_RELEASE_VERSION'],
-#     xcodeproj: "ios/App/App.xcodeproj",
-#     target: 'App'
-#   )
-
    increment_version_number(
      xcodeproj: "ios/App/App.xcodeproj",
      version_number: package['version']
@@ -65,41 +58,11 @@ platform :ios do
    )
   end
 
-#  desc "Generate iconset"
-#  lane :icons do
-#    appicon(
-#      appicon_image_file: 'fastlane/metadata/app_icon.png',
-#      appicon_devices: %i[ipad iphone ios_marketing],
-#      appicon_path: "ios/App/App/Assets.xcassets",
-#   )
-#  end
-
   desc "Generate new localized screenshots"
   lane :screenshots do
     capture_screenshots(workspace: "ios/App/App.xcworkspace", scheme: "App", dark_mode: false, clean: true)
     frameit(white: false, path: './fastlane/screenshots')
     ##upload_to_app_store(skip_binary_upload: true, skip_metadata: true)
-  end
-
-  desc "Check certs and profiles"
-  lane :prepare_signing do |options|
-   app_id = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-   api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-
-   profile_name = "match AppStore org.thankthemaker.rescueapp" # replace with the name of your existing profile, or define a name for the profile that fastlane will create if it’s not found
-
-   cert(
-       api_key: api_key,
-       keychain_path: ENV["KEYCHAIN_PATH"] # the path to the keychain where your certificates are stored
-     )
-
-   # main app profile
-   sigh(
-     api_key: api_key,
-     app_identifier: app_id,
-     provisioning_name: profile_name,
-     force: true # always recreate this exact profile to ensure it's valid and not expired
-   )
   end
 
   desc "Build the iOS app for release"
@@ -147,17 +110,8 @@ platform :ios do
     update_info_plist( # Advanced processing: find URL scheme for particular key and replace value
       xcodeproj: "ios/App/App.xcodeproj",
       plist_path: "App/Info.plist",
-#      block: proc do |plist|
-#        plist["ITSAppUsesNonExemptEncryption "]               = false
-#        plist["NSLocationWhenInUseUsageDescription"]          = "This App uses your location to allow tracking your route on a map."
-#        plist["NSLocationAlwaysUsageDescription"]             = "This App uses your location to allow tracking your route on a map."
-#        plist["NSLocationAlwaysAndWhenInUseUsageDescription"] = "This App uses your location to allow tracking your route on a map."
-#        plist["NSBluetoothPeripheralUsageDescription"]        = "This App uses Bluetooth to connect to your rESCue device via BLE."
-#        plist["NSBluetoothAlwaysUsageDescription"]            = "This App uses Bluetooth / BLE even when the App is in background to keep connected to your rESCue device."
-#      end
     )
     fetch_and_increment_build_number
-###    prepare_signing
     build_release
     upload_to_testflight(
       skip_waiting_for_build_processing: true

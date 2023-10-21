@@ -6,6 +6,9 @@ import {Router} from '@angular/router';
 import {BleService} from './services/ble.service';
 import {AppSettings} from './models/AppSettings';
 import {Preferences} from '@capacitor/preferences';
+import { register } from 'swiper/element/bundle';
+
+register();
 
 @Component({
   selector: 'app-root',

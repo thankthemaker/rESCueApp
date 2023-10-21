@@ -33,11 +33,11 @@ export class HomePage {
     if(!this.deactivateWizard) {
       this.router.navigate(['/wizard']);
     }
-    if(await this.storageService.getBoolean('autoconnect')) {
-      this.autoconnect = true;
+    this.autoconnect = await this.storageService.getBoolean('autoconnect');
+    if(this.autoconnect) {
       this.logger.info('Autoconnect detected, trying to connect device');
       this.connect(true);
-    }
+    } 
   }
 
   async connect(autoconnect: boolean) {

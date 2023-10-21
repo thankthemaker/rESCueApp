@@ -19,19 +19,22 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label>Use virtual device</ion-label>
-      <ion-toggle slot="end" name="useVirtualDevice" [(ngModel)]="appSettings.useVirtualDevice"
-                  (ngModelChange)="appSettings.toggleValue('useVirtualDevice', $event)"></ion-toggle>
+      <ion-toggle name="useVirtualDevice" justify="space-between" [(ngModel)]="appSettings.useVirtualDevice"
+                  (ngModelChange)="appSettings.toggleValue('useVirtualDevice', $event)">
+        Use virtual device
+      </ion-toggle>
     </ion-item>
     <ion-item>
-      <ion-label>Dark theme enabled</ion-label>
-      <ion-toggle slot="end" name="darkThemeSupported" [(ngModel)]="appSettings.darkThemeSupported"
-                  (ngModelChange)="appSettings.toggleValue('darkThemeSupported', $event)" disabled="true"></ion-toggle>
+      <ion-toggle name="darkThemeSupported" justify="space-between" [(ngModel)]="appSettings.darkThemeSupported"
+                  (ngModelChange)="appSettings.toggleValue('darkThemeSupported', $event)" disabled="true">
+          Dark theme enabled
+       </ion-toggle>
     </ion-item>
     <ion-item>
-      <ion-label>Use metric system</ion-label>
-      <ion-toggle slot="end" name="metricSystemEnabled" [(ngModel)]="appSettings.metricSystemEnabled"
-                  (ngModelChange)="appSettings.toggleValue('metricSystemEnabled', $event)"></ion-toggle>
+      <ion-toggle name="metricSystemEnabled" justify="space-between" [(ngModel)]="appSettings.metricSystemEnabled"
+                  (ngModelChange)="appSettings.toggleValue('metricSystemEnabled', $event)">
+          Use metric system
+      </ion-toggle>
     </ion-item>
 
     <ion-item-divider>
@@ -66,15 +69,15 @@
     </ion-item-divider>
     <ion-item>
       <ion-label>App-Version</ion-label>
-      <ion-label>{{version}}</ion-label>
+      <ion-label slot="end">{{version}}</ion-label>
     </ion-item>
     <ion-item>
       <ion-label>Saved rides</ion-label>
-      <ion-label>{{numberOfRides}}</ion-label>
+      <ion-label slot="end">{{numberOfRides}}</ion-label>
     </ion-item>
     <ion-item>
       <ion-label>Used space</ion-label>
-      <ion-label>{{usedSpace}} kB</ion-label>
+      <ion-label slot="end">{{usedSpace}} kB</ion-label>
     </ion-item>
 
     <ion-item-divider>
@@ -97,9 +100,10 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label>Allow beta updates</ion-label>
-      <ion-toggle slot="end" name="betaFirmwareUpdatesEnabled" [(ngModel)]="appSettings.betaFirmwareUpdatesEnabled"
-                  (ngModelChange)="appSettings.toggleValue('betaFirmwareUpdatesEnabled', $event)"></ion-toggle>
+      <ion-toggle name="betaFirmwareUpdatesEnabled" justify="space-between" [(ngModel)]="appSettings.betaFirmwareUpdatesEnabled"
+                  (ngModelChange)="appSettings.toggleValue('betaFirmwareUpdatesEnabled', $event)">
+        Allow beta updates                
+      </ion-toggle>
     </ion-item>
 
   </ion-list>

@@ -88,10 +88,11 @@
       </ion-text>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked">Enable Notifications</ion-label>
-      <ion-toggle slot="end" name="notificationsEnabled" checked
+      <ion-toggle name="notificationsEnabled" justify="space-between" checked
                   [(ngModel)]="rescueConf.isNotificationEnabled"
-                  (ngModelChange)="toggleNotificationsEnabled($event)"></ion-toggle>
+                  (ngModelChange)="toggleNotificationsEnabled($event)">
+        Enable Notifications
+      </ion-toggle>
     </ion-item>
 
     <ion-item-group *ngIf="rescueConf.isNotificationEnabled">
@@ -101,19 +102,22 @@
         </ion-label>
       </ion-item-divider>
       <ion-item>
-        <ion-label position="stacked">Battery Warnings</ion-label>
-        <ion-toggle slot="end" name="batteryNotificationEnabled" checked
-                    [(ngModel)]="rescueConf.isBatteryNotificationEnabled"></ion-toggle>
+        <ion-toggle name="batteryNotificationEnabled" justify="space-between" checked
+                    [(ngModel)]="rescueConf.isBatteryNotificationEnabled">
+          Battery Warnings
+        </ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">Current Warnings</ion-label>
-        <ion-toggle slot="end" name="currentNotificationEnabled" checked
-                    [(ngModel)]="rescueConf.isCurrentNotificationEnabled"></ion-toggle>
+        <ion-toggle name="currentNotificationEnabled" justify="space-between" checked
+                    [(ngModel)]="rescueConf.isCurrentNotificationEnabled">
+          Current Warnings
+        </ion-toggle>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked">DutyCycle Warnings</ion-label>
-        <ion-toggle slot="end" name="dutycycleNotificationEnabled" checked
-                    [(ngModel)]="rescueConf.isErpmNotificationEnabled"></ion-toggle>
+        <ion-toggle name="dutycycleNotificationEnabled" justify="space-between" checked
+                    [(ngModel)]="rescueConf.isErpmNotificationEnabled">
+          DutyCycle Warnings
+        </ion-toggle>
       </ion-item>
     </ion-item-group>
 

@@ -112,6 +112,8 @@ export class BleService {
     this.reConnectEnabled = false;
     if (!this.info.isVirtual && this.connected) {
       await BleClient.disconnect(this.device.deviceId);
+    } else {
+      this.connected = false;
     }
     if(redirect) {
       this.router.navigate(['']);

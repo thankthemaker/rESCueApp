@@ -219,6 +219,7 @@ export class OverviewChartComponent implements OnInit {
         name: 'Speed',
         data: [0],
         dataLabels: {
+          color: '#777777',
           format:
             '<div class="gauge-data-label" style="text-align:center">' +
             '<span style="font-size:16px">{y:.1f}<br/></span>' +
@@ -257,6 +258,7 @@ export class OverviewChartComponent implements OnInit {
         name: 'DutyCycle',
         data: [0],
         dataLabels: {
+          color: '#777777',
           format:
             '<div style="text-align:center">' +
             '<span style="font-size:16px">{y:.0f}<br/></span>' +
@@ -273,7 +275,12 @@ export class OverviewChartComponent implements OnInit {
       yAxis: {
         min: 0,
         max: 100000,
-        plotBands: [
+        labels: {
+          style: {
+            color: '#777777'
+          }
+        },
+       plotBands: [
           { from: 0, to: 60000, color: 'green', outerRadius: '38', innerRadius: '35'},
           { from: 60000, to: 80000, color: 'yellow', outerRadius: '38', innerRadius: '35'},
           { from: 80000, to: 100000, color: 'red', outerRadius: '38', innerRadius: '35'},
@@ -284,6 +291,7 @@ export class OverviewChartComponent implements OnInit {
         name: 'ERPM',
         data: [0],
         dataLabels: {
+          color: '#777777',
           format:
             '<div style="text-align:center">' +
             '<span style="font-size:10px;opacity:0.4"><br/></span>' +
@@ -298,6 +306,11 @@ export class OverviewChartComponent implements OnInit {
         type: 'numeric',
         min: Math.round(batteryMin),
         max: Math.round(batteryMax),
+        labels: {
+          style: {
+            color: '#777777'
+          }
+        },
         tickPositions: [Math.round(batteryMin), Math.round(batteryMax)],
         stops: [
           [0.1, '#DF5353'], // red
@@ -317,9 +330,10 @@ export class OverviewChartComponent implements OnInit {
         name: 'Battery',
         data: [0],
         dataLabels: {
+          color: '#777777',
           format:
             '<div style="text-align:center">' +
-            '<span style="font-size:10px;opacity:0.4">V<br/></span>' +
+            '<span style="font-size:10px;opacity:0.4;color:#FFFFFF">V<br/></span>' +
             '<span style="font-size:14px">{y:.1f}</span>' +
             '</div>'
         },
@@ -333,7 +347,12 @@ export class OverviewChartComponent implements OnInit {
       yAxis: {
         min: 0,
         max: 100,
-        plotBands: [
+        labels: {
+          style: {
+            color: '#777777'
+          }
+        },
+       plotBands: [
           { from: 0, to: 50, color: 'green', outerRadius: '38', innerRadius: '35'},
           { from: 50, to: 70, color: 'yellow', outerRadius: '38', innerRadius: '35'},
           { from: 70, to: 100, color: 'red', outerRadius: '38', innerRadius: '35'},
@@ -344,9 +363,10 @@ export class OverviewChartComponent implements OnInit {
         name: 'Current',
         data: [0],
         dataLabels: {
+          color: '#777777',
           format:
             '<div style="text-align:center">' +
-            '<span style="font-size:10px;opacity:0.4">A<br/></span>' +
+            '<span style="font-size:10px;opacity:0.4;color:#FFFFFF">A<br/></span>' +
             '<span style="font-size:14px">{y:.1f}</span>' +
             '</div>'
         },

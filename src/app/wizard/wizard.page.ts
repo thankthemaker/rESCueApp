@@ -1,6 +1,6 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, ElementRef} from '@angular/core';
 import {Router} from '@angular/router';
-import {IonSlides} from '@ionic/angular';
+import {IonicSlides} from '@ionic/angular';
 import {BleService} from '../services/ble.service';
 import {AppSettings} from '../models/AppSettings';
 import {Device, DeviceInfo} from '@capacitor/device';
@@ -14,7 +14,10 @@ import {StorageService} from '../services/storage.service';
 })
 export class WizardPage {
 
-  @ViewChild('wizard', {static: false}) wizard: IonSlides;
+  @ViewChild('wizard')
+  swiperRef: ElementRef | undefined;
+
+  swiperModules = [IonicSlides];
 
   info: DeviceInfo;
   platform = 'unknown';
@@ -56,7 +59,7 @@ export class WizardPage {
       this.deviceName = this.bleService.device.name;
       this.deviceId = this.bleService.device.deviceId;
       this.connected = true;
-      this.wizard.slideNext(500);
+      this.swiperRef.nativeElement.swiper.slideNext(500);
     }
   }
 
@@ -97,20 +100,12 @@ export class WizardPage {
   }
 
   goBack() {
-    this.wizard.slideTo(0, 500);
+    this.swiperRef.nativeElement.swiper.slidePrev();
   }
 
-  slideChanged() {
-    if (!this.connected) {
-      this.wizard.getActiveIndex().then((index) => {
-        if (index > 1) {
-          this.wizard.slideTo(1, 50);
-        }
-      });
+  slideChanged(e: any) {
+    if (!this.connected && this.swiperRef.nativeElement.swiper.activeIndex > 1) {
+      this.swiperRef.nativeElement.swiper.slideTo(1, 50);
     }
-  }
-
-  async lockSwipes(lock: boolean) {
-    await this.wizard.lockSwipes(lock);
   }
 }
