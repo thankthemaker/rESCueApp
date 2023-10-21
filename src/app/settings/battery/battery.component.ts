@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {LedTypeComponent} from '../led-type/led-type.component';
 import {BatteryTypeComponent} from '../battery-type/battery-type.component';
 import {PickerController, PopoverController, ToastController} from '@ionic/angular';
 import {PickerOptions} from '@ionic/core/dist/types/components/picker/picker-interface';
@@ -13,6 +14,7 @@ export class BatteryComponent implements OnInit {
 
   @Input() rescueConf: any;
   @Output() changeEvent = new EventEmitter<{ key: string; value: string }>();
+  @Output() lightBarLedTypeUpdate = new EventEmitter();
 
   batteryPresets: any;
   toast: any;
@@ -111,6 +113,24 @@ export class BatteryComponent implements OnInit {
     await this.toast.present();
   }
 
+  async changeLightBarLedType(event) {
+    const popover = await this.popoverController.create({
+      //event,
+      component: LedTypeComponent,
+      translucent: true,
+      showBackdrop: true,
+      //backdropDismiss: false,
+      cssClass: 'led-type-popover',
+    });
+    popover.present();
+
+    const {data} = await popover.onDidDismiss();
+    this.rescueConf.lightBarLedType = data.ledType;
+    this.rescueConf.lightBarLedFrequency = data.ledFrequency;
+    this.logger.debug('Selected Light Bar LED-Type: ' + this.rescueConf.lightBarLedType + ' ' + this.rescueConf.lightBarLedFrequency);
+    this.lightBarLedTypeUpdate.emit('updateValues');
+    this.ngOnInit();
+  }
   changeLightbarMaxBrightness(event) {
     this.rescueConf.lightbarMaxBrightness = event.detail.value;
     this.changeEvent.emit({key: 'lightbarMaxBrightness', value: event.detail.value});
