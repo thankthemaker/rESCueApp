@@ -63,6 +63,7 @@
     <app-battery #batteryComponent
                  [rescueConf]="rescueConf"
                  (changeEvent)="saveProperty($event)">
+                 (lightBarLedTypeUpdate)="updateLightBarLedType()">
     </app-battery>
 
     <ion-item-divider>

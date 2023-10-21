@@ -10,6 +10,25 @@
              [(ngModel)]="rescueConf.numberPixelBatMon"></ion-input>
 </ion-item>
 <ion-item>
+  <ion-label>Different LED Type</ion-label>
+  <ion-toggle [(ngModel)]="rescueConf.isLightBarLedTypeDifferent"></ion-toggle>
+</ion-item>
+<ion-item *ngIf="rescueConf.isLightBarLedTypeDifferent">
+  <ion-label position="stacked">Type: {{rescueConf.lightBarLedType}} {{rescueConf.lightBarLedFrequency}}</ion-label>
+  <ion-chip outline color="secondary" (click)="changeLightBarLedType($event)">
+    <ion-icon name="bulb-outline"></ion-icon>
+    <ion-label>Change Type</ion-label>
+  </ion-chip>
+</ion-item>
+<ion-item>
+  <ion-label>LED Bar Reversed</ion-label>
+  <ion-toggle [(ngModel)]="rescueConf.isLightBarReversed"></ion-toggle>
+</ion-item>
+<ion-item>
+  <ion-label>Mall Grab (pitch>=70) for Battery Status</ion-label>
+  <ion-toggle [(ngModel)]="rescueConf.mallGrab"></ion-toggle>
+  </ion-item>
+<ion-item>
     <ion-range label="LED Maximum Brightness [{{rescueConf.lightbarMaxBrightness}}]" min="0" max="255" step="1" [(ngModel)]="rescueConf.lightbarMaxBrightness" pin snaps color="secondary"
                (ionKnobMoveEnd)="changeLightbarMaxBrightness($event)">
       <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>
@@ -56,6 +75,5 @@
              min="{{batteryPresets.minVoltage}}" max="{{batteryPresets.maxVoltage + 1}}"
              [(ngModel)]="rescueConf.maxBatteryVoltage"
              (ionChange)="checkValues()"
-             step="0.1">
-  </ion-input>
+             step="0.1" slot="end"></ion-input>
 </ion-item>

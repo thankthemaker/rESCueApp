@@ -29,16 +29,21 @@ export class RescueConf {
   public vescId = 25;
   public authToken = '';
   public mtuSize = 512;
-  public logLevel = 0;
+  public logLevel = 5;
   public realtimeDataInterval = 300;
   public balanceDataInterval = 300;
   public ledType = 'GRB';
   public ledFrequency = '800kHz';
+  public lightBarLedType = "GRB";
+  public lightBarLedFrequency = "800kHz";
+  public isLightBarReversed = false;
+  public isLightBarLedTypeDifferent = false;
+  public mallGrab = false;
   public batteryType = '12s2p, 6Ah';
   public isNotificationEnabled = true;
   public isBatteryNotificationEnabled = true;
   public isCurrentNotificationEnabled = true;
   public isErpmNotificationEnabled = true;
-
+  
   constructor() {}
 }
