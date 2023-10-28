@@ -15,7 +15,8 @@
   </ion-toggle>
 </ion-item>
 <ion-item *ngIf="rescueConf.isLightBarLedTypeDifferent">
-  <ion-chip label="Type: {{rescueConf.lightBarLedType}} {{rescueConf.lightBarLedFrequency}}" labelPlacement="stacked" outline color="secondary" (click)="changeLightBarLedType($event)">
+  <ion-label position="stacked">Type: {{rescueConf.lightBarLedType}} {{rescueConf.lightBarLedFrequency}}</ion-label>
+  <ion-chip outline color="secondary" (click)="changeLightBarLedType($event)">
     <ion-icon name="bulb-outline"></ion-icon>
     <ion-label>Change Type</ion-label>
   </ion-chip>

@@ -73,7 +73,7 @@ export class SettingsPage {
     const propertyString = property.key + '=' + property.value;
     this.logger.debug('Sending: ' + propertyString);
     return this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str, true);
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,propertyString, true);
   }
 
   async updateLedType() {
