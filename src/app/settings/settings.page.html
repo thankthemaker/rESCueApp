@@ -128,12 +128,11 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label class="ion-text-wrap">MTU size [{{rescueConf.mtuSize}}]
-        <ion-range min="23" max="512" step="1" [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
-          <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
-          <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
-        </ion-range>
-      </ion-label>
+      <ion-range label="MTU size [{{rescueConf.mtuSize}}]" labelPlacement="stacked" min="23" max="512" step="1" 
+                 [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
+        <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
+        <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
+      </ion-range>
     </ion-item>
 
     <ion-item-divider>
@@ -143,8 +142,7 @@
       </ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label position="stacked">LogLevel</ion-label>
-      <ion-select value="{{rescueConf.logLevel}}"
+      <ion-select label="LogLevel" labelPlacement="stacked" value="{{rescueConf.logLevel}}"
                   (ionChange)="changeLoglevel($event)"
                   interface="action-sheet">
         <ion-select-option value="0">Verbose</ion-select-option>

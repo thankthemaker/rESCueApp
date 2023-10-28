@@ -160,25 +160,32 @@ export class BleService {
    this.notifications.slice(this.notifications.indexOf(characteristicId), 1);
   }
 
-  async writeDataView(serviceId, characteristicId, data: DataView) {
+  async writeDataView(serviceId, characteristicId, data: DataView, wait: boolean=false) {
     if (this.info.isVirtual || !this.connected) {
       await new Promise(resolve => setTimeout(resolve, 50));
-      return;
+      return; 
     }
 
     try {
-      await BleClient.writeWithoutResponse(
-        this.device.deviceId,
-        serviceId,
-        characteristicId,
-        data
-      );
+      if(wait) {
+        await BleClient.write(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          data);
+        } else {
+        await BleClient.writeWithoutResponse(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          data);
+      }
     } catch(error) {
       this.logger.error('Cannot write to characteristics: ' + error)
     }
   }
 
-  async write(serviceId, characteristicId, str: string) {
+  async write(serviceId, characteristicId, str: string, wait: boolean=false) {
     if(!this.connected) {
       return;
     }
@@ -194,12 +201,20 @@ export class BleService {
     }
     console.log("writing to char " + characteristicId + ", data " + buf)
     try {
-      await BleClient.writeWithoutResponse(
-        this.device.deviceId,
-        serviceId,
-        characteristicId,
-        new DataView(buf)
-      );
+      if(wait) {
+        await BleClient.write(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          new DataView(buf));  
+      } 
+      else {
+        await BleClient.writeWithoutResponse(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          new DataView(buf));  
+      }
     } catch(error) {
       this.logger.error('Cannot write to characteristics: ' + error)
     }

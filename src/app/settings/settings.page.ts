@@ -8,6 +8,7 @@ import {NGXLogger} from 'ngx-logger';
 import {TextinputComponent} from '../components/textinput/textinput.component';
 import {RescueConf} from '../models/RescueConf';
 import {RescueData} from '../models/RescueData';
+import { log } from 'console';
 
 @Component({
   selector: 'app-enroll',
@@ -45,11 +46,9 @@ export class SettingsPage {
     this.rescueConf.deviceName = this.bleService.device.name;
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
-    await this.subscribeNotifications();
   }
 
   async ionViewDidLeave() {
-    this.unSubscribeNotifications();
   }
 
 
@@ -74,25 +73,8 @@ export class SettingsPage {
     const str = property.key + '=' + property.value;
     this.logger.debug('Sending: ' + str);
     return this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str);
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str, true);
   }
-
-  subscribeNotifications() {
-    this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
-        this.logger.info('hello');
-        const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-        if (!String(values[0]).startsWith('vesc')) {
-          this.logger.info('Received CONF: ' + values);
-          this.rescueConf[values[0]] = values[1];
-        }
-      });    
-    }
-
-    unSubscribeNotifications() {
-      this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
-        AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF);
-    }
 
   async updateLedType() {
     await this.saveProperty({key: 'ledType', value: this.rescueConf.ledType});

@@ -173,11 +173,10 @@ onFirmwareFileSelected(event: Event): void {
     this.logger.info('filesize bytes ' + byteCount);
 
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, "update=start");
+      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, "update=start", true);
 
     await this.bleService.disconnect(false);
-
-    await this.bleService.connect(false);
+    await this.bleService.reconnect();
     
     const timer = setInterval(() => {
       this.logger.info("Starting update now")
@@ -216,7 +215,7 @@ onFirmwareFileSelected(event: Event): void {
       this.totalSize >> 16 & 0xFF,
       this.totalSize >> 8 & 0xFF,
       this.totalSize & 0xFF
-    ]));
+    ]), true);
 
     await this.writeOtaData(Buffer.from([
       0xFF,
@@ -224,9 +223,9 @@ onFirmwareFileSelected(event: Event): void {
       this.partCount % 256,
       mtu / 256,
       mtu % 256
-    ]));
+    ]), true);
 
-    await this.writeOtaData(Buffer.from([0xFD]));
+    await this.writeOtaData(Buffer.from([0xFD]), true);
   }
 
 
@@ -239,7 +238,6 @@ onFirmwareFileSelected(event: Event): void {
         this.sendBufferedData.bind(this)(0);
         break
       case 0xF1:
-        this.progressbarType = 'determinate';
         this.lastAcknowledged = value.getUint16(1);
         this.logger.info('Sending package ' + this.lastAcknowledged);
         this.sendBufferedData.bind(this)(this.lastAcknowledged);
@@ -248,8 +246,7 @@ onFirmwareFileSelected(event: Event): void {
         this.updateProgress(1, 'Installing firmware');
         this.logger.info('Starting firmware install');
         break
-      case 0x0F:
-      case 0x8C:
+      default:
         let result = value.buffer;
         this.updateProgress(1, 'Finished update');
         this.logger.info('Finished update with result ', result);
@@ -260,7 +257,10 @@ onFirmwareFileSelected(event: Event): void {
   }
 
   async sendBufferedData(ack: number) {
-    this.logger.debug('sendBufferedData: ' + this.lastSend++ + ', last ack. ' + ack);
+      this.logger.debug('sendBufferedData: ' + this.lastSend++ + ', last ack. ' + ack);
+      if(this.progressbarType !== 'determinate') {
+        this.progressbarType = 'determinate';
+      }
 
       let start = ack * part;
       let end = (ack+1) * part;
@@ -279,8 +279,9 @@ onFirmwareFileSelected(event: Event): void {
         await this.writeOtaData(Buffer.concat([
           Buffer.from([0xFB, i]),
           Buffer.from(this.dataToSend)
-        ]));
+        ]), true);
         position = position+mtu;
+        this.updateProgress(position, 'Transfering... ' + (100 * this.progressNum).toPrecision(3) + '%');
         this.lastSendTime = new Date().getTime();
       }
       /// loop
@@ -291,12 +292,11 @@ onFirmwareFileSelected(event: Event): void {
         await this.writeOtaData(Buffer.concat([
           Buffer.from([0xFB, fullPakages]),
           Buffer.from(this.dataToSend)
-        ]));
+        ]), true);
         position = position+mtu;
+        this.updateProgress(position, 'Transfering... ' + (100 * this.progressNum).toPrecision(3) + '%');
         this.lastSendTime = new Date().getTime();
       }
-
-      this.updateProgress(position, 'Transfering... ' + (100 * this.progressNum).toPrecision(3) + '%');
 
       await this.writeOtaData(Buffer.concat([
         Buffer.from([0xFC,
@@ -305,7 +305,7 @@ onFirmwareFileSelected(event: Event): void {
           ack / 256,
           ack % 256
         ]),
-      ]));
+      ]), true);
   
   }
 
@@ -368,12 +368,12 @@ onFirmwareFileSelected(event: Event): void {
       });
   }
 
-  async writeOtaData(data: Buffer) {
+  async writeOtaData(data: Buffer, wait:boolean=false) {
     try {
       await this.bleService.writeDataView(
         AppSettings.OTA_SERVICE_UUID,
         AppSettings.OTA_CHARACTERISTIC_RX_UUID,
-        new DataView(data.buffer));
+        new DataView(data.buffer), wait);
     } catch (error) {
       this.logger.error('Error BLE.write ' + error);
     }
