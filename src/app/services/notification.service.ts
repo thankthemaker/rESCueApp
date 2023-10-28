@@ -34,14 +34,14 @@ export class NotificationsService {
     });
   }
 
-  async push(title: string, message: string) {
+  async push(title: string, message: string, color: string = 'warning') {
     if (await this.storageService.getBoolean('notificationsEnabled')) {
       if (this.platform !== 'ios') {
         const toast = await this.toastCtrl.create({
           header: title,
           message,
           position: 'bottom',
-          color: 'warning',
+          color,
           animated: true,
           duration: 3000,
         });

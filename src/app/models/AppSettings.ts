@@ -31,6 +31,7 @@ export class AppSettings {
   public metricSystemEnabled = true;
   public betaFirmwareUpdatesEnabled = false;
   public useVirtualDevice = false;
+  public iconsOnly = false;
   public useOdometer = false;
   public notificationsEnabled = false;
   public batteryNotificationEnabled = false;

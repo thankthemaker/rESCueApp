@@ -1,6 +1,5 @@
 <ion-item>
-  <ion-label position="stacked">Start Melody</ion-label>
-  <ion-select [(ngModel)]="rescueConf.startSoundIndex"
+  <ion-select label="Start Melody" labelPlacement="stacked" [(ngModel)]="rescueConf.startSoundIndex"
               (ionChange)="changeStartSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()"
               interface="action-sheet">
@@ -23,8 +22,7 @@
   </ion-select>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Battery Warning Sound</ion-label>
-  <ion-select [(ngModel)]="rescueConf.batteryWarningSoundIndex"
+  <ion-select label="Battery Warning Sound" labelPlacement="stacked" [(ngModel)]="rescueConf.batteryWarningSoundIndex"
               (ionChange)="changeBatteryWarningSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
   <ion-select-option value="0">No Sound</ion-select-option>
@@ -34,8 +32,7 @@
   </ion-select>
 </ion-item>
 <ion-item>
-  <ion-label position="stacked">Battery Alarm Sound</ion-label>
-  <ion-select [(ngModel)]="rescueConf.batteryAlarmSoundIndex"
+  <ion-select label="Battery Alarm Sound" labelPlacement="stacked" [(ngModel)]="rescueConf.batteryAlarmSoundIndex"
               (ionChange)="changeBatteryAlarmSoundIndex($event)"
               (ionFocus)="lock()" (ionBlur)="unlock()" interface="action-sheet">
   <ion-select-option value="0">No Sound</ion-select-option>

@@ -36,7 +36,12 @@
           Use metric system
       </ion-toggle>
     </ion-item>
-
+    <ion-item>
+      <ion-toggle name="iconsOnly" justify="space-between" [(ngModel)]="appSettings.iconsOnly"
+                  (ngModelChange)="appSettings.toggleValue('iconsOnly', $event)">
+          Show Icons only
+      </ion-toggle>
+    </ion-item>
     <ion-item-divider>
       <ion-label class="item-divider">
         <ion-icon name="notifications" slot="start"></ion-icon>

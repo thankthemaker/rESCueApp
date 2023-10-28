@@ -24,6 +24,7 @@ export class DevicePage {
   @ViewChild('overviewChart')
   overviewChart: OverviewChartComponent;
 
+  iconsOnly = false;
   lightsOn = true;
   connected = false;
   lastVescMessage = 0;
@@ -129,6 +130,7 @@ export class DevicePage {
     this.skipIncompatibleCheck = await this.storageService.getBoolean('skipIncompatibleCheck');
     this.autoconnect = await this.storageService.getBoolean('autoconnect');
     this.showCardDetails = await this.storageService.getBoolean('showCardDetails');
+    this.iconsOnly = await this.storageService.getBoolean('iconsOnly');
     if (this.showCardDetails) {
       this.showCardDetailsText = 'Hide details';
     } else {
@@ -180,7 +182,6 @@ export class DevicePage {
     if (this.timerId) {
       await clearInterval(this.timerId);
     }
-    this.unSubscribeNotifications();
   }
 
   async readVescFirmwareInfo() {
@@ -217,6 +218,9 @@ export class DevicePage {
           this.logger.debug('Received CONF: ' + values);
           this.rescueConf[values[0]] = values[1];
         }
+        if(String(values[0]).startsWith('sendConfigFinished')) {
+          this.notificationService.push('Configuration loaded', 'The settings page was updated successfully.', 'success');
+        }
       });
     this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
        AppSettings.CHARACTERISTIC_UUID_LOOP, (value: DataView) => {
@@ -237,16 +241,6 @@ export class DevicePage {
         this.vescMessageHandler.queueMessage(Buffer.from(value.buffer));
       });
   }
-
-  unSubscribeNotifications() {
-    this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF);
-    this.bleService.stopNotifications(AppSettings.RESCUE_SERVICE_UUID,
-      AppSettings.CHARACTERISTIC_UUID_LOOP);
-    this.bleService.stopNotifications(AppSettings.VESC_SERVICE_UUID,
-      AppSettings.VESC_CHARACTERISTICS_TX_UUID);
-  }
-
 
   async disconnect(rebootToRescue: boolean) {
     if (rebootToRescue) {

@@ -19,17 +19,19 @@
         <ion-card-subtitle>Name: {{deviceName}}, Hardware version: {{hardwareVersion}}, {{deviceString}}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <ion-button fill="clear" onclick="window.open('https://github.com/thankthemaker/rESCue/blob/master/versions.md', '_system', 'location=yes')">
-          Read about firmware versions
-        </ion-button><br/>
-        <ion-chip outline color="secondary" (click)="loadVersions()" id="loadVersionsChip">
-          <ion-icon name="pricetags-outline"></ion-icon>
-          <ion-label>Change version</ion-label>
-        </ion-chip>
-        <ion-chip outline color="secondary" (click)="loadTypes()" id="loadTypesChip">
-          <ion-icon name="albums-outline"></ion-icon>
-          <ion-label>Change type</ion-label>
-        </ion-chip>
+        <div *ngIf="!updateInProgress">
+          <ion-button fill="clear" onclick="window.open('https://github.com/thankthemaker/rESCue/blob/master/versions.md', '_system', 'location=yes')">
+            Read about firmware versions
+          </ion-button><br/>
+          <ion-chip outline color="secondary" (click)="loadVersions()" id="loadVersionsChip">
+            <ion-icon name="pricetags-outline"></ion-icon>
+            <ion-label>Change version</ion-label>
+          </ion-chip>
+          <ion-chip outline color="secondary" (click)="loadTypes()" id="loadTypesChip">
+            <ion-icon name="albums-outline"></ion-icon>
+            <ion-label>Change type</ion-label>
+          </ion-chip>
+        </div>
         <ion-list *ngIf="softwareVersion !== 'Local File'">
           <ion-item>
             <ion-label>Firmware-Channel:</ion-label>
