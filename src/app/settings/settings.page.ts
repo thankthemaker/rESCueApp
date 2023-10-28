@@ -70,8 +70,8 @@ export class SettingsPage {
   }
 
   async saveProperty(property) {
-    const str = property.key + '=' + property.value;
-    this.logger.debug('Sending: ' + str);
+    const propertyString = property.key + '=' + property.value;
+    this.logger.debug('Sending: ' + propertyString);
     return this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,str, true);
   }
