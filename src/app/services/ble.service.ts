@@ -167,12 +167,19 @@ export class BleService {
     }
 
     try {
-      const writeMethod = wait ? BleClient.write : BleClient.writeWithoutResponse;
-      await writeMethod(
-        this.device.deviceId,
-        serviceId,
-        characteristicId,
-        data);
+      if(wait) {
+        await BleClient.write(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          data);
+      } else {
+        await BleClient.writeWithoutResponse(
+          this.device.deviceId,
+          serviceId,
+          characteristicId,
+          data);
+       } 
     } catch(error) {
       this.logger.error('Cannot write to characteristics: ' + error)
     }
