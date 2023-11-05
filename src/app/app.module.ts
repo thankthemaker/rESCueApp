@@ -15,7 +15,8 @@ import {LedTypeComponent} from './settings/led-type/led-type.component';
 import {FormsModule} from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoggerModule } from 'ngx-logger';
-import {NotificationsService} from './services/notification.service';
+import { NotificationsService } from './services/notification.service';
+import { EventService } from './services/event.service';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
@@ -39,6 +40,7 @@ import { NgxColorsModule } from 'ngx-colors';
     providers: [
         BleService,
         NotificationsService,
+        EventService,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent],

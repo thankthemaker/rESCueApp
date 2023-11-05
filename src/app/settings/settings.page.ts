@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { LoadingController, PopoverController} from '@ionic/angular';
+import { LoadingController, PopoverController } from '@ionic/angular';
 import {BleService} from '../services/ble.service';
 import {LightsComponent} from './lights/lights.component';
 import {AppSettings} from '../models/AppSettings';
@@ -8,7 +8,7 @@ import {NGXLogger} from 'ngx-logger';
 import {TextinputComponent} from '../components/textinput/textinput.component';
 import {RescueConf} from '../models/RescueConf';
 import {RescueData} from '../models/RescueData';
-import { log } from 'console';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-enroll',
@@ -23,6 +23,7 @@ export class SettingsPage {
   stateDirty = true;
   softwareVersion: string;
   hardwareVersion: string;
+  loadingIndicator: HTMLIonLoadingElement;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,6 +31,7 @@ export class SettingsPage {
     private popoverController: PopoverController,
     private loadingController: LoadingController,
     private bleService: BleService,
+    private events: EventService,
     private logger: NGXLogger,
     public rescueConf: RescueConf,
     public rescueData: RescueData) {
@@ -40,13 +42,19 @@ export class SettingsPage {
         this.softwareVersion = this.router.getCurrentNavigation().extras.state.softwareVersion;
       }
     });
+
+    events.getObservable().subscribe((data) => {
+      //console.log("Event " + data);
+      this.loadingController.dismiss();
+    })
    }
 
   async ionViewDidEnter() {
     this.rescueConf.deviceName = this.bleService.device.name;
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
-  }
+    this.showLoading();   
+}
 
   async ionViewDidLeave() {
   }
@@ -62,7 +70,11 @@ export class SettingsPage {
 
     for (const [key, value] of Object.entries(this.rescueConf)) {
       loading.message = `Saving configuration: ${key}`;
-      await this.saveProperty({key, value: String(value)});
+      if(typeof this.rescueConf[key] === "boolean") {
+        await this.saveProperty({key, value: value ? 1 : 0});
+      } else {
+        await this.saveProperty({key, value: String(value)});
+      }
     }
     await this.saveProperty({key: 'save', value: 'true'});
     await loading.dismiss();
@@ -119,7 +131,18 @@ export class SettingsPage {
     setTimeout(() => {
       this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
         AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
-      event.target.complete();
-    }, 1000);
+        this.showLoading();
+        event.target.complete();
+    }, 500);
+  }
+
+  async showLoading() {
+    this.loadingIndicator = await this.loadingController.create({
+      message: 'Loading configuration: ',
+      spinner: 'circles',
+      duration: 5000
+    });
+
+    await this.loadingIndicator.present();   
   }
 }
