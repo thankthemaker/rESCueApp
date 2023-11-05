@@ -13,6 +13,7 @@ import {Buffer} from 'buffer';
 import {NotificationsService} from '../services/notification.service';
 import {StorageService} from '../services/storage.service';
 import {RescueConf} from '../models/RescueConf';
+import { EventService } from '../services/event.service';
 
 @Component({
   selector: 'app-device',
@@ -48,6 +49,7 @@ export class DevicePage {
     private toastCtrl: ToastController,
     private firmwareService: FirmwareService,
     private storageService: StorageService,
+    private events: EventService,
     public appSettings: AppSettings,
     public bleService: BleService,
     public rescueData: RescueData,
@@ -216,10 +218,14 @@ export class DevicePage {
         const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
         if (!String(values[0]).startsWith('vesc')) {
           this.logger.debug('Received CONF: ' + values);
-          this.rescueConf[values[0]] = values[1];
+          if(typeof this.rescueConf[values[0]] === "boolean") {
+            this.rescueConf[values[0]] = Boolean(JSON.parse(values[1]));
+          } else {
+            this.rescueConf[values[0]] = values[1];
+          }
         }
         if(String(values[0]).startsWith('sendConfigFinished')) {
-          this.notificationService.push('Configuration loaded', 'The settings page was updated successfully.', 'success');
+          this.events.publishApplicationEvent({sendConfigFinished: true});
         }
       });
     this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,

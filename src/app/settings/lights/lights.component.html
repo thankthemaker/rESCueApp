@@ -31,6 +31,11 @@
     <ion-select-option value="6">Trans-Pride</ion-select-option>
   </ion-select>
 </ion-item>
+<ion-item>
+  <ion-toggle name="oddevenActive" justify="space-between" [(ngModel)]="rescueConf.oddevenActive">
+    Use odd/even pattern
+  </ion-toggle>
+</ion-item>
 <ion-item-divider>
   <ion-label>
     Light settings
@@ -61,21 +66,21 @@
   </ion-note>
 </ion-item>
 <ion-item>
-          <ion-range label="LED Maximum Brightness [{{rescueConf.lightMaxBrightness}}]" labelPlacement="stacked" min="0" max="255" 
+          <ion-range label="LED Maximum Brightness [{{rescueConf.lightMaxBrightness}}]" labelPlacement="stacked" min="0" max="255"
                      step="1" [(ngModel)]="rescueConf.lightMaxBrightness" pin snaps color="secondary">
             <ion-icon slot="start" size="small" color="secondary" name="sunny"></ion-icon>
             <ion-icon slot="end" color="secondary" name="sunny"></ion-icon>
           </ion-range>
 </ion-item>
 <ion-item>
-    <ion-range label="LED Fading Duration [{{rescueConf.lightFadingDuration}} ms]" labelPlacement="stacked" min="0" max="500" 
+    <ion-range label="LED Fading Duration [{{rescueConf.lightFadingDuration}} ms]" labelPlacement="stacked" min="0" max="500"
                step="1" [(ngModel)]="rescueConf.lightFadingDuration" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
     </ion-range>
 </ion-item>
 <ion-item>
-    <ion-range label="LED Idle Timeout [{{ (rescueConf.idleLightTimeout > 0 ? rescueConf.idleLightTimeout + 'ms' : 'infinite') }}]" 
+    <ion-range label="LED Idle Timeout [{{ (rescueConf.idleLightTimeout > 0 ? rescueConf.idleLightTimeout + 'ms' : 'infinite') }}]"
                labelPlacement="stacked" min="0" max="60000" step="500" [(ngModel)]="rescueConf.idleLightTimeout" pin snaps color="secondary">
       <ion-icon slot="start" size="small" color="secondary" name="timer-outline"></ion-icon>
       <ion-icon slot="end" color="secondary" name="timer-outline"></ion-icon>
@@ -92,7 +97,7 @@
   </ion-toggle>
 </ion-item>
 <ion-item *ngIf="rescueConf.brakeLightEnabled">
-    <ion-range label="Brake Light Amp Min [{{rescueConf.brakeLightMinAmp}} A]" labelPlacement="stacked" min="1" max="10" step="1" 
+    <ion-range label="Brake Light Amp Min [{{rescueConf.brakeLightMinAmp}} A]" labelPlacement="stacked" min="1" max="10" step="1"
                [(ngModel)]="rescueConf.brakeLightMinAmp" pin snaps color="secondary">
     </ion-range>
 </ion-item>
