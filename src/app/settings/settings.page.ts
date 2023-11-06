@@ -9,6 +9,7 @@ import {TextinputComponent} from '../components/textinput/textinput.component';
 import {RescueConf} from '../models/RescueConf';
 import {RescueData} from '../models/RescueData';
 import { EventService } from '../services/event.service';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-enroll',
@@ -31,6 +32,7 @@ export class SettingsPage {
     private popoverController: PopoverController,
     private loadingController: LoadingController,
     private bleService: BleService,
+    private storageService: StorageService,
     private events: EventService,
     private logger: NGXLogger,
     public rescueConf: RescueConf,
@@ -50,9 +52,14 @@ export class SettingsPage {
    }
 
   async ionViewDidEnter() {
+    let cells = Number(await this.storageService.get('battery.cells'));
+    let groups = Number(await this.storageService.get('battery.groups'));
+    let cellcapacity = Number(await this.storageService.get('battery.cellcapacity'));
+    this.rescueConf.batteryType =  cells+ 's' + groups + 'p ' + groups*cellcapacity / 1000 + 'Ah';
     this.rescueConf.deviceName = this.bleService.device.name;
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
+
     this.showLoading();   
 }
 
