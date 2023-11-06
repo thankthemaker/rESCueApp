@@ -47,6 +47,7 @@ export class AppSettings {
   public maxErpm;
   public maxDuty;
   public maxSpeed;
+  public batteryType;
 
   constructor(
     private toastController: ToastController,

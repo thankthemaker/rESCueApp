@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {LedTypeComponent} from '../led-type/led-type.component';
 import {BatteryTypeComponent} from '../battery-type/battery-type.component';
 import {PickerController, PopoverController, ToastController} from '@ionic/angular';
-import {PickerOptions} from '@ionic/core/dist/types/components/picker/picker-interface';
 import {NGXLogger} from 'ngx-logger';
 
 @Component({
@@ -45,9 +44,9 @@ export class BatteryComponent implements OnInit {
     const {data} = await popover.onDidDismiss();
     this.rescueConf.batteryType = data.battery;
     this.batteryPresets = {
-      minVoltage: (data.batteryCells * 3.3333).toFixed(1),
+      minVoltage: (data.batteryCells * 3.1).toFixed(1),
       maxVoltage: (data.batteryCells * 4.2).toFixed(1),
-      lowVoltage: (data.batteryCells * 3.5).toFixed(1)
+      lowVoltage: (data.batteryCells * 3.3).toFixed(1)
     };
     this.rescueConf.minBatteryVoltage = this.batteryPresets.minVoltage;
     this.rescueConf.lowBatteryVoltage = this.batteryPresets.lowVoltage;
@@ -56,36 +55,6 @@ export class BatteryComponent implements OnInit {
     this.ngOnInit();
   }
 
-  async showPicker() {
-    const opts: PickerOptions = {
-      buttons: [
-        {
-          text: 'Done'
-        },
-        {
-          text: 'Cancel',
-          role: 'cancel'
-        }
-      ],
-      columns: [
-        {
-          name: 'full',
-          options: [
-            {
-              text: 'bla',
-              value: 'bla'
-            },
-            {
-              text: 'blubb',
-              value: 'blubb'
-            }
-          ]
-        }
-      ]
-    };
-    const picker = await this.pickerController.create(opts);
-    await picker.present();
-  }
 
   checkValues() {
     if (this.rescueConf.lowBatteryVoltage <= this.rescueConf.minBatteryVoltage) {
