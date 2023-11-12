@@ -8,13 +8,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 })
 export class InstallPage {
 
-  espWebInstaller: any;
-
   constructor(private sanitizer: DomSanitizer) { }
 
-  ionViewDidEnter() {
-    this.espWebInstaller = this.sanitizer.bypassSecurityTrustResourceUrl(
-      'https://rescue.thank-the-maker.org/webinstaller/index.html'
-    );
+  secureUrl(url: string) {
+    return  this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
