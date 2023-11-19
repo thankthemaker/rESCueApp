@@ -8,6 +8,7 @@ import { AppSettings } from '../models/AppSettings';
 import { ListpickerComponent } from '../components/listpicker/listpicker.component';
 import { NGXLogger } from 'ngx-logger';
 import * as CryptoJS from 'crypto-js';
+import { KeepAwake } from '@capacitor-community/keep-awake';
 
 const part = 19000;
 const mtu = 250;
@@ -177,7 +178,8 @@ onFirmwareFileSelected(event: Event): void {
 
     await this.bleService.disconnect(false);
     await this.bleService.reconnect();
-    
+    await KeepAwake.keepAwake();
+
     const timer = setInterval(() => {
       this.logger.info("Starting update now")
       this.sendFile();
@@ -197,6 +199,7 @@ onFirmwareFileSelected(event: Event): void {
         role: 'ok'
       }]
     });
+    await KeepAwake.allowSleep();
     await toast.present();
     const { role } = await toast.onDidDismiss();
     this.router.navigate(['']);
