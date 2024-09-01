@@ -5,7 +5,7 @@
 </ion-item>
 <ion-item>
   <ion-input label="VESC-ID" class="ion-text-right" labelPlacement="stacked" 
-             type="number" min="1" [(ngModel)]="rescueConf.vescId"></ion-input>
+             type="number" min="1" [(ngModel)]="rescueConf.vescId" (ionChange)="changeVescId($event)"></ion-input>
 </ion-item>
 <ion-item-divider>
   <ion-label>
