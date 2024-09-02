@@ -187,7 +187,7 @@ platform :android do
 
     increment_version_code(
       gradle_file_path: "android/app/build.gradle",
-      version_code: current_build_number
+      version_code: 31
     )
 
     gradle(
