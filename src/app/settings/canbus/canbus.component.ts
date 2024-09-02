@@ -13,6 +13,10 @@ export class CanbusComponent implements OnInit {
 
   ngOnInit() {}
 
+  changeVescId(event) {
+    this.rescueConf.vescId = event.detail.vescId;
+  }
+
   changeRealtimeDataInterval(event) {
     this.rescueConf.realtimeDataInterval = event.detail.value;
   }

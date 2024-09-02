@@ -216,14 +216,14 @@ export class DevicePage {
     this.bleService.startNotifications(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF, (value: DataView) => {
         const values = String.fromCharCode.apply(null, new Uint8Array(value.buffer)).split('=');
-        if (!String(values[0]).startsWith('vesc')) {
-          this.logger.debug('Received CONF: ' + values);
-          if(typeof this.rescueConf[values[0]] === "boolean") {
-            this.rescueConf[values[0]] = Boolean(JSON.parse(values[1]));
-          } else {
-            this.rescueConf[values[0]] = values[1];
-          }
+
+        this.logger.debug('Received CONF: ' + values);
+        if(typeof this.rescueConf[values[0]] === "boolean") {
+          this.rescueConf[values[0]] = Boolean(JSON.parse(values[1]));
+        } else {
+          this.rescueConf[values[0]] = values[1];
         }
+
         if(String(values[0]).startsWith('sendConfigFinished')) {
           this.events.publishApplicationEvent({sendConfigFinished: true});
         }
