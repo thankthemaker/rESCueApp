@@ -1,12 +1,12 @@
 platforms:
   android:
-    variables:
-      - name: minSdkVersion
-        value: 22
-      - name: compileSdkVersion
-        value: 35
-      - name: targetSdkVersion
-        value: 35
+    copy:
+      # copy UI tests for screengrab to grab screenshots for different devices
+      - src: ../resources/android/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
+        dest: app/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
+      # copy additional manifest for debugging, screengrab needs additional permissions
+      - src: ../resources/android/src/debug/AndroidManifest.xml
+        dest: app/src/debug/AndroidManifest.xml
     gradle:
       - file: app/build.gradle
         target:
@@ -17,13 +17,6 @@ platforms:
           - androidTestImplementation: "\"androidx.test.espresso:espresso-web:$androidxEspressoCoreVersion\""
           - androidTestImplementation: "\"androidx.test:runner:1.5.1\""
           - androidTestImplementation: "\"androidx.test:rules:1.5.0\""
-    copy:
-      # copy UI tests for screengrab to grab screenshots for different devices
-      - src: ../resources/android/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
-        dest: app/src/androidTest/java/org/thankthemaker/rescueapp/ScreengrabTests.java
-      # copy additional manifest for debugging, screengrab needs additional permissions
-      - src: ../resources/android/src/debug/AndroidManifest.xml
-        dest: app/src/debug/AndroidManifest.xml
     manifest:
       # add the needed permissions to the manifest
       - file: AndroidManifest.xml

@@ -7,10 +7,5 @@
   "plugins": {
   },
   "cordova": {},
-  "allowMixedContent": true,
-  "android": {
-    "compileSdkVersion": 35,
-    "targetSdkVersion": 35,
-    "minSdkVersion": 22
-  }
+  "allowMixedContent": true
 }
