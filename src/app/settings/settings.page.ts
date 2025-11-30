@@ -60,7 +60,7 @@ export class SettingsPage {
     await this.bleService.write(AppSettings.RESCUE_SERVICE_UUID,
       AppSettings.RESCUE_CHARACTERISTIC_UUID_CONF,'config=true');
 
-    this.showLoading();   
+    this.showLoading();
 }
 
   async ionViewDidLeave() {
@@ -147,9 +147,9 @@ export class SettingsPage {
     this.loadingIndicator = await this.loadingController.create({
       message: 'Loading configuration: ',
       spinner: 'circles',
-      duration: 5000
+      duration: this.bleService.info.isVirtual ? 500 : 5000
     });
 
-    await this.loadingIndicator.present();   
+    await this.loadingIndicator.present();
   }
 }

@@ -31,134 +31,134 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-list>
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="bulb-outline" slot="start"></ion-icon>
-        Lights
-      </ion-label>
-    </ion-item-divider>
-    <app-lights #lightComponent
-                [rescueConf]="rescueConf"
-                (ledTypeUpdate)="updateLedType()">
-    </app-lights>
-
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="musical-notes-outline" slot="start"></ion-icon>
-        Sounds
-      </ion-label>
-    </ion-item-divider>
-    <app-sounds #soundsComponent
-                [rescueConf]="rescueConf"
-                (changeEvent)="saveProperty($event)">
-    </app-sounds>
-
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="battery-half-outline" slot="start"></ion-icon>
-        Battery Monitor
-      </ion-label>
-    </ion-item-divider>
-    <app-battery #batteryComponent
-                 [rescueConf]="rescueConf"
-                 (changeEvent)="saveProperty($event)">
-                 (lightBarLedTypeUpdate)="updateLightBarLedType()">
-    </app-battery>
-
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="bus-outline"></ion-icon>
-        CANBUS
-      </ion-label>
-    </ion-item-divider>
-    <app-canbus #canbusComponent
-                [rescueConf]="rescueConf">
-    </app-canbus>
-
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="notifications-outline"></ion-icon>
-        Notifications
-      </ion-label>
-    </ion-item-divider>
-    <ion-item>
-      <ion-text>
-        <p>Send local push notifications if supported by your system.</p>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-toggle name="notificationsEnabled" justify="space-between" checked
-                  [(ngModel)]="rescueConf.isNotificationEnabled"
-                  (ngModelChange)="toggleNotificationsEnabled($event)">
-        Enable Notifications
-      </ion-toggle>
-    </ion-item>
-
-    <ion-item-group *ngIf="rescueConf.isNotificationEnabled">
-      <ion-item-divider>
-        <ion-label>
-          Notification types
+  <ion-accordion-group>
+    <ion-accordion value="light">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="bulb-outline" slot="start"></ion-icon>
+          Lights
         </ion-label>
-      </ion-item-divider>
-      <ion-item>
-        <ion-toggle name="batteryNotificationEnabled" justify="space-between" checked
-                    [(ngModel)]="rescueConf.isBatteryNotificationEnabled">
-          Battery Warnings
-        </ion-toggle>
       </ion-item>
-      <ion-item>
-        <ion-toggle name="currentNotificationEnabled" justify="space-between" checked
-                    [(ngModel)]="rescueConf.isCurrentNotificationEnabled">
-          Current Warnings
-        </ion-toggle>
-      </ion-item>
-      <ion-item>
-        <ion-toggle name="dutycycleNotificationEnabled" justify="space-between" checked
-                    [(ngModel)]="rescueConf.isErpmNotificationEnabled">
-          DutyCycle Warnings
-        </ion-toggle>
-      </ion-item>
-    </ion-item-group>
+      <div class="ion-padding" slot="content">
+        <app-lights #lightComponent
+                    [rescueConf]="rescueConf"
+                    (ledTypeUpdate)="updateLedType()">
+        </app-lights>
+      </div>
+    </ion-accordion>
 
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="bluetooth" slot="start"></ion-icon>
-        Bluetooth Settings
-      </ion-label>
-    </ion-item-divider>
-    <ion-item>
-      <ion-range label="MTU size [{{rescueConf.mtuSize}}]" labelPlacement="stacked" min="23" max="512" step="1" 
-                 [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
-        <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
-        <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
-      </ion-range>
-    </ion-item>
+    <ion-accordion value="sound">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="musical-notes-outline" slot="start"></ion-icon>
+          Sounds
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <app-sounds #soundsComponent
+                    [rescueConf]="rescueConf"
+                    (changeEvent)="saveProperty($event)">
+        </app-sounds>
+      </div>
+    </ion-accordion>
 
-    <ion-item-divider>
-      <ion-label class="item-divider">
-        <ion-icon name="document-text-outline"></ion-icon>
-        Logging
-      </ion-label>
-    </ion-item-divider>
-    <ion-item>
-      <ion-select label="LogLevel" labelPlacement="stacked" value="{{rescueConf.logLevel}}"
-                  (ionChange)="changeLoglevel($event)"
-                  interface="action-sheet">
-        <ion-select-option value="0">Verbose</ion-select-option>
-        <ion-select-option value="1">Notice</ion-select-option>
-        <ion-select-option value="2">Warning</ion-select-option>
-        <ion-select-option value="3">Error</ion-select-option>
-        <ion-select-option value="4">Fatal</ion-select-option>
-        <ion-select-option value="5">Silent</ion-select-option>
-      </ion-select>
-    </ion-item>
-  </ion-list>
-  <ion-item-divider>
-    <ion-label class="item-divider">
-      &nbsp;
-    </ion-label>
-  </ion-item-divider>
+    <ion-accordion value="battery">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="battery-half-outline" slot="start"></ion-icon>
+          Battery Monitor
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <app-battery #batteryComponent
+                     [rescueConf]="rescueConf"
+                     (changeEvent)="saveProperty($event)">
+          (lightBarLedTypeUpdate)="updateLightBarLedType()">
+        </app-battery>
+      </div>
+    </ion-accordion>
+
+    <ion-accordion value="canbus">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="bus-outline"></ion-icon>
+          CANBUS
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <app-canbus #canbusComponent
+                    [rescueConf]="rescueConf">
+        </app-canbus>
+      </div>
+    </ion-accordion>
+
+    <ion-accordion value="notifications">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="notifications-outline"></ion-icon>
+          Notifications
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-item>
+          <ion-text>
+            <p>Send local push notifications if supported by your system.</p>
+          </ion-text>
+        </ion-item>
+        <ion-item>
+          <ion-toggle name="notificationsEnabled" justify="space-between" checked
+                      [(ngModel)]="rescueConf.isNotificationEnabled"
+                      (ngModelChange)="toggleNotificationsEnabled($event)">
+            Enable Notifications
+          </ion-toggle>
+        </ion-item>
+
+        <ion-item-group *ngIf="rescueConf.isNotificationEnabled">
+          <ion-item-divider>
+            <ion-label>
+              Notification types
+            </ion-label>
+          </ion-item-divider>
+          <ion-item>
+            <ion-toggle name="batteryNotificationEnabled" justify="space-between" checked
+                        [(ngModel)]="rescueConf.isBatteryNotificationEnabled">
+              Battery Warnings
+            </ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle name="currentNotificationEnabled" justify="space-between" checked
+                        [(ngModel)]="rescueConf.isCurrentNotificationEnabled">
+              Current Warnings
+            </ion-toggle>
+          </ion-item>
+          <ion-item>
+            <ion-toggle name="dutycycleNotificationEnabled" justify="space-between" checked
+                        [(ngModel)]="rescueConf.isErpmNotificationEnabled">
+              DutyCycle Warnings
+            </ion-toggle>
+          </ion-item>
+        </ion-item-group>
+      </div>
+    </ion-accordion>
+
+    <ion-accordion value="bluetooth">
+      <ion-item slot="header" color="first">
+        <ion-label class="item-divider">
+          <ion-icon name="bluetooth" slot="start"></ion-icon>
+          Bluetooth Settings
+        </ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-item>
+          <ion-range label="MTU size [{{rescueConf.mtuSize}}]" labelPlacement="stacked" min="23" max="512" step="1"
+                     [(ngModel)]="rescueConf.mtuSize" pin snaps color="secondary">
+            <ion-icon slot="start" size="small" color="secondary" name="apps"></ion-icon>
+            <ion-icon slot="end" color="secondary" name="apps"></ion-icon>
+          </ion-range>
+        </ion-item>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
 </ion-content>
 
 <ion-footer *ngIf="stateDirty">

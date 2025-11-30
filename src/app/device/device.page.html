@@ -13,6 +13,18 @@
 
 <ion-content [fullscreen]="true" color="light">
 
+
+  <ion-fab horizontal="end" vertical="top" slot="fixed">
+    <ion-fab-button color="medium">
+      <ion-icon name="bulb" [class.bulb-on]="lightsOn" [class.bulb-off]="!lightsOn"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="down">
+      <ion-fab-button>on</ion-fab-button>
+      <ion-fab-button>auto</ion-fab-button>
+      <ion-fab-button>off</ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+
   <ion-card>
     <ion-card-header>
       <ion-card-subtitle *ngIf="bleService.isRescueDevice">rESCue device: {{deviceId}}</ion-card-subtitle>
@@ -51,7 +63,7 @@
         </ion-row>
       </ion-grid>
     </ion-card-content>
-    <div class="ion-text-end">
+    <div class="ion-text-start">
       <ion-chip  outline (click)="toggleAutoconnect()" id="toggleAutoconnectChip">
         <ion-icon *ngIf="autoconnect" src="assets/icon/plug-circle-check.svg"></ion-icon>
         <ion-icon *ngIf="!autoconnect" src="assets/icon/plug-circle-xmark.svg"></ion-icon>
@@ -173,6 +185,7 @@
   </ion-row>
  </ion-grid>
 </ion-content>
+
 <!--
 <ion-footer *ngIf="bleService.info.isVirtual">
   <ion-toolbar>
