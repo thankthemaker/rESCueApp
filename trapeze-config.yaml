@@ -1,5 +1,12 @@
 platforms:
   android:
+    variables:
+      - name: minSdkVersion
+        value: 22
+      - name: compileSdkVersion
+        value: 35
+      - name: targetSdkVersion
+        value: 35
     gradle:
       - file: app/build.gradle
         target:
